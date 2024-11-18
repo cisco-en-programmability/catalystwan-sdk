@@ -5,6 +5,13 @@ default_stages: [commit]
 repos:
 
   # Autoformatting (modifies staged files)
+  - repo: local
+    hooks:
+    -   id: copyright
+        name: copyright
+        entry: python copyright.py
+        language: system
+        types: [python]
 
   - repo: https://github.com/timothycrosley/isort
     rev: 5.12.0

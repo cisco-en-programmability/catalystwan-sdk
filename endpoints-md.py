@@ -161,7 +161,7 @@ class Endpoint(MarkdownRenderer):
         )
 
     def __lt__(self, other: Endpoint):
-        self.method_link < other.method_link
+        return self.method_link < other.method_link
 
     def md(self) -> str:
         return "|".join(
