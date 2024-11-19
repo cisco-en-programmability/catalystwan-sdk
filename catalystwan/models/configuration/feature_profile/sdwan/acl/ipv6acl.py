@@ -1,3 +1,4 @@
+# Copyright 2024 Cisco Systems, Inc. and its affiliates
 from ipaddress import IPv6Address, IPv6Interface
 from typing import List, Literal, Optional, Tuple, Union
 from uuid import UUID

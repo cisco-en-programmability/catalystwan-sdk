@@ -1,3 +1,4 @@
+# Copyright 2024 Cisco Systems, Inc. and its affiliates
 from typing import Type
 
 from catalystwan.api.feature_profile_api import PolicyObjectFeatureProfileAPI
