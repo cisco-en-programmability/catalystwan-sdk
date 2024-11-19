@@ -906,6 +906,11 @@ class PrefixListEntry(BaseModel):
     ref: UUID
 
 
+class Ipv6PrefixListEntry(BaseModel):
+    field: Literal["ipv6prefixList"] = "ipv6prefixList"
+    ref: UUID
+
+
 class RegionListEntry(BaseModel):
     field: Literal["regionList"] = "regionList"
     ref: UUID
@@ -1289,6 +1294,7 @@ MatchEntry = Annotated[
         ExtendedCommunityEntry,
         GroupIDEntry,
         ICMPMessageEntry,
+        Ipv6PrefixListEntry,
         LocalPreferenceEntry,
         MetricEntry,
         NextHeaderEntry,

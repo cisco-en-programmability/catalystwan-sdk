@@ -1,3 +1,4 @@
+# Copyright 2024 Cisco Systems, Inc. and its affiliates
 from catalystwan.api.templates.device_variable import DeviceVariable
 from catalystwan.utils.feature_template.find_template_values import find_template_values
 

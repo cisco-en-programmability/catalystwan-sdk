@@ -1,3 +1,4 @@
+# Copyright 2024 Cisco Systems, Inc. and its affiliates
 from ipaddress import IPv4Address, IPv4Interface
 
 from catalystwan.api.templates.models.cisco_secure_internet_gateway import (
