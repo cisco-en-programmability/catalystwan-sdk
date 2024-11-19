@@ -23,6 +23,7 @@ from catalystwan.models.policy.policy_definition import (
     ExpandedCommunityListEntry,
     ExportToAction,
     GroupIDEntry,
+    Ipv6PrefixListEntry,
     Match,
     MultiRegionRole,
     OMPTagEntry,
@@ -60,6 +61,7 @@ AnyControlPolicyRouteSequenceMatchEntry = Annotated[
         ColorListEntry,
         CommunityListEntry,
         ExpandedCommunityListEntry,
+        Ipv6PrefixListEntry,
         OMPTagEntry,
         OriginatorEntry,
         OriginEntry,
@@ -190,6 +192,9 @@ class ControlPolicyRouteSequence(PolicyDefinitionSequenceBase):
 
     def match_prefix_list(self, prefix_list_id: UUID) -> None:
         self._insert_match(PrefixListEntry(ref=prefix_list_id))
+
+    def match_ipv6_prefix_list(self, prefix_list_id: UUID) -> None:
+        self._insert_match(Ipv6PrefixListEntry(ref=prefix_list_id))
 
     @accept_action
     def associate_community_action(self, community: str, additive: bool = False) -> None:
