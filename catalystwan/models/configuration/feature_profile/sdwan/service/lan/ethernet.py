@@ -138,12 +138,9 @@ class VrrpIPv4(BaseModel):
 class Trustsec(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
 
-    enable_sgt_propagation: Annotated[
-        Union[Global[bool], Default[bool]],
-        VersionedField(versions="<=20.13", serialization_alias="enableSGTPropogation"),
-    ] = Field(
+    enable_sgt_propagation: Union[Global[bool], Default[bool]] = Field(
         serialization_alias="enableSGTPropagation",
-        validation_alias=AliasChoices("enableSGTPropagation", "enableSGTPropogation"),
+        validation_alias="enableSGTPropogation",
         default=Default[bool](value=False),
     )
     propagate: Annotated[
@@ -152,13 +149,10 @@ class Trustsec(BaseModel):
     security_group_tag: Optional[Union[Global[int], Variable, Default[None]]] = Field(
         serialization_alias="securityGroupTag", validation_alias="securityGroupTag", default=None
     )
-    enable_enforced_propagation: Annotated[
-        Union[Global[bool], Default[None]],
-        VersionedField(versions="<=20.13", serialization_alias="enableEnforcedPropogation"),
-    ] = Field(
+    enable_enforced_propagation: Union[Global[bool], Default[None]] = Field(
         default=Default[None](value=None),
         serialization_alias="enableEnforcedPropagation",
-        validation_alias=AliasChoices("enableEnforcedPropagation", "enableEnforcedPropogation"),
+        validation_alias="enableEnforcedPropogation",
     )
     enforced_security_group_tag: Union[Global[int], Variable, Default[None]] = Field(
         default=Default[None](value=None),
