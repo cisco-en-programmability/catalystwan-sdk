@@ -1,6 +1,6 @@
 # Copyright 2023 Cisco Systems, Inc. and its affiliates
 
-from ipaddress import IPv4Address, IPv4Network, IPv6Network
+from ipaddress import IPv4Address, IPv4Network, IPv6Address, IPv6Network
 from typing import List, Literal, Optional, Set, Tuple, Union, overload
 from uuid import UUID
 
@@ -49,6 +49,7 @@ from catalystwan.models.policy.policy_definition import (
     Match,
     NATAction,
     NextHopActionEntry,
+    NextHopIpv6ActionEntry,
     NextHopLooseEntry,
     PacketLengthEntry,
     PLPEntry,
@@ -274,8 +275,11 @@ class TrafficDataPolicySequence(PolicyDefinitionSequenceBase):
         self._insert_action(nat_action)
 
     @accept_action
-    def associate_next_hop_action(self, next_hop: IPv4Address, loose: bool = False) -> None:
-        self._insert_action_in_set(NextHopActionEntry(value=next_hop))
+    def associate_next_hop_action(self, next_hop: Union[IPv4Address, IPv6Address], loose: bool = False) -> None:
+        if isinstance(next_hop, IPv6Address):
+            self._insert_action_in_set(NextHopIpv6ActionEntry(value=next_hop))
+        else:
+            self._insert_action_in_set(NextHopActionEntry(value=next_hop))
         self._insert_action_in_set(NextHopLooseEntry(value=loose))
 
     @accept_action

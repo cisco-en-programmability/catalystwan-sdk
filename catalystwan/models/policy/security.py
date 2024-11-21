@@ -124,7 +124,7 @@ class UnifiedSecurityPolicyDefinition(PolicyDefinition):
 
 
 class SecurityPolicy(PolicyCreationPayload):
-    policy_mode: Literal[None, "security"] = Field(
+    policy_mode: Literal[None, "", "security"] = Field(
         default="security", serialization_alias="policyMode", validation_alias="policyMode"
     )
     policy_type: str = Field(default="feature", serialization_alias="policyType", validation_alias="policyType")
@@ -138,26 +138,26 @@ class SecurityPolicy(PolicyCreationPayload):
     def get_assemby_item_uuids(self) -> Set[UUID]:
         return set((item.definition_id for item in self.policy_definition.assembly))
 
-    def add_item(self, item: SecurityPolicyAssemblyItem) -> None:
+    def _add_item(self, item: SecurityPolicyAssemblyItem) -> None:
         self.policy_definition.assembly.append(item)
 
     def add_zone_based_fw(self, definition_id: UUID) -> None:
-        self.add_item(ZoneBasedFWAssemblyItem(definition_id=definition_id))
+        self._add_item(ZoneBasedFWAssemblyItem(definition_id=definition_id))
 
     def add_dns_security(self, definition_id: UUID) -> None:
-        self.add_item(DNSSecurityAssemblyItem(definition_id=definition_id))
+        self._add_item(DNSSecurityAssemblyItem(definition_id=definition_id))
 
     def add_intrusion_prevention(self, definition_id: UUID) -> None:
-        self.add_item(IntrusionPreventionAssemblyItem(definition_id=definition_id))
+        self._add_item(IntrusionPreventionAssemblyItem(definition_id=definition_id))
 
     def add_url_filtering(self, definition_id: UUID) -> None:
-        self.add_item(URLFilteringAssemblyItem(definition_id=definition_id))
+        self._add_item(URLFilteringAssemblyItem(definition_id=definition_id))
 
     def add_advanced_malware_protection(self, definition_id: UUID) -> None:
-        self.add_item(AdvancedMalwareProtectionAssemblyItem(definition_id=definition_id))
+        self._add_item(AdvancedMalwareProtectionAssemblyItem(definition_id=definition_id))
 
     def add_ssl_decryption(self, definition_id: UUID) -> None:
-        self.add_item(SSLDecryptionAssemblyItem(definition_id=definition_id))
+        self._add_item(SSLDecryptionAssemblyItem(definition_id=definition_id))
 
     @field_validator("policy_definition", mode="before")
     @classmethod

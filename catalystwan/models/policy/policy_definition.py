@@ -492,6 +492,11 @@ class NextHopActionEntry(BaseModel):
     value: Union[IPv4Address, IPv6Address]
 
 
+class NextHopIpv6ActionEntry(BaseModel):
+    field: Literal["nextHopIpv6"] = "nextHopIpv6"
+    value: IPv6Address
+
+
 class NextHopMatchEntry(BaseModel):
     field: Literal["nextHop"] = "nextHop"
     ref: UUID
@@ -1205,6 +1210,7 @@ ActionSetEntry = Annotated[
         MetricEntry,
         MetricTypeEntry,
         NextHopActionEntry,
+        NextHopIpv6ActionEntry,
         NextHopLooseEntry,
         OMPTagEntry,
         OriginatorEntry,

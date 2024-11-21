@@ -676,7 +676,18 @@ DNSTypeEntryType = Literal[
     "umbrella",
 ]
 
-PolicyModeType = Literal["security", "unified"]
+_PolicyModeType = Literal["security", "unified"]
+
+def parse_policy_mode(val: Optional[str]) -> _PolicyModeType:
+    if isinstance(val, str) and val == "unified":
+        return "unified"
+    return "security"
+
+PolicyModeType = Annotated[
+    _PolicyModeType,
+    BeforeValidator(parse_policy_mode)
+]
+
 
 CoreRegion = Literal[
     "core",
