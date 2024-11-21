@@ -7,6 +7,7 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field
 from typing_extensions import Annotated
 
+from catalystwan.models.common import PolicyModeType
 from catalystwan.models.misc.application_protocols import ApplicationProtocol
 from catalystwan.models.policy.policy_definition import (
     AdvancedInspectionProfileAction,
@@ -220,12 +221,6 @@ class ZoneBasedFWPolicyEntry(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
 
-class ZoneBasedFWPolicyHeader(PolicyDefinitionBase):
-    type: Literal["zoneBasedFW"] = "zoneBasedFW"
-    mode: str = Field(default="security")
-    model_config = ConfigDict(populate_by_name=True)
-
-
 class ZoneBasedFWPolicyDefinition(DefinitionWithSequencesCommonBase):
     default_action: ZoneBasedFirewallDefaultAction = Field(
         default=ZoneBasedFirewallDefaultAction(type="drop"),
@@ -236,9 +231,10 @@ class ZoneBasedFWPolicyDefinition(DefinitionWithSequencesCommonBase):
     entries: List[ZoneBasedFWPolicyEntry] = []
 
 
-class ZoneBasedFWPolicy(ZoneBasedFWPolicyHeader):
+class ZoneBasedFWPolicy(PolicyDefinitionBase):
+    model_config = ConfigDict(populate_by_name=True)
     type: Literal["zoneBasedFW"] = "zoneBasedFW"
-    mode: Literal["security", "unified"] = "security"
+    mode: PolicyModeType = "security"
     definition: ZoneBasedFWPolicyDefinition = ZoneBasedFWPolicyDefinition()
 
     def add_ipv4_rule(
