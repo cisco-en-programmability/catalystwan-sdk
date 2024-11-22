@@ -30,7 +30,7 @@ class VpnVsmartInterfaceModel(FeatureTemplate):
     model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True)
     _docs_description: str = "vSmart VPN Interface Feature Template configuration"
 
-    if_name: str = Field(
+    if_name: Optional[str] = Field(
         default=None, description="The name of the interface.", json_schema_extra={"vmanage_key": "if-name"}
     )
     interface_description: Optional[str] = Field(

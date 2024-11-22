@@ -1,7 +1,7 @@
 # Copyright 2023 Cisco Systems, Inc. and its affiliates
 
 from pathlib import Path
-from typing import ClassVar, List, Literal, Optional
+from typing import ClassVar, List, Literal, Optional, Union
 
 from pydantic import ConfigDict, Field
 
@@ -176,7 +176,7 @@ class CiscoSystemModel(FeatureTemplate):
     overlay_id: Optional[int] = Field(
         default=None, description="The overlay ID of the device.", json_schema_extra={"vmanage_key": "overlay-id"}
     )
-    site_id: int = Field(
+    site_id: Union[int, DeviceVariable] = Field(
         default=DeviceVariable(name="system_site_id"),
         description="The site ID of the device.",
         json_schema_extra={"vmanage_key": "site-id"},

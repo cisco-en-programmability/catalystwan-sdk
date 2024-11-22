@@ -66,115 +66,104 @@ TrafficClass = Literal[
 
 class AppListMatch(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    app_list: RefIdItem = Field(default=None, validation_alias="appList", serialization_alias="appList")
+    app_list: RefIdItem = Field(validation_alias="appList", serialization_alias="appList")
 
 
 class SaasAppListMatch(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    saas_app_list: RefIdItem = Field(default=None, validation_alias="saasAppList", serialization_alias="saasAppList")
+    saas_app_list: RefIdItem = Field(validation_alias="saasAppList", serialization_alias="saasAppList")
 
 
 class ServiceAreaMatch(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
     service_area: Global[List[ServiceAreaValue]] = Field(
-        default=None, validation_alias="serviceArea", serialization_alias="serviceArea"
+        validation_alias="serviceArea", serialization_alias="serviceArea"
     )
 
 
 class TrafficCategoryMatch(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
     traffic_category: Global[TrafficCategory] = Field(
-        default=None, validation_alias="trafficCategory", serialization_alias="trafficCategory"
+        validation_alias="trafficCategory", serialization_alias="trafficCategory"
     )
 
 
 class DnsAppListMatch(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    dns_app_list: RefIdItem = Field(default=None, validation_alias="dnsAppList", serialization_alias="dnsAppList")
+    dns_app_list: RefIdItem = Field(validation_alias="dnsAppList", serialization_alias="dnsAppList")
 
 
 class TrafficClassMatch(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    traffic_class: Global[TrafficClass] = Field(
-        default=None, validation_alias="trafficClass", serialization_alias="trafficClass"
-    )
+    traffic_class: Global[TrafficClass] = Field(validation_alias="trafficClass", serialization_alias="trafficClass")
 
 
 class DscpMatch(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    dscp: Global[int] = Field(default=None)
+    dscp: Global[int]
 
 
 class PacketLengthMatch(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    packet_length: Global[str] = Field(
-        default=None, validation_alias="packetLength", serialization_alias="packetLength"
-    )
+    packet_length: Global[str] = Field(validation_alias="packetLength", serialization_alias="packetLength")
 
 
 class ProtocolMatch(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    protocol: Global[List[str]] = Field(default=None)
+    protocol: Global[List[str]]
 
 
 class IcmpMessageMatch(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    icmp_message: Global[List[IcmpMsgType]] = Field(
-        default=None, validation_alias="icmpMessage", serialization_alias="icmpMessage"
-    )
+    icmp_message: Global[List[IcmpMsgType]] = Field(validation_alias="icmpMessage", serialization_alias="icmpMessage")
 
 
 class Icmp6MessageMatch(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
     icmp6_message: Global[List[Icmp6MsgType]] = Field(
-        default=None, validation_alias="icmp6Message", serialization_alias="icmp6Message"
+        validation_alias="icmp6Message", serialization_alias="icmp6Message"
     )
 
 
 class SourceDataPrefixListMatch(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
     source_data_prefix_list: RefIdItem = Field(
-        default=None, validation_alias="sourceDataPrefixList", serialization_alias="sourceDataPrefixList"
+        validation_alias="sourceDataPrefixList", serialization_alias="sourceDataPrefixList"
     )
 
 
 class SourceDataIpv6PrefixListMatch(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
     source_data_ipv6_prefix_list: RefIdItem = Field(
-        default=None, validation_alias="sourceDataIpv6PrefixList", serialization_alias="sourceDataIpv6PrefixList"
+        validation_alias="sourceDataIpv6PrefixList", serialization_alias="sourceDataIpv6PrefixList"
     )
 
 
 class SourceIpMatch(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    source_ip: Global[IPv4Network] = Field(default=None, validation_alias="sourceIp", serialization_alias="sourceIp")
+    source_ip: Global[IPv4Network] = Field(validation_alias="sourceIp", serialization_alias="sourceIp")
 
 
 class SourceIpv6Match(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    source_ipv6: Global[IPv6Network] = Field(
-        default=None, validation_alias="sourceIpv6", serialization_alias="sourceIpv6"
-    )
+    source_ipv6: Global[IPv6Network] = Field(validation_alias="sourceIpv6", serialization_alias="sourceIpv6")
 
 
 class SourcePortMatch(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    source_port: Global[List[str]] = Field(
-        default=None, validation_alias="sourcePort", serialization_alias="sourcePort"
-    )
+    source_port: Global[List[str]] = Field(validation_alias="sourcePort", serialization_alias="sourcePort")
 
 
 class DestinationDataPrefixListMatch(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
     destination_data_prefix_list: RefIdItem = Field(
-        default=None, validation_alias="destinationDataPrefixList", serialization_alias="destinationDataPrefixList"
+        validation_alias="destinationDataPrefixList", serialization_alias="destinationDataPrefixList"
     )
 
 
 class DestinationDataIpv6PrefixListMatch(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
     destination_data_ipv6_prefix_list: RefIdItem = Field(
-        default=None,
         validation_alias="destinationDataIpv6PrefixList",
         serialization_alias="destinationDataIpv6PrefixList",
     )
@@ -182,22 +171,20 @@ class DestinationDataIpv6PrefixListMatch(BaseModel):
 
 class DestinationIpMatch(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    destination_ip: Global[IPv4Network] = Field(
-        default=None, validation_alias="destinationIp", serialization_alias="destinationIp"
-    )
+    destination_ip: Global[IPv4Network] = Field(validation_alias="destinationIp", serialization_alias="destinationIp")
 
 
 class DestinationIpv6Match(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
     destination_ipv6: Global[IPv6Network] = Field(
-        default=None, validation_alias="destinationIpv6", serialization_alias="destinationIpv6"
+        validation_alias="destinationIpv6", serialization_alias="destinationIpv6"
     )
 
 
 class DestinationPortMatch(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
     destination_port: Global[List[str]] = Field(
-        default=None, validation_alias="destinationPort", serialization_alias="destinationPort"
+        validation_alias="destinationPort", serialization_alias="destinationPort"
     )
 
 
@@ -209,20 +196,18 @@ class TcpMatch(BaseModel):
 class DestinationRegionMatch(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
     destination_region: Global[DestinationRegion] = Field(
-        default=None, validation_alias="destinationRegion", serialization_alias="destinationRegion"
+        validation_alias="destinationRegion", serialization_alias="destinationRegion"
     )
 
 
 class TrafficToMatch(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    traffic_to: Global[TrafficTargetType] = Field(
-        default=None, validation_alias="trafficTo", serialization_alias="trafficTo"
-    )
+    traffic_to: Global[TrafficTargetType] = Field(validation_alias="trafficTo", serialization_alias="trafficTo")
 
 
 class DnsMatch(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    dns: Global[DNSEntryType] = Field(default=None)
+    dns: Global[DNSEntryType]
 
 
 Entry = Union[
@@ -282,7 +267,7 @@ class SlaClass(BaseModel):
 
 class LocalTlocList(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    color: Global[List[TLOCColor]] = Field(default=None)
+    color: Global[List[TLOCColor]]
     encap: Optional[Union[Global[EncapType], Global[List[EncapType]]]] = Field(
         default=None, description="encap is list <=20.12"
     )
@@ -295,7 +280,7 @@ class LocalTlocList(BaseModel):
 
 class PreferredRemoteColor(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    color: Global[List[TLOCColor]] = Field(default=None)
+    color: Global[List[TLOCColor]]
     remote_color_restrict: Optional[Global[Global[bool]]] = Field(
         default=None, validation_alias="remoteColorRestrict", serialization_alias="remoteColorRestrict"
     )
@@ -303,16 +288,16 @@ class PreferredRemoteColor(BaseModel):
 
 class Tloc(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    color: Global[List[TLOCColor]] = Field(default=None)
-    encap: Global[EncapType] = Field(default=None)
-    ip: Global[IPv4Address] = Field(default=None)
+    color: Global[List[TLOCColor]]
+    encap: Global[EncapType]
+    ip: Global[IPv4Address]
 
 
 class ServiceTloc(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
     tloc: Tloc = Field()
-    type: Global[ServiceType] = Field(default=None)
-    vpn: Global[int] = Field(default=None)
+    type: Global[ServiceType]
+    vpn: Global[int]
 
 
 class ServiceTlocList(BaseModel):
@@ -324,11 +309,11 @@ class ServiceTlocList(BaseModel):
 
 class ServiceChain(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    local: Global[bool] = Field(default=None)
-    restrict: Global[bool] = Field(default=None)
+    local: Global[bool]
+    restrict: Global[bool]
     tloc: Optional[Tloc] = Field(default=None)
     tloc_list: Optional[RefIdItem] = Field(default=None, validation_alias="tlocList", serialization_alias="tlocList")
-    type: Global[ServiceChainNumber] = Field(default=None)
+    type: Global[ServiceChainNumber]
     vpn: Optional[Global[int]] = Field(default=None)
 
 
@@ -464,9 +449,7 @@ class AppqoeOptimization(BaseModel):
     dre_optimization: Optional[Global[bool]] = Field(
         default=None, validation_alias="dreOptimization", serialization_alias="dreOptimization"
     )
-    service_node_group: Global[str] = Field(
-        default=None, validation_alias="serviceNodeGroup", serialization_alias="serviceNodeGroup"
-    )
+    service_node_group: Global[str] = Field(validation_alias="serviceNodeGroup", serialization_alias="serviceNodeGroup")
     tcp_optimization: Optional[Global[bool]] = Field(
         default=None, validation_alias="tcpOptimization", serialization_alias="tcpOptimization"
     )
@@ -484,7 +467,7 @@ class LossCorrection(BaseModel):
         default=None, validation_alias="lossCorrectFec", serialization_alias="lossCorrectFec"
     )
     loss_correction_type: Global[LossProtectionType] = Field(
-        default=None, validation_alias="lossCorrectionType", serialization_alias="lossCorrectionType"
+        validation_alias="lossCorrectionType", serialization_alias="lossCorrectionType"
     )
 
 
@@ -498,7 +481,7 @@ class Nat(BaseModel):
         default=None, validation_alias="diaPool", serialization_alias="diaPool"
     )
     fallback: Optional[Global[bool]] = Field(default=None)
-    use_vpn: Global[bool] = Field(default=None, validation_alias="useVpn", serialization_alias="useVpn")
+    use_vpn: Global[bool] = Field(validation_alias="useVpn", serialization_alias="useVpn")
 
     @model_serializer(mode="wrap", when_used="json")
     def serialize(self, handler: SerializerFunctionWrapHandler, info: SerializationInfo) -> Dict[str, Any]:
@@ -514,10 +497,10 @@ SecureServiceEdgeInstance = Literal[
 class Sse(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
     secure_service_edge: Global[Global[bool]] = Field(
-        default=None, validation_alias="secureServiceEdge", serialization_alias="secureServiceEdge"
+        validation_alias="secureServiceEdge", serialization_alias="secureServiceEdge"
     )
     secure_service_edge_instance: Global[SecureServiceEdgeInstance] = Field(
-        default=None, validation_alias="secureServiceEdgeInstance", serialization_alias="secureServiceEdgeInstance"
+        validation_alias="secureServiceEdgeInstance", serialization_alias="secureServiceEdgeInstance"
     )
 
 
@@ -561,7 +544,7 @@ class SlaClassAction(BaseModel):
 class BackupSlaPreferredColorAction(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
     backup_sla_preferred_color: Global[List[TLOCColor]] = Field(
-        default=None, validation_alias="backupSlaPreferredColor", serialization_alias="backupSlaPreferredColor"
+        validation_alias="backupSlaPreferredColor", serialization_alias="backupSlaPreferredColor"
     )
 
 
@@ -570,7 +553,7 @@ TS = TypeVar("TS", bound=Set)
 
 class SetAction(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    set: List[Set] = Field(default=None)
+    set: List[Set] = Field(default_factory=list)
 
     @property
     def _set(self):
@@ -600,73 +583,71 @@ class SetAction(BaseModel):
 
 class RedirectDnsAction(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    redirect_dns: RedirectDns = Field(default=None, validation_alias="redirectDns", serialization_alias="redirectDns")
+    redirect_dns: RedirectDns = Field(validation_alias="redirectDns", serialization_alias="redirectDns")
 
 
 class AppqoeOptimizationAction(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
     appqoe_optimization: AppqoeOptimization = Field(
-        default=None, validation_alias="appqoeOptimization", serialization_alias="appqoeOptimization"
+        validation_alias="appqoeOptimization", serialization_alias="appqoeOptimization"
     )
 
 
 class LossCorrectionAction(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    loss_correction: LossCorrection = Field(
-        default=None, validation_alias="lossCorrection", serialization_alias="lossCorrection"
-    )
+    loss_correction: LossCorrection = Field(validation_alias="lossCorrection", serialization_alias="lossCorrection")
 
 
 class CountAction(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    count: Global[str] = Field(default=None)
+    count: Global[str]
 
 
 class LogAction(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    log: Global[bool] = Field(default=None)
+    log: Global[bool]
 
 
 class CloudSaasAction(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    cloud_saas: Global[bool] = Field(default=None, validation_alias="cloudSaas", serialization_alias="cloudSaas")
+    cloud_saas: Global[bool] = Field(validation_alias="cloudSaas", serialization_alias="cloudSaas")
 
 
 class CloudProbeAction(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    cloud_probe: Global[bool] = Field(default=None, validation_alias="cloudProbe", serialization_alias="cloudProbe")
+    cloud_probe: Global[bool] = Field(validation_alias="cloudProbe", serialization_alias="cloudProbe")
 
 
 class CflowdAction(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    cflowd: Global[bool] = Field(default=None)
+    cflowd: Global[bool]
 
 
 class NatPoolAction(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    nat_pool: Global[int] = Field(default=None, validation_alias="natPool", serialization_alias="natPool")
+    nat_pool: Global[int] = Field(validation_alias="natPool", serialization_alias="natPool")
 
 
 class NatAction(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    nat: Nat = Field(default=None)
+    nat: Nat
 
 
 class SigAction(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    sig: Global[bool] = Field(default=None)
+    sig: Global[bool]
 
 
 class FallbackToRoutingAction(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
     fallback_to_routing: Global[bool] = Field(
-        default=None, validation_alias="fallbackToRouting", serialization_alias="fallbackToRouting"
+        validation_alias="fallbackToRouting", serialization_alias="fallbackToRouting"
     )
 
 
 class SseAction(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    sse: Sse = Field(default=None)
+    sse: Sse
 
 
 Action = Union[
@@ -703,7 +684,7 @@ class Sequence(BaseModel):
         default=None, validation_alias="sequenceId", serialization_alias="sequenceId"
     )
     sequence_ip_type: Global[SequenceIpType] = Field(
-        default=None, validation_alias="sequenceIpType", serialization_alias="sequenceIpType"
+        validation_alias="sequenceIpType", serialization_alias="sequenceIpType"
     )
     sequence_name: Optional[Global[str]] = Field(
         default=None, validation_alias="sequenceName", serialization_alias="sequenceName"

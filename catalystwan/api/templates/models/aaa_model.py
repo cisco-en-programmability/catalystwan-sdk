@@ -131,7 +131,7 @@ class RadiusServer(FeatureTemplateValidator):
         description="The accounting port for the RADIUS server",
     )
     vpn: Optional[str] = Field(
-        default=0,
+        default="0",
         json_schema_extra={"vmanage_key": "vpn"},
         description="Set VPN in which RADIUS server is located",
     )
@@ -159,7 +159,7 @@ class TacacsServer(FeatureTemplateValidator):
         description="The authentication port for the TACACS+ server",
     )
     vpn: Optional[str] = Field(
-        default=0,
+        default="0",
         json_schema_extra={"vmanage_key": "vpn"},
         description="Set VPN in which TACACS+ server is located",
     )
@@ -185,7 +185,7 @@ class TaskPermissions(FeatureTemplateValidator):
         description="Select the task to set privileges for",
     )
     permission: List[TaskPermission] = Field(
-        default="pap",
+        default=["read"],  # type: ignore
         json_schema_extra={
             "vmanage_key": "permission",
         },
@@ -207,7 +207,7 @@ class UserGroup(FeatureTemplateValidator):
         json_schema_extra={"vmanage_key": "name"},
         description="Set name of user group",
     )
-    task: List[TaskPermissions] = Field(
+    task: Optional[List[TaskPermissions]] = Field(
         default=None,
         json_schema_extra={"vmanage_key": "task", "priority_order": ["mode", "permission"]},
         description="Set the user group's tasks and task privileges. Skipping tasks sets all as read and write",
@@ -220,7 +220,7 @@ class AAAModel(FeatureTemplate):
 
     auth_order: Optional[List[AuthenticationOrder]] = Field(
         validate_default=True,
-        default=["local", "radius", "tacacs"],
+        default=["local", "radius", "tacacs"],  # type: ignore
         json_schema_extra={"vmanage_key": "auth-order", "data_path": ["aaa"]},
         description="ServerGroups authentication order to user access",
     )

@@ -260,7 +260,6 @@ class Natpool(FeatureTemplateValidator):
         json_schema_extra={"vmanage_key": "prefix-length"},
     )
     range_start: str = Field(
-        default=None,
         description="The starting IP address for the NAT pool range.",
         json_schema_extra={"vmanage_key": "range-start"},
     )
