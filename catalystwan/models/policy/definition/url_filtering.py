@@ -41,7 +41,7 @@ class UrlFilteringDefinition(BaseModel):
     logging: List[str] = Field(default_factory=list)
     enable_alerts: bool = Field(validation_alias="enableAlerts", serialization_alias="enableAlerts")
     alerts: Set[UrlFilteringAlerts] = Field(
-        default_factory=list, validation_alias="alerts", serialization_alias="alerts"
+        default_factory=set, validation_alias="alerts", serialization_alias="alerts"
     )
     target_vpns: List[VpnId] = Field(
         default_factory=list, validation_alias="targetVpns", serialization_alias="targetVpns"

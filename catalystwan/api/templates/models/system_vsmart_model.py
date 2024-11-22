@@ -68,7 +68,7 @@ class SystemVsmart(FeatureTemplate):
         description="Geographical longitude of the vSmart controller",
     )
     device_groups: List[str] = Field(
-        default=None,
+        default_factory=list,
         json_schema_extra={"vmanage_key": "device-groups"},
         description="Device group names for the vSmart controller",
     )

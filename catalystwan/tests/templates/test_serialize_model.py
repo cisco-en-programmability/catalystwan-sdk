@@ -41,7 +41,7 @@ class TestFeatureTemplate2(TestCase):
         )
         # Assert
         # self.assertDictEqual
-        self.maxDiff = 10000
+        self.maxDiff = 2**16
         self.assertDictEqual(
             definition["templateDefinition"],
             feature_template_payload.model_dump(by_alias=True, mode="json")["templateDefinition"],

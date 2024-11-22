@@ -194,9 +194,7 @@ class WANIPv4StaticRoute(BaseModel):
     gateway: Global[Literal["nextHop", "null0", "dhcp"]] = Field(
         default=Global(value="nextHop"), serialization_alias="gateway", validation_alias="gateway"
     )
-    next_hops: Optional[List[NextHop]] = Field(
-        default_factory=list, serialization_alias="nextHop", validation_alias="nextHop"
-    )
+    next_hops: Optional[List[NextHop]] = Field(default=None, serialization_alias="nextHop", validation_alias="nextHop")
     distance: Optional[Global[int]] = Field(default=None, serialization_alias="distance", validation_alias="distance")
 
     def set_to_next_hop(

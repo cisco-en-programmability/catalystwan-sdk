@@ -59,10 +59,12 @@ class SslDecryptionParcel(_ParcelBase):
     )
     unknown_status: Optional[Global[Action]] = Field(default=None, validation_alias=AliasPath("data", "unknownStatus"))
     unsupported_protocol_versions: Global[UnspportedModeAction] = Field(
-        default=Global[Action](value="drop"), validation_alias=AliasPath("data", "unsupportedProtocolVersions")
+        default=Global[UnspportedModeAction](value="drop"),
+        validation_alias=AliasPath("data", "unsupportedProtocolVersions"),
     )
     unsupported_cipher_suites: Global[UnspportedModeAction] = Field(
-        default=Global[Action](value="drop"), validation_alias=AliasPath("data", "unsupportedCipherSuites")
+        default=Global[UnspportedModeAction](value="drop"),
+        validation_alias=AliasPath("data", "unsupportedCipherSuites"),
     )
     failure_mode: Global[FailureMode] = Field(
         default=Global[FailureMode](value="close"), validation_alias=AliasPath("data", "failureMode")

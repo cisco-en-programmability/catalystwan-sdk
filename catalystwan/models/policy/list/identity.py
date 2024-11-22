@@ -9,8 +9,8 @@ from catalystwan.models.policy.policy_list import PolicyListBase, PolicyListId, 
 
 class IdentityListEntry(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
-    user: str = Field(default=None)
-    user_group: str = Field(default=None, validation_alias="userGroup", serialization_alias="userGroup")
+    user: str
+    user_group: str = Field(validation_alias="userGroup", serialization_alias="userGroup")
 
 
 class IdentityList(PolicyListBase):

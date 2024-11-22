@@ -139,7 +139,7 @@ class Trustsec(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
 
     enable_sgt_propagation: Union[Global[bool], Default[bool]] = Field(
-        serialization_alias="enableSGTPropagation",
+        serialization_alias="enableSGTPropogation",
         validation_alias="enableSGTPropogation",
         default=Default[bool](value=False),
     )
@@ -151,7 +151,7 @@ class Trustsec(BaseModel):
     )
     enable_enforced_propagation: Union[Global[bool], Default[None]] = Field(
         default=Default[None](value=None),
-        serialization_alias="enableEnforcedPropagation",
+        serialization_alias="enableEnforcedPropogation",
         validation_alias="enableEnforcedPropogation",
     )
     enforced_security_group_tag: Union[Global[int], Variable, Default[None]] = Field(

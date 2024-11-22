@@ -138,7 +138,7 @@ class RadiusGroup(FeatureTemplateValidator):
         json_schema_extra={"vmanage_key": "group-name"},
         description="The name of the RADIUS group",
     )
-    vpn: Optional[int] = Field(description="The VPN ID for the RADIUS group")
+    vpn: Optional[int] = Field(default=None, description="The VPN ID for the RADIUS group")
     source_interface: Optional[str] = Field(
         json_schema_extra={"vmanage_key": "source-interface"},
         description="The source interface for the RADIUS group",
@@ -154,7 +154,6 @@ class RadiusVPN(FeatureTemplateValidator):
         },
     )
     server_key: str = Field(
-        default=None,
         description="Specify a RADIUS client server-key",
         json_schema_extra={
             "vmanage_key": "server-key",

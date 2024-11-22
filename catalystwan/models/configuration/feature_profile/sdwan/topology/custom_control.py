@@ -181,7 +181,7 @@ class Actions(BaseModel):
 
 class Sequence(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
-    actions: Optional[List[Actions]] = Field(default_factory=list)
+    actions: Optional[List[Actions]] = Field(default=None)
     base_action: Optional[Global[AcceptRejectActionType]] = Field(
         default=None, validation_alias="baseAction", serialization_alias="baseAction"
     )

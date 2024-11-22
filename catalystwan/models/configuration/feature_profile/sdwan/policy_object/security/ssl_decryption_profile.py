@@ -113,7 +113,7 @@ class SslDecryptionProfileParcel(_ParcelBase):
         default=Global[List[Categories]](value=[]), validation_alias=AliasPath("data", "neverDecryptCategories")
     )
     skip_decrypt_categories: Global[List[Categories]] = Field(
-        default=None, validation_alias=AliasPath("data", "skipDecryptCategories")
+        default=Global[List[Categories]](value=[]), validation_alias=AliasPath("data", "skipDecryptCategories")
     )
     reputation: Global[bool] = Field(
         default=Global[bool](value=False), validation_alias=AliasPath("data", "reputation")
