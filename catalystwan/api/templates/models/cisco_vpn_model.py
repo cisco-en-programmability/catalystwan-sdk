@@ -229,7 +229,7 @@ class Overload(str, Enum):
 class Natpool(FeatureTemplateValidator):
     name: int
     prefix_length: Optional[int] = Field(default=None, json_schema_extra={"vmanage_key": "prefix-length"})
-    range_start: str = Field(default=None, json_schema_extra={"vmanage_key": "range-start"})
+    range_start: str = Field(json_schema_extra={"vmanage_key": "range-start"})
     range_end: Optional[str] = Field(default=None, json_schema_extra={"vmanage_key": "range-end"})
     overload: Overload = Overload.TRUE
     direction: Direction

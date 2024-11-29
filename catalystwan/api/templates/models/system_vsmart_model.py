@@ -37,7 +37,7 @@ class SystemVsmart(FeatureTemplate):
     device_groups: Optional[str] = Field(default=None, json_schema_extra={"vmanage_key": "device-groups"})
     longitude: Optional[int] = Field(default=None, ge=-180, le=180)
     latitude: Optional[int] = Field(default=None, ge=-90, le=90)
-    system_tunnel_mtu: Optional[str] = Field(default=1024, json_schema_extra={"vmanage_key": "system-tunnel-mtu"})
+    system_tunnel_mtu: Optional[int] = Field(default=1024, json_schema_extra={"vmanage_key": "system-tunnel-mtu"})
     location: Optional[str] = None
     host_name: Optional[str] = Field(default=None, json_schema_extra={"vmanage_key": "host-name"})
 

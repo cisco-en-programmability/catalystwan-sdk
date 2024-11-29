@@ -61,7 +61,7 @@ class Validation(BaseModel):
     device_id: Optional[str] = Field(default=None, serialization_alias="deviceID", validation_alias="deviceID")
     uuid: Optional[str] = Field(default=None, serialization_alias="uuid", validation_alias="uuid")
     rid: Optional[int] = Field(default=None, serialization_alias="@rid", validation_alias="@rid")
-    status_id: str = Field(default=None, serialization_alias="statusId", validation_alias="statusId")
+    status_id: str = Field(serialization_alias="statusId", validation_alias="statusId")
     process_id: Optional[str] = Field(default=None, serialization_alias="processId", validation_alias="processId")
     action_config: Optional[Union[str, Dict]] = Field(
         default=None, serialization_alias="actionConfig", validation_alias="actionConfig"
@@ -74,7 +74,7 @@ class Validation(BaseModel):
     request_status: Optional[str] = Field(
         default=None, serialization_alias="requestStatus", validation_alias="requestStatus"
     )
-    status: OperationStatus = Field(default=None, serialization_alias="status", validation_alias="status")
+    status: OperationStatus = Field(serialization_alias="status", validation_alias="status")
     order: Optional[int] = Field(default=None, serialization_alias="order", validation_alias="order")
 
 
