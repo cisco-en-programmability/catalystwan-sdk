@@ -12,7 +12,9 @@ from urllib.parse import urljoin, urlparse, urlunparse
 
 from packaging.version import Version  # type: ignore
 from requests import PreparedRequest, Request, Response, Session, get, head
+from requests.adapters import HTTPAdapter
 from requests.exceptions import ConnectionError, HTTPError, RequestException
+from urllib3 import Retry
 
 from catalystwan import USER_AGENT
 from catalystwan.apigw_auth import ApiGwAuth, ApiGwLogin, LoginMode
@@ -251,11 +253,19 @@ class ManagerSession(ManagerResponseAdapter, APIEndpointClient):
         self._api_version: Version = NullVersion  # type: ignore
         self.restart_timeout: int = 1200
         self.polling_requests_timeout: int = 10
-        self.request_timeout: Optional[int] = None
+        self.request_timeout: Optional[int] = 10
         self._validate_responses = True
         self._state: ManagerSessionState = ManagerSessionState.OPERATIVE
         self._last_request: Optional[PreparedRequest] = None
         self._limiter: RequestLimiter = request_limiter or RequestLimiter()
+        retry = Retry(
+            total=3,
+            backoff_factor=0.5,
+            backoff_jitter=0.3,
+            status_forcelist=[429, 503],
+        )
+        self.http_adapter = HTTPAdapter(max_retries=retry)
+        self.mount(self.base_url, self.http_adapter)
 
     @cached_property
     def api(self) -> APIContainer:
