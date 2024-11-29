@@ -85,10 +85,12 @@ class TestvManageAuth(TestCase):
 
         # Assert
         mock_post.assert_called_with(
+            vmanage_auth.request_retries,
             url="https://1.1.1.1:1111/j_security_check",
             data=security_payload,
             verify=False,
             headers={"Content-Type": "application/x-www-form-urlencoded", "User-Agent": USER_AGENT},
+            timeout=vmanage_auth.request_timeout,
         )
 
     @mock.patch("catalystwan.vmanage_auth.post", side_effect=mock_request_j_security_check)
@@ -99,16 +101,19 @@ class TestvManageAuth(TestCase):
             "j_username": username,
             "j_password": self.password,
         }
+        vmanage_auth = vManageAuth(username, self.password)
         # Act
         with self.assertRaises(UnauthorizedAccessError):
-            vManageAuth(username, self.password).get_jsessionid()
+            vmanage_auth.get_jsessionid()
 
         # Assert
         mock_post.assert_called_with(
+            vmanage_auth.request_retries,
             url="/j_security_check",
             data=security_payload,
             verify=False,
             headers={"Content-Type": "application/x-www-form-urlencoded", "User-Agent": USER_AGENT},
+            timeout=vmanage_auth.request_timeout,
         )
 
     @mock.patch("catalystwan.vmanage_auth.get", side_effect=mock_valid_token)
@@ -128,10 +133,12 @@ class TestvManageAuth(TestCase):
         self.assertEqual(token, "valid-token")
 
         mock_get.assert_called_with(
+            vmanage_auth.request_retries,
             url=valid_url,
             verify=False,
             headers={"Content-Type": "application/json", "User-Agent": USER_AGENT},
             cookies=cookies,
+            timeout=vmanage_auth.request_timeout,
         )
 
     @mock.patch("catalystwan.vmanage_auth.get", side_effect=mock_invalid_token_status)

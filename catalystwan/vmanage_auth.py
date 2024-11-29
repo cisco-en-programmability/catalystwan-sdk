@@ -7,7 +7,7 @@ from typing import Optional
 from urllib.parse import urlparse
 
 from packaging.version import Version  # type: ignore
-from requests import PreparedRequest, Response, get, post
+from requests import PreparedRequest, Response
 from requests.auth import AuthBase
 from requests.cookies import RequestsCookieJar, merge_cookies
 
@@ -15,6 +15,8 @@ from catalystwan import USER_AGENT
 from catalystwan.abstractions import APIEndpointClient, AuthProtocol
 from catalystwan.exceptions import CatalystwanException, TenantSubdomainNotFound
 from catalystwan.models.tenant import Tenant
+from catalystwan.request import retry_get as get
+from catalystwan.request import retry_post as post
 from catalystwan.response import ManagerResponse, auth_response_debug
 from catalystwan.version import NullVersion
 
@@ -81,6 +83,8 @@ class vManageAuth(AuthBase, AuthProtocol):
         self._base_url: str = ""
         self.session_count: int = 0
         self.lock: RLock = RLock()
+        self.request_retries = 1
+        self.request_timeout = 10
 
     def __str__(self) -> str:
         return f"vManageAuth(username={self.username})"
@@ -109,7 +113,14 @@ class vManageAuth(AuthBase, AuthProtocol):
         }
         url = self._base_url + "/j_security_check"
         headers = {"Content-Type": "application/x-www-form-urlencoded", "User-Agent": USER_AGENT}
-        response: Response = post(url=url, headers=headers, data=security_payload, verify=self.verify)
+        response: Response = post(
+            self.request_retries,
+            url=url,
+            headers=headers,
+            data=security_payload,
+            verify=self.verify,
+            timeout=self.request_timeout,
+        )
         self.sync_cookies(response.cookies)
         self.logger.debug(auth_response_debug(response, str(self)))
         if response.text != "" or not isinstance(self.jsessionid, str) or self.jsessionid == "":
@@ -120,10 +131,12 @@ class vManageAuth(AuthBase, AuthProtocol):
         url = self._base_url + "/dataservice/client/token"
         headers = {"Content-Type": "application/json", "User-Agent": USER_AGENT}
         response: Response = get(
+            self.request_retries,
             url=url,
             cookies=self.cookies,
             headers=headers,
             verify=self.verify,
+            timeout=self.request_timeout,
         )
         self.sync_cookies(response.cookies)
         self.logger.debug(auth_response_debug(response, str(self)))
@@ -151,11 +164,21 @@ class vManageAuth(AuthBase, AuthProtocol):
                 headers = {"x-xsrf-token": self.xsrftoken, "User-Agent": USER_AGENT}
                 if version >= Version("20.12"):
                     response = post(
-                        f"{self._base_url}/logout", headers=headers, cookies=self.cookies, verify=self.verify
+                        self.request_retries,
+                        url=f"{self._base_url}/logout",
+                        headers=headers,
+                        cookies=self.cookies,
+                        verify=self.verify,
+                        timeout=self.request_timeout,
                     )
                 else:
                     response = get(
-                        f"{self._base_url}/logout", headers=headers, cookies=self.cookies, verify=self.verify
+                        self.request_retries,
+                        url=f"{self._base_url}/logout",
+                        headers=headers,
+                        cookies=self.cookies,
+                        verify=self.verify,
+                        timeout=self.request_timeout,
                     )
                 self.logger.debug(auth_response_debug(response, str(self)))
                 if response.status_code != 200:
@@ -227,10 +250,12 @@ class vSessionAuth(vManageAuth):
         url = self._base_url + "/dataservice/tenant"
         headers = {"Content-Type": "application/json", "User-Agent": USER_AGENT, "x-xsrf-token": self.xsrftoken}
         response: Response = get(
+            self.request_retries,
             url=url,
             cookies=self.cookies,
             headers=headers,
             verify=self.verify,
+            timeout=self.request_timeout,
         )
         self.sync_cookies(response.cookies)
         self.logger.debug(auth_response_debug(response, str(self)))
@@ -244,10 +269,12 @@ class vSessionAuth(vManageAuth):
         url = self._base_url + f"/dataservice/tenant/{tenantid}/vsessionid"
         headers = {"Content-Type": "application/json", "User-Agent": USER_AGENT, "x-xsrf-token": self.xsrftoken}
         response: Response = post(
+            self.request_retries,
             url=url,
             cookies=self.cookies,
             headers=headers,
             verify=self.verify,
+            timeout=self.request_timeout,
         )
         self.sync_cookies(response.cookies)
         self.logger.debug(auth_response_debug(response, str(self)))
