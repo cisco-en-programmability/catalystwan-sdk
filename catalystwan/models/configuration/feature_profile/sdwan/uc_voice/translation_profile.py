@@ -1,5 +1,6 @@
 # Copyright 2024 Cisco Systems, Inc. and its affiliates
 from typing import List, Literal, Optional, Union
+from uuid import UUID
 
 from pydantic import AliasPath, BaseModel, ConfigDict, Field
 
@@ -27,3 +28,11 @@ class TranslationProfileParcel(_ParcelBase):
         validation_alias=AliasPath("data", "translationProfileSettings"),
         description="Translation Profile configuration",
     )
+
+    def set_ref_by_call_type(self, ref: UUID, ct: CallType) -> TranslationProfileSettings:
+        tps = TranslationProfileSettings(call_type=Global[CallType](value=ct))
+        for tps_ in self.translation_profile_settings:
+            if isinstance(tps_.call_type, Global) and tps_.call_type == ct:
+                tps = tps_
+        tps.translation_rule = RefIdItem.from_uuid(ref)
+        return tps
