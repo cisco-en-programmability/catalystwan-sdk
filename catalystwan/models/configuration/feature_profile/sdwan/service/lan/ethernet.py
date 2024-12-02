@@ -228,7 +228,7 @@ class Trustsec(BaseModel):
         validation_alias="enableSGTPropagation",
         default=Default[bool](value=False),
     )
-    propagate: Optional[Union[Global[bool], Default[bool]]] = Default[bool](value=True)
+    propogate: Optional[Union[Global[bool], Default[bool]]] = Default[bool](value=True)
     security_group_tag: Optional[Union[Global[int], Variable, Default[None]]] = Field(
         serialization_alias="securityGroupTag", validation_alias="securityGroupTag", default=None
     )
