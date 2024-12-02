@@ -2,7 +2,7 @@
 
 from enum import Enum
 from pathlib import Path
-from typing import ClassVar, List, Optional
+from typing import ClassVar, List, Optional, Union
 
 from pydantic import ConfigDict, Field
 
@@ -151,7 +151,9 @@ class CiscoSystemModel(FeatureTemplate):
         default=DeviceVariable(name="system_system_ip"), json_schema_extra={"vmanage_key": "system-ip"}
     )
     overlay_id: Optional[int] = Field(default=None, json_schema_extra={"vmanage_key": "overlay-id"})
-    site_id: int = Field(default=DeviceVariable(name="system_site_id"), json_schema_extra={"vmanage_key": "site-id"})
+    site_id: Union[int, DeviceVariable] = Field(
+        default=DeviceVariable(name="system_site_id"), json_schema_extra={"vmanage_key": "site-id"}
+    )
     site_type: Optional[List[SiteType]] = Field(default=None, json_schema_extra={"vmanage_key": "site-type"})
     port_offset: Optional[int] = Field(default=None, json_schema_extra={"vmanage_key": "port-offset"})
     port_hop: Optional[BoolStr] = Field(default=None, json_schema_extra={"vmanage_key": "port-hop"})
