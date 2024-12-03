@@ -28,4 +28,4 @@ class TranslationRuleParcel(_ParcelBase):
         validation_alias=AliasPath("data", "ruleSettings"),
         description="Translation Rule configuration",
     )
-    rule_name: Optional[Global[int]] = Field(default=None, validation_alias="ruleName", serialization_alias="ruleName")
+    rule_name: Optional[Global[int]] = Field(default=None, validation_alias=AliasPath("data", "ruleName"))
