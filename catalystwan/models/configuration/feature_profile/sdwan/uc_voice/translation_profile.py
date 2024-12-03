@@ -33,7 +33,7 @@ class TranslationProfileParcel(_ParcelBase):
         """Set reference UUID to a calling or called rule item or create one and then set the UUID"""
         tps = None
         for tps_ in self.translation_profile_settings:
-            if isinstance(tps_.call_type, Global) and tps_.call_type == ct:
+            if isinstance(tps_.call_type, Global) and tps_.call_type.value == ct:
                 tps = tps_
         if tps is None:
             tps = TranslationProfileSettings(call_type=Global[CallType](value=ct))
