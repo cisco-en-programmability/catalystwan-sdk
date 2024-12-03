@@ -24,7 +24,7 @@ if TYPE_CHECKING:
 
 @dataclass
 class TranslationProfile:
-    tp: TranslationProfileParcel
+    tpp: TranslationProfileParcel
     calling: Optional[TranslationRuleParcel] = None
     called: Optional[TranslationRuleParcel] = None
 
@@ -81,7 +81,7 @@ class UcVoiceFeatureProfileBuilder:
     ):
         if not calling and not called:
             raise ValueError("There must be at least one translation rule to create a translation profile")
-        self._translation_profiles.append(TranslationProfile(tp=tpp, called=called, calling=calling))
+        self._translation_profiles.append(TranslationProfile(tpp=tpp, called=called, calling=calling))
 
     def build(self) -> FeatureProfileBuildReport:
         """
@@ -108,9 +108,9 @@ class UcVoiceFeatureProfileBuilder:
         if tp.called:
             called_uuid = self._create_parcel(profile_uuid, tp.called)
             if called_uuid:
-                tp.tp.set_ref_by_call_type(called_uuid, "called")
+                tp.tpp.set_ref_by_call_type(called_uuid, "called")
         if tp.calling:
             calling_uuid = self._create_parcel(profile_uuid, tp.calling)
             if calling_uuid:
-                tp.tp.set_ref_by_call_type(calling_uuid, "calling")
-        self._create_parcel(profile_uuid, tp.tp)
+                tp.tpp.set_ref_by_call_type(calling_uuid, "calling")
+        self._create_parcel(profile_uuid, tp.tpp)
