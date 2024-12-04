@@ -5,7 +5,6 @@ from typing import Any, Dict, List, Literal, Optional, Union
 from uuid import UUID
 
 from pydantic import (
-    AliasChoices,
     AliasPath,
     BaseModel,
     ConfigDict,
