@@ -103,10 +103,7 @@ class VrrpIPv6(BaseModel):
 class VrrpIPv4(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
 
-    group_id: Annotated[
-        Union[Variable, Global[int]],
-        VersionedField(versions="<=20.12", serialization_alias="group_id"),
-    ] = Field(serialization_alias="groupId", validation_alias=AliasChoices("groupId", "group_id"))
+    group_id: Union[Variable, Global[int]]
     priority: Union[Variable, Global[int], Default[int]] = Default[int](value=100)
     timer: Union[Variable, Global[int], Default[int]] = Default[int](value=1000)
     track_omp: Union[Global[bool], Default[bool]] = Field(
