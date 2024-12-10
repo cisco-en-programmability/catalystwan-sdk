@@ -10,6 +10,7 @@ from catalystwan.models.policy.policy import AssemblyItemBase, PolicyCreationPay
 LocalizedPolicySupportedItemType = Literal[
     "qosMap",
     "rewriteRule",
+    "vpnQosMap",
     "vpnQoSMap",
     "acl",
     "aclv6",
@@ -101,7 +102,7 @@ class LocalizedPolicy(PolicyCreationPayload):
         self._add_item("rewriteRule", definition_id)
 
     def add_vpn_qos_map(self, definition_id: UUID) -> None:
-        self._add_item("vpnQoSMap", definition_id)
+        self._add_item("vpnQosMap", definition_id)
 
     def add_access_control_list(self, definition_id: UUID) -> None:
         self._add_item("acl", definition_id)

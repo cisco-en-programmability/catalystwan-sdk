@@ -52,6 +52,7 @@ from catalystwan.endpoints.configuration.policy.definition.traffic_data import C
 from catalystwan.endpoints.configuration.policy.definition.vpn_membership import (
     ConfigurationPolicyVPNMembershipGroupDefinition,
 )
+from catalystwan.endpoints.configuration.policy.definition.vpn_qos_map import ConfigurationPolicyVPNQoSMapDefinition
 from catalystwan.endpoints.configuration.policy.definition.zone_based_firewall import (
     ConfigurationPolicyZoneBasedFirewallDefinition,
 )
@@ -195,6 +196,7 @@ class ConfigurationPolicyDefinitionContainer:
         self.security_group = ConfigurationPolicySecurityGroupDefinition(session)
         self.srst_phone_profile = ConfigurationPolicySrstPhoneProfileDefinition(session)
         self.vpn_membership = ConfigurationPolicyVPNMembershipGroupDefinition(session)
+        self.vpn_qos_map = ConfigurationPolicyVPNQoSMapDefinition(session)
         self.zone_based_firewall = ConfigurationPolicyZoneBasedFirewallDefinition(session)
 
 
