@@ -54,6 +54,7 @@ from catalystwan.endpoints.configuration.policy.definition.url_filtering import 
 from catalystwan.endpoints.configuration.policy.definition.vpn_membership import (
     ConfigurationPolicyVPNMembershipGroupDefinition,
 )
+from catalystwan.endpoints.configuration.policy.definition.vpn_qos_map import ConfigurationPolicyVPNQoSMapDefinition
 from catalystwan.endpoints.configuration.policy.definition.zone_based_firewall import (
     ConfigurationPolicyZoneBasedFirewallDefinition,
 )
@@ -204,6 +205,7 @@ from catalystwan.models.policy.definition.ssl_decryption_utd_profile import (
 from catalystwan.models.policy.definition.traffic_data import TrafficDataPolicy, TrafficDataPolicyGetResponse
 from catalystwan.models.policy.definition.url_filtering import UrlFilteringPolicy, UrlFilteringPolicyGetResponse
 from catalystwan.models.policy.definition.vpn_membership import VPNMembershipPolicy, VPNMembershipPolicyGetResponse
+from catalystwan.models.policy.definition.vpn_qos_map import VPNQoSMapPolicy
 from catalystwan.models.policy.definition.zone_based_firewall import ZoneBasedFWPolicy, ZoneBasedFWPolicyGetResponse
 from catalystwan.models.policy.list.app_probe import AppProbeClassListInfo
 from catalystwan.models.policy.list.class_map import ClassMapListInfo
@@ -332,6 +334,7 @@ POLICY_DEFINITION_ENDPOINTS_MAP: Mapping[type, type] = {
     TrafficDataPolicy: ConfigurationPolicyDataDefinition,
     UrlFilteringPolicy: ConfigurationPolicyUrlFilteringDefinition,
     VPNMembershipPolicy: ConfigurationPolicyVPNMembershipGroupDefinition,
+    VPNQoSMapPolicy: ConfigurationPolicyVPNQoSMapDefinition,
     ZoneBasedFWPolicy: ConfigurationPolicyZoneBasedFirewallDefinition,
 }
 
@@ -933,6 +936,10 @@ class PolicyDefinitionsAPI:
         ...
 
     @overload
+    def get(self, type: Type[VPNQoSMapPolicy]) -> DataSequence[PolicyDefinitionInfo]:
+        ...
+
+    @overload
     def get(self, type: Type[HubAndSpokePolicy]) -> DataSequence[PolicyDefinitionInfo]:
         ...
 
@@ -1051,6 +1058,10 @@ class PolicyDefinitionsAPI:
 
     @overload
     def get(self, type: Type[VPNMembershipPolicy], id: UUID) -> VPNMembershipPolicyGetResponse:
+        ...
+
+    @overload
+    def get(self, type: Type[VPNQoSMapPolicy], id: UUID) -> VPNMembershipPolicyGetResponse:
         ...
 
     @overload
