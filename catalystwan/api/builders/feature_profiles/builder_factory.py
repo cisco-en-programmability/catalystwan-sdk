@@ -9,6 +9,7 @@ from catalystwan.api.builders.feature_profiles.other import OtherFeatureProfileB
 from catalystwan.api.builders.feature_profiles.service import ServiceFeatureProfileBuilder
 from catalystwan.api.builders.feature_profiles.system import SystemFeatureProfileBuilder
 from catalystwan.api.builders.feature_profiles.transport import TransportAndManagementProfileBuilder
+from catalystwan.api.builders.feature_profiles.uc_voice import UcVoiceFeatureProfileBuilder
 from catalystwan.exceptions import CatalystwanException
 from catalystwan.models.configuration.feature_profile.common import ProfileType
 
@@ -22,6 +23,7 @@ FeatureProfileBuilder = Union[
     TransportAndManagementProfileBuilder,
     CliFeatureProfileBuilder,
     ApplicationPriorityFeatureProfileBuilder,
+    UcVoiceFeatureProfileBuilder
 ]
 
 BUILDER_MAPPING: Mapping[ProfileType, Callable] = {
@@ -31,6 +33,7 @@ BUILDER_MAPPING: Mapping[ProfileType, Callable] = {
     "transport": TransportAndManagementProfileBuilder,
     "cli": CliFeatureProfileBuilder,
     "application-priority": ApplicationPriorityFeatureProfileBuilder,
+    "uc-voice": UcVoiceFeatureProfileBuilder,
 }
 
 

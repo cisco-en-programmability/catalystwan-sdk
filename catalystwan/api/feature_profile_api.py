@@ -2259,9 +2259,25 @@ class UcVoiceFeatureProfileAPI:
     SDWAN Feature Profile UC Voice APIs
     """
 
+    ENDPOINT_PARCEL_TYPE_MAP = {
+        "analog-interface": "tdm-sip/analog-interface"
+    }
+
     def __init__(self, session: ManagerSession):
         self.session = session
         self.endpoint = UcVoiceFeatureProfile(session)
+
+    def _get_endpoint_parcel_type(self, parcel_type: str) -> str:
+        """
+        Returns the mapped endpoint parcel type if it exists, otherwise returns the input key.
+        
+        Args:
+            parcel_type (str): The parcel type to look up.
+
+        Returns:
+            str: The mapped parcel type or the input key if not found.
+        """
+        return self.ENDPOINT_PARCEL_TYPE_MAP.get(parcel_type, parcel_type)
 
     def get_profiles(
         self, limit: Optional[int] = None, offset: Optional[int] = None
@@ -2360,14 +2376,13 @@ class UcVoiceFeatureProfileAPI:
         """
         Get one UC Voice Parcel given profile id, parcel type and parcel id
         """
-        return self.endpoint.get_by_id(profile_id, parcel_type._get_parcel_type(), parcel_id)
+        return self.endpoint.get_by_id(profile_id, self._get_endpoint_parcel_type(parcel_type._get_parcel_type()), parcel_id)
 
     def create_parcel(self, profile_id: UUID, payload: AnyUcVoiceParcel) -> ParcelCreationResponse:
         """
         Create UC Voice Parcel for selected profile_id based on payload type
         """
-
-        return self.endpoint.create(profile_id, payload._get_parcel_type(), payload)
+        return self.endpoint.create(profile_id, self._get_endpoint_parcel_type(payload._get_parcel_type()), payload)
 
     def update_parcel(self, profile_id: UUID, payload: AnyUcVoiceParcel, parcel_id: UUID) -> ParcelCreationResponse:
         """

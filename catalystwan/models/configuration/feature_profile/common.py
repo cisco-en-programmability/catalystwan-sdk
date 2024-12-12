@@ -295,7 +295,7 @@ class RefIdItem(BaseModel):
         extra="forbid",
         populate_by_name=True,
     )
-    ref_id: Global[str] = Field(..., serialization_alias="refId", validation_alias="refId")
+    ref_id: Union[Global[str], Default[None]] = Field(..., serialization_alias="refId", validation_alias="refId")
 
     @classmethod
     def from_uuid(cls, ref_id: UUID):
