@@ -5,7 +5,15 @@ from typing import List, Literal, Optional, Union
 from pydantic import AliasPath, BaseModel, ConfigDict, Field
 
 from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase, as_default
-from catalystwan.models.common import CarrierType, EthernetDuplexMode, MediaType, Speed, TLOCColor, TunnelMode
+from catalystwan.models.common import (
+    CarrierType,
+    EncapType,
+    EthernetDuplexMode,
+    MediaType,
+    Speed,
+    TLOCColor,
+    TunnelMode,
+)
 from catalystwan.models.configuration.feature_profile.common import (
     AclQos,
     AllowService,
@@ -196,7 +204,7 @@ class InterfaceEthernetParcel(_ParcelBase):
     model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
     type_: Literal["wan/vpn/interface/ethernet"] = Field(default="wan/vpn/interface/ethernet", exclude=True)
     encapsulation: List[Encapsulation] = Field(
-        validation_alias=AliasPath("data", "encapsulation"), description="Encapsulation for TLOC"
+        default_factory=list, validation_alias=AliasPath("data", "encapsulation"), description="Encapsulation for TLOC"
     )
     interface_name: Union[Variable, Global[str]] = Field(validation_alias=AliasPath("data", "interfaceName"))
     interface_ip_address: Union[InterfaceDynamicIPv4Address, InterfaceStaticIPv4Address] = Field(
@@ -263,3 +271,11 @@ class InterfaceEthernetParcel(_ParcelBase):
     tunnel: Optional[Tunnel] = Field(
         default=None, validation_alias=AliasPath("data", "tunnel"), description="Tunnel Interface Attributes"
     )
+
+    def add_encapsulation(
+        self,
+        encap: Optional[EncapType] = None,
+        preference: Union[None, int, str] = None,
+        weight: Union[None, int, str] = None,
+    ) -> None:
+        self.encapsulation.append(Encapsulation.from_params(encap, preference, weight))
