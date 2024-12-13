@@ -16,6 +16,7 @@ from catalystwan.models.policy.definition.srst_phone_profile import (
     SrstPhoneProfilePolicy,
     SrstPhoneProfilePolicyGetResponse,
 )
+from catalystwan.models.policy.definition.vpn_qos_map import VPNQoSMapPolicy, VPNQoSMapPolicyGetResponse
 from catalystwan.models.policy.list.app import AppList, AppListInfo
 from catalystwan.models.policy.list.app_probe import AppProbeClassList, AppProbeClassListInfo
 from catalystwan.models.policy.list.as_path import ASPathList, ASPathListInfo
@@ -136,6 +137,7 @@ AnyPolicyDefinition = Annotated[
         TrafficDataPolicy,
         UrlFilteringPolicy,
         VPNMembershipPolicy,
+        VPNQoSMapPolicy,
         ZoneBasedFWPolicy,
     ],
     Field(discriminator="type"),
@@ -266,6 +268,7 @@ AnyPolicyDefinitionInfo = Annotated[
         TrafficDataPolicyGetResponse,
         UrlFilteringPolicyGetResponse,
         VPNMembershipPolicyGetResponse,
+        VPNQoSMapPolicyGetResponse,
         ZoneBasedFWPolicyGetResponse,
     ],
     Field(discriminator="type"),
@@ -346,6 +349,7 @@ __all__ = (
     "UrlFilteringPolicy",
     "VPNList",
     "VPNMembershipPolicy",
+    "VPNQoSMapPolicy",
     "ZoneBasedFWPolicy",
     "ZoneList",
 )
