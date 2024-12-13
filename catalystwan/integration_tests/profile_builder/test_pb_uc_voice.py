@@ -7,8 +7,12 @@ from catalystwan.models.configuration.feature_profile.sdwan.uc_voice import (
     TranslationProfileParcel,
     TranslationRuleParcel,
 )
+from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.analog_interface import (
+    Association,
+    ModuleType,
+    SlotId,
+)
 from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.translation_rule import Action, RuleSettings
-from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.analog_interface import Association, SlotId, ModuleType
 from catalystwan.tests.builders.uc_voice import as_default
 
 
@@ -21,7 +25,9 @@ class TestUcVoiceFeatureProfileBuilder(TestCaseBase):
             feature_profile=FeatureProfileCreationPayload(name=self.fp_name, description=self.fp_description)
         )
         self.api = self.session.api.sdwan_feature_profiles.transport
-        self.tp = TranslationProfileParcel(parcel_name="TPP", parcel_description="TTP_Desc", translation_profile_settings=[])
+        self.tp = TranslationProfileParcel(
+            parcel_name="TPP", parcel_description="TTP_Desc", translation_profile_settings=[]
+        )
         self.tr_calling = TranslationRuleParcel(
             parcel_name="2",
             parcel_description="desc",
@@ -57,7 +63,9 @@ class TestUcVoiceFeatureProfileBuilder(TestCaseBase):
         # Assert
         assert len(report.failed_parcels) == 0
 
-    def test_when_build_profile_with_analog_interface_and_translation_profile_and_rules_assosiations_expect_success(self):
+    def test_when_build_profile_with_analog_interface_and_translation_profile_and_rules_assosiations_expect_success(
+        self,
+    ):
         # Arrange
         ai = AnalogInterfaceParcel(
             parcel_name="Ai",
@@ -71,9 +79,9 @@ class TestUcVoiceFeatureProfileBuilder(TestCaseBase):
                     translation_profile=RefIdItem(ref_id=as_global("TPP")),
                     trunk_group=RefIdItem(ref_id=as_default(None)),
                     trunk_group_priority=as_default(None),
-                    translation_rule_direction=as_default(None)
+                    translation_rule_direction=as_default(None),
                 )
-            ]
+            ],
         )
         self.builder.add_translation_profile(self.tp, self.tr_calling, self.tr_called)
         self.builder.add_parcel_with_associations(ai)
