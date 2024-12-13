@@ -35,9 +35,9 @@ def load_config() -> dict:
         raise CatalystwanException("Missing environment variables")
     return dict(
         url=url,
-        port=port,
         username=username,
         password=password,
+        port=port,
     )
 
 

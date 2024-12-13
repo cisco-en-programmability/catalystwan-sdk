@@ -1,12 +1,19 @@
 # Copyright 2024 Cisco Systems, Inc. and its affiliates
-from catalystwan.api.configuration_groups.parcel import Global
+from catalystwan.api.configuration_groups.parcel import Global, as_global, as_variable
 from catalystwan.integration_tests.base import TestCaseBase, create_name_with_run_id
-from catalystwan.models.configuration.feature_profile.common import FeatureProfileCreationPayload
+from catalystwan.models.configuration.feature_profile.common import FeatureProfileCreationPayload, RefIdItem
 from catalystwan.models.configuration.feature_profile.sdwan.uc_voice import (
+    AnalogInterfaceParcel,
     TranslationProfileParcel,
     TranslationRuleParcel,
 )
+from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.analog_interface import (
+    Association,
+    ModuleType,
+    SlotId,
+)
 from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.translation_rule import Action, RuleSettings
+from catalystwan.tests.builders.uc_voice import as_default
 
 
 class TestUcVoiceFeatureProfileBuilder(TestCaseBase):
@@ -18,10 +25,10 @@ class TestUcVoiceFeatureProfileBuilder(TestCaseBase):
             feature_profile=FeatureProfileCreationPayload(name=self.fp_name, description=self.fp_description)
         )
         self.api = self.session.api.sdwan_feature_profiles.transport
-
-    def test_when_build_profile_with_translation_profile_and_rules_expect_success(self):
-        tp = TranslationProfileParcel(parcel_name="TPP", parcel_description="TTP_Desc", translation_profile_settings=[])
-        tr_calling = TranslationRuleParcel(
+        self.tp = TranslationProfileParcel(
+            parcel_name="TPP", parcel_description="TTP_Desc", translation_profile_settings=[]
+        )
+        self.tr_calling = TranslationRuleParcel(
             parcel_name="2",
             parcel_description="desc",
             rule_name=Global[int](value=2),
@@ -34,7 +41,7 @@ class TestUcVoiceFeatureProfileBuilder(TestCaseBase):
                 )
             ],
         )
-        tr_called = TranslationRuleParcel(
+        self.tr_called = TranslationRuleParcel(
             parcel_name="4",
             parcel_description="desc",
             rule_name=Global[int](value=4),
@@ -47,7 +54,37 @@ class TestUcVoiceFeatureProfileBuilder(TestCaseBase):
                 )
             ],
         )
-        self.builder.add_translation_profile(tp, tr_calling, tr_called)
+
+    def test_when_build_profile_with_translation_profile_and_rules_expect_success(self):
+        # Arrange
+        self.builder.add_translation_profile(self.tp, self.tr_calling, self.tr_called)
+        # Act
+        report = self.builder.build()
+        # Assert
+        assert len(report.failed_parcels) == 0
+
+    def test_when_build_profile_with_analog_interface_and_translation_profile_and_rules_assosiations_expect_success(
+        self,
+    ):
+        # Arrange
+        ai = AnalogInterfaceParcel(
+            parcel_name="Ai",
+            parcel_description="",
+            enable=as_default(True),
+            slot_id=as_global("0/1", SlotId),
+            module_type=as_global("72 Port FXS", ModuleType),
+            association=[
+                Association(
+                    port_range=as_variable("{{test}}"),
+                    translation_profile=RefIdItem(ref_id=as_global("TPP")),
+                    trunk_group=RefIdItem(ref_id=as_default(None)),
+                    trunk_group_priority=as_default(None),
+                    translation_rule_direction=as_default(None),
+                )
+            ],
+        )
+        self.builder.add_translation_profile(self.tp, self.tr_calling, self.tr_called)
+        self.builder.add_parcel_with_associations(ai)
         # Act
         report = self.builder.build()
         # Assert

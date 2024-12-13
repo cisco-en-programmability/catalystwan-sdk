@@ -23,6 +23,7 @@ FeatureProfileBuilder = Union[
     TransportAndManagementProfileBuilder,
     CliFeatureProfileBuilder,
     ApplicationPriorityFeatureProfileBuilder,
+    UcVoiceFeatureProfileBuilder
 ]
 
 BUILDER_MAPPING: Mapping[ProfileType, Callable] = {
