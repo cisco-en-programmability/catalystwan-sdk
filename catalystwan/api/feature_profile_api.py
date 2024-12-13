@@ -2259,9 +2259,7 @@ class UcVoiceFeatureProfileAPI:
     SDWAN Feature Profile UC Voice APIs
     """
 
-    ENDPOINT_PARCEL_TYPE_MAP = {
-        "analog-interface": "tdm-sip/analog-interface"
-    }
+    ENDPOINT_PARCEL_TYPE_MAP = {"analog-interface": "tdm-sip/analog-interface"}
 
     def __init__(self, session: ManagerSession):
         self.session = session
@@ -2270,7 +2268,7 @@ class UcVoiceFeatureProfileAPI:
     def _get_endpoint_parcel_type(self, parcel_type: str) -> str:
         """
         Returns the mapped endpoint parcel type if it exists, otherwise returns the input key.
-        
+
         Args:
             parcel_type (str): The parcel type to look up.
 
@@ -2376,7 +2374,9 @@ class UcVoiceFeatureProfileAPI:
         """
         Get one UC Voice Parcel given profile id, parcel type and parcel id
         """
-        return self.endpoint.get_by_id(profile_id, self._get_endpoint_parcel_type(parcel_type._get_parcel_type()), parcel_id)
+        return self.endpoint.get_by_id(
+            profile_id, self._get_endpoint_parcel_type(parcel_type._get_parcel_type()), parcel_id
+        )
 
     def create_parcel(self, profile_id: UUID, payload: AnyUcVoiceParcel) -> ParcelCreationResponse:
         """
