@@ -398,40 +398,38 @@ class AnalogInterfaceParcel(_ParcelBase):
         description="Association",
     )
     caller_id: Optional[List[CallerId]] = Field(default=None, validation_alias=AliasPath("data", "callerId"))
-    connection_plar: Optional[List[ConnectionPlar]] = Field(
+    connection_plar: List[ConnectionPlar] = Field(
         default_factory=list,
         validation_alias=AliasPath("data", "connectionPlar"),
         description="Connection plar",
     )
-    did_timer: Optional[List[DidTimer]] = Field(
+    did_timer: List[DidTimer] = Field(
         default_factory=list,
         validation_alias=AliasPath("data", "didTimer"),
         description="DID timer",
     )
-    line_params: Optional[List[LineParams]] = Field(
+    line_params: List[LineParams] = Field(
         default_factory=list,
         validation_alias=AliasPath("data", "lineParams"),
         description="Configure of voice card station Id",
     )
-    module_type: Optional[Global[ModuleType]] = Field(
-        default_factory=list, validation_alias=AliasPath("data", "moduleType")
-    )
-    tuning_params: Optional[List[TuningParams]] = Field(
+    module_type: Global[ModuleType] = Field(validation_alias=AliasPath("data", "moduleType"))
+    tuning_params: List[TuningParams] = Field(
         default_factory=list,
         validation_alias=AliasPath("data", "tuningParams"),
         description="Configure of voice card station Id",
     )
-    tuning_params_fxs: Optional[List[TuningParamsFxs]] = Field(
+    tuning_params_fxs: List[TuningParamsFxs] = Field(
         default_factory=list,
         validation_alias=AliasPath("data", "tuningParamsFxs"),
         description="Configure of voice card station Id",
     )
-    voice_card_basic: Optional[List[VoiceCardBasic]] = Field(
+    voice_card_basic: List[VoiceCardBasic] = Field(
         default_factory=list,
         validation_alias=AliasPath("data", "voiceCardBasic"),
         description="Configure of voice card",
     )
-    voice_card_station_i_d: Optional[List[VoiceCardStationID]] = Field(
+    voice_card_station_i_d: List[VoiceCardStationID] = Field(
         default_factory=list,
         validation_alias=AliasPath("data", "voiceCardStationID"),
         description="Configure of voice card station Id",
