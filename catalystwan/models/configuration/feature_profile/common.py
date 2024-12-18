@@ -8,7 +8,15 @@ from uuid import UUID
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 from typing_extensions import Self
 
-from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, as_default, as_global
+from catalystwan.api.configuration_groups.parcel import (
+    Default,
+    Global,
+    Variable,
+    as_default,
+    as_global,
+    as_optional_global,
+    as_optional_global_or_variable,
+)
 from catalystwan.models.common import (
     CableLengthLongValue,
     CableLengthShortValue,
@@ -484,6 +492,18 @@ class Encapsulation(BaseModel):
     encap: Optional[Global[EncapType]] = Field(default=None)
     preference: Optional[Union[Global[int], Variable, Default[None]]] = Field(default=None)
     weight: Optional[Union[Global[int], Variable, Default[int]]] = Field(default=None)
+
+    @staticmethod
+    def from_params(
+        encap: Optional[EncapType] = None,
+        preference: Union[None, int, str] = None,
+        weight: Union[None, int, str] = None,
+    ) -> "Encapsulation":
+        return Encapsulation(
+            encap=as_optional_global(encap, EncapType),
+            preference=as_optional_global_or_variable(preference),
+            weight=as_optional_global_or_variable(weight),
+        )
 
 
 class AllowService(BaseModel):

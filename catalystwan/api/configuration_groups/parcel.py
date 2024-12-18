@@ -197,3 +197,10 @@ def as_default(value: Any, generic_alias: Any = None):
     raise TypeError(
         f"Inappropriate type origin: {generic_alias} {get_origin(generic_alias)} for argument generic_alias"
     )
+
+
+def as_optional_global_or_variable(value: Any, generic_alias: Any = None):
+    if isinstance(value, str) and value.startswith("{{") and value.endswith("}}"):
+        return as_variable(value)
+    else:
+        return as_optional_global(value, generic_alias)
