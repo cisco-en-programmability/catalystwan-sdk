@@ -6,54 +6,8 @@ from uuid import UUID
 from pydantic import AliasPath, BaseModel, ConfigDict, Field, model_validator
 
 from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase, as_global, as_variable
-from catalystwan.models.common import AcceptDropActionType, check_fields_exclusive
+from catalystwan.models.common import AcceptDropActionType, IcmpMsgType, check_fields_exclusive
 from catalystwan.models.configuration.feature_profile.common import RefIdItem
-
-IcmpIPv4Messages = Literal[
-    "administratively-prohibited",
-    "dod-host-prohibited",
-    "dod-net-prohibited",
-    "echo",
-    "echo-reply",
-    "echo-reply-no-error",
-    "extended-echo",
-    "extended-echo-reply",
-    "general-parameter-problem",
-    "host-isolated",
-    "host-precedence-unreachable",
-    "host-redirect",
-    "host-tos-redirect",
-    "host-tos-unreachable",
-    "host-unknown",
-    "host-unreachable",
-    "interface-error",
-    "malformed-query",
-    "multiple-interface-match",
-    "net-redirect",
-    "net-tos-redirect",
-    "net-tos-unreachable",
-    "net-unreachable",
-    "network-unknown",
-    "no-room-for-option",
-    "option-missing",
-    "packet-too-big",
-    "parameter-problem",
-    "photuris",
-    "port-unreachable",
-    "precedence-unreachable",
-    "protocol-unreachable",
-    "reassembly-timeout",
-    "redirect",
-    "router-advertisement",
-    "router-solicitation",
-    "source-route-failed",
-    "table-entry-error",
-    "time-exceeded",
-    "timestamp-reply",
-    "timestamp-request",
-    "ttl-exceeded",
-    "unreachable",
-]
 
 
 class SourceDataPrefixList(BaseModel):
@@ -110,7 +64,7 @@ class MatchEntry(BaseModel):
         description="Destination Port List",
     )
     dscp: Optional[Global[List[int]]] = Field(default=None)
-    icmp_msg: Optional[Global[List[IcmpIPv4Messages]]] = Field(
+    icmp_msg: Optional[Global[List[IcmpMsgType]]] = Field(
         default=None, validation_alias="icmpMsg", serialization_alias="icmpMsg"
     )
     packet_length: Union[Global[str], Global[int], None] = Field(
@@ -249,8 +203,8 @@ class Sequence(BaseModel):
     def match_dscp(self, dscp: List[int]):
         self._entry.dscp = as_global(dscp)
 
-    def match_icmp_msg(self, icmp: List[IcmpIPv4Messages]):
-        self._entry.icmp_msg = Global[List[IcmpIPv4Messages]](value=icmp)
+    def match_icmp_msg(self, icmp: List[IcmpMsgType]):
+        self._entry.icmp_msg = Global[List[IcmpMsgType]](value=icmp)
 
     def match_packet_length(self, len: Union[int, Tuple[int, int]]):
         if isinstance(len, int):

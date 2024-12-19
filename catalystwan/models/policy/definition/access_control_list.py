@@ -7,6 +7,7 @@ from uuid import UUID
 from pydantic import ConfigDict, Field
 from typing_extensions import Annotated
 
+from catalystwan.models.common import IcmpMsgType
 from catalystwan.models.policy.policy_definition import (
     AcceptDropActionType,
     ActionSet,
@@ -18,6 +19,7 @@ from catalystwan.models.policy.policy_definition import (
     DestinationIPEntry,
     DestinationPortEntry,
     DSCPEntry,
+    ICMPMessageEntry,
     LogAction,
     Match,
     MirrorAction,
@@ -46,6 +48,7 @@ AclPolicySequenceMatchEntry = Annotated[
         DestinationIPEntry,
         DestinationPortEntry,
         DSCPEntry,
+        ICMPMessageEntry,
         PacketLengthEntry,
         PLPEntry,
         ProtocolEntry,
@@ -90,6 +93,9 @@ class AclPolicySequence(PolicyDefinitionSequenceBase):
 
     def match_dscp(self, dscp: List[int]) -> None:
         self._insert_match(DSCPEntry(value=dscp))
+
+    def match_icmp(self, icmp_message_types: List[IcmpMsgType]) -> None:
+        self._insert_match(ICMPMessageEntry(value=icmp_message_types))
 
     def match_packet_length(self, packet_lengths: Tuple[int, int]) -> None:
         self._insert_match(PacketLengthEntry.from_range(packet_lengths))
