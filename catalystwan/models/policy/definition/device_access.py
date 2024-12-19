@@ -23,6 +23,7 @@ from catalystwan.models.policy.policy_definition import (
     SourceDataPrefixListEntry,
     SourceIPEntry,
     SourcePortEntry,
+    VPNEntry,
 )
 
 DeviceAccessPolicySequenceMatchEntry = Annotated[
@@ -33,6 +34,7 @@ DeviceAccessPolicySequenceMatchEntry = Annotated[
         SourceDataPrefixListEntry,
         SourceIPEntry,
         SourcePortEntry,
+        VPNEntry,
     ],
     Field(discriminator="field"),
 ]
