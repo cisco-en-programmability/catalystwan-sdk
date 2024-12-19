@@ -1133,6 +1133,14 @@ class SlaPreferredColor(BaseModel):
     value: SpaceSeparatedTLOCColorStr
 
 
+class SlaPreferredRemoteColor(BaseModel):
+    field: Literal["preferredRemoteColor"] = "preferredRemoteColor"
+    value: TLOCColor
+    remote_color_restrict: Optional[bool] = Field(
+        default=None, serialization_alias="remoteColorRestrict", validation_alias="remoteColorRestrict"
+    )
+
+
 class SlaPreferredColorGroup(BaseModel):
     field: Literal["preferredColorGroup"] = "preferredColorGroup"
     ref: UUID
@@ -1147,6 +1155,7 @@ SlaClassActionParam = Annotated[
         SlaName,
         SlaPreferredColor,
         SlaPreferredColorGroup,
+        SlaPreferredRemoteColor,
         SlaNotMet,
     ],
     Field(discriminator="field"),
@@ -1234,7 +1243,7 @@ ActionSetEntry = Annotated[
 
 class ActionSet(BaseModel):
     type: Literal["set"] = "set"
-    parameter: List[ActionSetEntry] = []
+    parameter: List[ActionSetEntry] = Field(default_factory=list)
 
 
 ActionEntry = Annotated[
