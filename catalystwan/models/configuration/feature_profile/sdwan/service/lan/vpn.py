@@ -18,7 +18,7 @@ from catalystwan.models.configuration.feature_profile.common import (
 ProtocolIPv4 = Literal[
     "bgp",
     "ospf",
-    "opsfv3",
+    "ospfv3",
     "connected",
     "static",
     "network",
