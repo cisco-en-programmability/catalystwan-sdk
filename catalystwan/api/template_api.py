@@ -115,7 +115,9 @@ class TemplatesAPI:
         self, feature: DeviceTemplateFeature = DeviceTemplateFeature.ALL
     ) -> DataSequence[DeviceTemplateInformation]:
         """In a multitenant vManage system, this API is only available in the Provider view."""
-        return self.session.endpoints.configuration_template_master.get_device_template_list(params=feature.value)
+        return self.session.endpoints.configuration_template_master.get_device_template_list(
+            params={"feature": feature.value}
+        )
 
     def attach(self, name: str, device: Device, timeout_seconds: int = 300, **kwargs):
         template_info = self.get(DeviceTemplate).filter(name=name).single_or_default()
