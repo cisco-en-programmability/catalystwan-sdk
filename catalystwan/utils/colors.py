@@ -4,9 +4,9 @@ from enum import Enum
 
 
 class PrintColors(Enum):
-    RED_BACKGROUND: str = "\033[41m"
-    RED: str = "\033[31m"
-    YELLOW: str = "\033[33m"
-    BLUE: str = "\033[34m"
-    GREEN: str = "\033[32m"
-    NONE: str = "\033[0m"
+    RED_BACKGROUND = "\033[41m"
+    RED = "\033[31m"
+    YELLOW = "\033[33m"
+    BLUE = "\033[34m"
+    GREEN = "\033[32m"
+    NONE = "\033[0m"
