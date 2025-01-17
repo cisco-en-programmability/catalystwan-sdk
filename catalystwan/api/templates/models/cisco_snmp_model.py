@@ -66,9 +66,9 @@ class Target(FeatureTemplateValidator):
     vpn_id: int = Field(json_schema_extra={"vmanage_key": "vpn-id"})
     ip: str
     port: int
-    community_name: str = Field(default=None, json_schema_extra={"vmanage_key": "community-name"})
+    community_name: Optional[str] = Field(default=None, json_schema_extra={"vmanage_key": "community-name"})
     user: Optional[str] = None
-    source_interface: str = Field(default=None, json_schema_extra={"vmanage_key": "source-interface"})
+    source_interface: Optional[str] = Field(default=None, json_schema_extra={"vmanage_key": "source-interface"})
     model_config = ConfigDict(populate_by_name=True)
 
 

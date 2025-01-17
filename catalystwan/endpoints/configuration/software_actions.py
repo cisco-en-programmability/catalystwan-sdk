@@ -100,8 +100,10 @@ class RemoteServerInfo(BaseModel):
 class SoftwareRemoteServer(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
-    filename: str = Field(default=None, serialization_alias="fileName", validation_alias="fileName")
-    remote_server_id: str = Field(default=None, serialization_alias="remoteServerId", validation_alias="remoteServerId")
+    filename: Optional[str] = Field(default=None, serialization_alias="fileName", validation_alias="fileName")
+    remote_server_id: Optional[str] = Field(
+        default=None, serialization_alias="remoteServerId", validation_alias="remoteServerId"
+    )
     smu_defect_id: Optional[str] = Field(
         default=None, serialization_alias="smuDefectId", validation_alias="smuDefectId"
     )
@@ -158,7 +160,9 @@ class SoftwareImageDetails(BaseModel):
     vnf_properties_json: Optional[str] = Field(
         default=None, serialization_alias="vnfPropertiesJson", validation_alias="vnfPropertiesJson"
     )
-    remote_server_id: str = Field(default=None, serialization_alias="remoteServerId", validation_alias="remoteServerId")
+    remote_server_id: Optional[str] = Field(
+        default=None, serialization_alias="remoteServerId", validation_alias="remoteServerId"
+    )
 
 
 class ConfigurationSoftwareActions(APIEndpoints):
