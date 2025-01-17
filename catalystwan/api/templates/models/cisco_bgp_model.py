@@ -183,7 +183,7 @@ class Ipv6Neighbor(FeatureTemplateValidator):
     address: str
     description: Optional[str] = None
     shutdown: Optional[BoolStr] = None
-    remote_as: int = Field(default=None, json_schema_extra={"vmanage_key": "remote-as"})
+    remote_as: Optional[int] = Field(default=None, json_schema_extra={"vmanage_key": "remote-as"})
     keepalive: Optional[int] = Field(default=None, json_schema_extra={"data_path": ["timers"]})
     holdtime: Optional[int] = Field(default=None, json_schema_extra={"data_path": ["timers"]})
     if_name: Optional[str] = Field(

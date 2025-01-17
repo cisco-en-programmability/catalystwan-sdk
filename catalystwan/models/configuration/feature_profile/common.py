@@ -221,7 +221,7 @@ class IPv4Prefix(BaseModel):
 class WANIPv4StaticRoute(BaseModel):
     prefix: IPv4Prefix = Field()
     gateway: Global[Literal["nextHop", "null0", "dhcp"]] = Field(default=Global(value="nextHop"), alias="gateway")
-    next_hops: Optional[List[NextHop]] = Field(default_factory=list, alias="nextHop")
+    next_hops: Optional[List[NextHop]] = Field(default=None, alias="nextHop")
     distance: Optional[Global[int]] = Field(default=None, alias="distance")
 
     def set_to_next_hop(

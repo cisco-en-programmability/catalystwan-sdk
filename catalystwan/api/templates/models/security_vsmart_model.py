@@ -10,8 +10,8 @@ from catalystwan.api.templates.feature_template import FeatureTemplate
 
 
 class Protocol(str, Enum):
-    DTLS: str = "dtls"
-    TLS: str = "tls"
+    DTLS = "dtls"
+    TLS = "tls"
 
 
 class SecurityvSmart(FeatureTemplate):

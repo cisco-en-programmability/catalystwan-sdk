@@ -157,7 +157,7 @@ class BgpIPv4Neighbor(BaseModel):
     description: Optional[Union[Global[str], Variable, Default[None]]] = None
     shutdown: Optional[Union[Global[bool], Variable, Default[bool]]] = Default[bool](value=False)
     remote_as: Union[Global[int], Variable] = Field(serialization_alias="remoteAs", validation_alias="remoteAs")
-    local_as: Union[Global[int], Variable] = Field(
+    local_as: Optional[Union[Global[int], Variable]] = Field(
         serialization_alias="localAs", validation_alias="localAs", default=None
     )
     keepalive: Optional[Union[Global[int], Variable, Default[int]]] = Default[int](value=60)
@@ -199,7 +199,7 @@ class BgpIPv6Neighbor(BaseModel):
     description: Optional[Union[Global[str], Variable, Default[None]]] = None
     shutdown: Optional[Union[Global[bool], Variable, Default[bool]]] = Default[bool](value=False)
     remote_as: Union[Global[int], Variable] = Field(serialization_alias="remoteAs", validation_alias="remoteAs")
-    local_as: Union[Global[int], Variable] = Field(
+    local_as: Optional[Union[Global[int], Variable]] = Field(
         serialization_alias="localAs", validation_alias="localAs", default=None
     )
     keepalive: Optional[Union[Global[int], Variable, Default[int]]] = Default[int](value=60)

@@ -15,51 +15,51 @@ from catalystwan.utils.reachability import Reachability
 
 
 class DeviceName(Enum):
-    VMANAGE: str = "vManage"
-    VBOND: str = "vBond"
-    VSMART: str = "vSmart"
-    EDGE: str = "WAN Edge"
-    VEDGE: str = "vEdge"
+    VMANAGE = "vManage"
+    VBOND = "vBond"
+    VSMART = "vSmart"
+    EDGE = "WAN Edge"
+    VEDGE = "vEdge"
 
 
 class StatusName(Enum):
-    CONTROL_STATUS: str = "Control Status"
-    CONTROL_UP: str = "Control up"
-    PARTIAL_CONTROL: str = "Partial"
-    CONTROL_DOWN: str = "Control down"
+    CONTROL_STATUS = "Control Status"
+    CONTROL_UP = "Control up"
+    PARTIAL_CONTROL = "Partial"
+    CONTROL_DOWN = "Control down"
 
 
 class BfdConnectivityName(Enum):
-    FULL: str = "Full WAN Connectivity"
-    PARTIAL: str = "Partial WAN Connectivity"
-    NO_CONNECTIVITY: str = "No WAN Connectivity"
+    FULL = "Full WAN Connectivity"
+    PARTIAL = "Partial WAN Connectivity"
+    NO_CONNECTIVITY = "No WAN Connectivity"
 
 
 class InventoryName(Enum):
-    TOTAL: str = "Total"
-    AUTHORIZED: str = "Authorized"
-    DEPLOYED: str = "Deployed"
-    STAGING: str = "Staging"
+    TOTAL = "Total"
+    AUTHORIZED = "Authorized"
+    DEPLOYED = "Deployed"
+    STAGING = "Staging"
 
 
 class PercentageDistributionName(Enum):
-    BELOW_10_MBPS: str = "less_than_10_mbps"
-    BETWEEN_10_AND_100_MBPS: str = "10_mbps_100_mbps"
-    BETWEEN_100_AND_500_MBPS: str = "100_mbps_500_mbps"
-    ABOVE_500_MBPS: str = "greater_than_500_mbps"
+    BELOW_10_MBPS = "less_than_10_mbps"
+    BETWEEN_10_AND_100_MBPS = "10_mbps_100_mbps"
+    BETWEEN_100_AND_500_MBPS = "100_mbps_500_mbps"
+    ABOVE_500_MBPS = "greater_than_500_mbps"
 
 
 class PercentageDistribution(Enum):
-    BELOW_10_MBPS: str = "< 10 Mbps"
-    BETWEEN_10_AND_100_MBPS: str = "10 Mbps - 100 Mbps"
-    BETWEEN_100_AND_500_MBPS: str = "100 Mbps - 500 Mbps"
-    ABOVE_500_MBPS: str = "> 500 Mbps"
+    BELOW_10_MBPS = "< 10 Mbps"
+    BETWEEN_10_AND_100_MBPS = "10 Mbps - 100 Mbps"
+    BETWEEN_100_AND_500_MBPS = "100 Mbps - 500 Mbps"
+    ABOVE_500_MBPS = "> 500 Mbps"
 
 
 class HealthColor(Enum):
-    GREEN: str = "green"
-    YELLOW: str = "yellow"
-    RED: str = "red"
+    GREEN = "green"
+    YELLOW = "yellow"
+    RED = "red"
 
 
 def name_converter(name):
