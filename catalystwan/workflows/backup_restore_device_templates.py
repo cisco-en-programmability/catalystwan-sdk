@@ -337,7 +337,7 @@ def process_feature_templates(
             try:
                 endpoint = "/dataservice/template/feature"
                 response = session.post(endpoint, json=template_definition)
-                new_template_id = response.json()["templateId"] if response else None
+                new_template_id = response.json().get("templateId") if response else None  # type: ignore
                 logger.info(f"Created Feature Template: {template_definition['templateName']}")
             except ManagerHTTPError as ex:
                 logger.error(
@@ -345,7 +345,8 @@ def process_feature_templates(
                     "\nManager error: {ex.info}"
                 )
                 raise ex
-        template_id_mapping[template_id] = new_template_id
+        if new_template_id is not None:
+            template_id_mapping[template_id] = new_template_id
 
     return template_id_mapping
 
