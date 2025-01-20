@@ -95,7 +95,7 @@ from .definition.traffic_data import TrafficDataPolicy, TrafficDataPolicyGetResp
 from .definition.url_filtering import UrlFilteringPolicy, UrlFilteringPolicyGetResponse
 from .definition.vpn_membership import VPNMembershipPolicy, VPNMembershipPolicyGetResponse
 from .definition.zone_based_firewall import ZoneBasedFWPolicy, ZoneBasedFWPolicyGetResponse
-from .localized import LocalizedPolicy
+from .localized import LocalizedPolicy, LocalizedPolicyInfo
 from .policy_definition import (
     CarrierType,
     ControlPathType,
@@ -334,6 +334,7 @@ __all__ = (
     "LocalAppList",
     "LocalDomainList",
     "LocalizedPolicy",
+    "LocalizedPolicyInfo",
     "MeshPolicy",
     "MirrorList",
     "MultiRegionRole",
