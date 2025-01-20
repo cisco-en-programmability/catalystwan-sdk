@@ -68,7 +68,7 @@ from catalystwan.models.policy.list.vpn import VPNList, VPNListInfo
 from catalystwan.models.policy.list.zone import ZoneList, ZoneListInfo
 from catalystwan.utils.model import get_model_type_field, resolve_nested_base_model_unions
 
-from .centralized import CentralizedPolicy, TrafficDataDirection
+from .centralized import CentralizedPolicy, CentralizedPolicyInfo, TrafficDataDirection
 from .definition.access_control_list import AclPolicy, AclPolicyGetResponse
 from .definition.access_control_list_ipv6 import AclIPv6Policy, AclIPv6PolicyGetResponse
 from .definition.aip import AdvancedInspectionProfilePolicy, AdvancedInspectionProfilePolicyGetResponse
@@ -106,7 +106,13 @@ from .policy_definition import (
     ServiceType,
     TLOCActionType,
 )
-from .security import SecurityPolicy, UnifiedSecurityPolicy
+from .security import (
+    AnySecurityPolicy,
+    AnySecurityPolicyInfo,
+    AnySecurityPolicyInfoList,
+    SecurityPolicy,
+    UnifiedSecurityPolicy,
+)
 
 AnyPolicyDefinition = Annotated[
     Union[
@@ -304,12 +310,16 @@ __all__ = (
     "AdvancedMalwareProtectionPolicy",
     "AnyPolicyDefinitionInfo",
     "AnyPolicyList",
+    "AnySecurityPolicy",
+    "AnySecurityPolicyInfo",
+    "AnySecurityPolicyInfoList",
     "AppList",
     "AppProbeClassList",
     "AppRoutePolicy",
     "ASPathList",
     "CarrierType",
     "CentralizedPolicy",
+    "CentralizedPolicyInfo",
     "CflowdPolicy",
     "ClassMapList",
     "ColorList",
