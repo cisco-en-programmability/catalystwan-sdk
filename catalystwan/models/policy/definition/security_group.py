@@ -10,7 +10,7 @@ from catalystwan.models.policy.policy_definition import (
     PolicyDefinitionBase,
     PolicyDefinitionGetResponse,
     PolicyDefinitionId,
-    Reference,
+    ReferenceList,
     VariableName,
 )
 
@@ -21,14 +21,20 @@ SequenceIPType = Literal[
 
 
 class SecurityGroupIPv4Definition(BaseModel):
-    data_prefix: Union[IPv4Network, VariableName, None] = Field(None, alias="dataPrefix")
-    data_prefix_list: Optional[Reference] = Field(None, alias="dataPrefixList")
+    data_prefix: Union[IPv4Network, VariableName, None] = Field(
+        None, serialization_alias="dataPrefix", validation_alias="dataPrefix"
+    )
+    data_prefix_list: Optional[ReferenceList] = Field(
+        None, serialization_alias="dataPrefixList", validation_alias="dataPrefixList"
+    )
     fqdn: Optional[str] = None
-    fqdn_list: Optional[Reference] = Field(None, alias="fqdnList")
-    geo_location: Optional[str] = Field(None, alias="geoLocation")
-    geo_location_list: Optional[Reference] = Field(None, alias="geoLocationList")
+    fqdn_list: Optional[ReferenceList] = Field(None, serialization_alias="fqdnList", validation_alias="fqdnList")
+    geo_location: Optional[str] = Field(None, serialization_alias="geoLocation", validation_alias="geoLocation")
+    geo_location_list: Optional[ReferenceList] = Field(
+        None, serialization_alias="geoLocationList", validation_alias="geoLocationList"
+    )
     port: Optional[str] = None
-    port_list: Optional[Reference] = Field(None, alias="portList")
+    port_list: Optional[ReferenceList] = Field(None, serialization_alias="portList", validation_alias="portList")
     model_config = ConfigDict(extra="forbid", populate_by_name=True)
 
     @model_validator(mode="after")
@@ -46,8 +52,12 @@ class SecurityGroupIPv4Definition(BaseModel):
 
 
 class SecurityGroupIPv6Definition(BaseModel):
-    data_ipv6_prefix: Union[IPv6Network, VariableName, None] = Field(None, alias="dataIPV6Prefix")
-    data_ipv6_prefix_list: Optional[Reference] = Field(None, alias="dataIPV6PrefixList")
+    data_ipv6_prefix: Union[IPv6Network, VariableName, None] = Field(
+        None, serialization_alias="dataIPV6Prefix", validation_alias="dataIPV6Prefix"
+    )
+    data_ipv6_prefix_list: Optional[ReferenceList] = Field(
+        None, serialization_alias="dataIPV6PrefixList", validation_alias="dataIPV6PrefixList"
+    )
     model_config = ConfigDict(extra="forbid", populate_by_name=True)
 
     @model_validator(mode="after")
@@ -61,7 +71,9 @@ class SecurityGroup(PolicyDefinitionBase):
     # EndpointAPI would need to support annotated union as payload parameter
     type: Literal["securityGroup"] = "securityGroup"
     mode: Literal["unified"] = "unified"
-    sequence_ip_type: SequenceIPType = Field(alias="sequenceIpType")
+    sequence_ip_type: SequenceIPType = Field(
+        default="ipv4", serialization_alias="sequenceIpType", validation_alias="sequenceIpType"
+    )
     definition: Union[SecurityGroupIPv4Definition, SecurityGroupIPv6Definition]
 
     @model_validator(mode="after")
