@@ -133,8 +133,6 @@ class LocalizedPolicy(PolicyCreationPayload):
         if (policy_definition := values.get("policyDefinition")) and values.get("policyType") != "cli":
             if isinstance(policy_definition, str):
                 values["policyDefinition"] = LocalizedPolicyDefinition.model_validate_json(policy_definition)
-        else:
-            values["policyDefinition"] = LocalizedPolicyDefinition()
         return values
 
 

@@ -1,7 +1,8 @@
 # Copyright 2024 Cisco Systems, Inc. and its affiliates
 
 # This stub provide top-level "public" policy models to be used with PolicyAPI()
-from typing import List, Union
+from functools import lru_cache
+from typing import List, Sequence, Type, Union, cast
 
 from pydantic import Field
 from typing_extensions import Annotated
@@ -65,8 +66,9 @@ from catalystwan.models.policy.list.umbrella_data import UmbrellaDataList, Umbre
 from catalystwan.models.policy.list.url import URLAllowList, URLAllowListInfo, URLBlockList, URLBlockListInfo
 from catalystwan.models.policy.list.vpn import VPNList, VPNListInfo
 from catalystwan.models.policy.list.zone import ZoneList, ZoneListInfo
+from catalystwan.utils.model import get_model_type_field, resolve_nested_base_model_unions
 
-from .centralized import CentralizedPolicy, TrafficDataDirection
+from .centralized import CentralizedPolicy, CentralizedPolicyInfo, TrafficDataDirection
 from .definition.access_control_list import AclPolicy, AclPolicyGetResponse
 from .definition.access_control_list_ipv6 import AclIPv6Policy, AclIPv6PolicyGetResponse
 from .definition.aip import AdvancedInspectionProfilePolicy, AdvancedInspectionProfilePolicyGetResponse
@@ -93,7 +95,7 @@ from .definition.traffic_data import TrafficDataPolicy, TrafficDataPolicyGetResp
 from .definition.url_filtering import UrlFilteringPolicy, UrlFilteringPolicyGetResponse
 from .definition.vpn_membership import VPNMembershipPolicy, VPNMembershipPolicyGetResponse
 from .definition.zone_based_firewall import ZoneBasedFWPolicy, ZoneBasedFWPolicyGetResponse
-from .localized import LocalizedPolicy
+from .localized import LocalizedPolicy, LocalizedPolicyInfo
 from .policy_definition import (
     CarrierType,
     ControlPathType,
@@ -104,7 +106,13 @@ from .policy_definition import (
     ServiceType,
     TLOCActionType,
 )
-from .security import SecurityPolicy, UnifiedSecurityPolicy
+from .security import (
+    AnySecurityPolicy,
+    AnySecurityPolicyInfo,
+    AnySecurityPolicyInfoList,
+    SecurityPolicy,
+    UnifiedSecurityPolicy,
+)
 
 AnyPolicyDefinition = Annotated[
     Union[
@@ -275,6 +283,26 @@ AnyPolicyDefinitionInfo = Annotated[
 ]
 
 
+@lru_cache
+def find_policy_list_model(model_type: str) -> Type[AnyPolicyListInfo]:
+    types = cast(
+        Sequence[Type[AnyPolicyListInfo]],
+        resolve_nested_base_model_unions(AnyPolicyListInfo),
+    )
+    model = next(t for t in types if get_model_type_field(t) == model_type)
+    return model
+
+
+@lru_cache
+def find_policy_definition_model(model_type: str) -> Type[AnyPolicyDefinitionInfo]:
+    types = cast(
+        Sequence[Type[AnyPolicyDefinitionInfo]],
+        resolve_nested_base_model_unions(AnyPolicyDefinitionInfo),
+    )
+    model = next(t for t in types if get_model_type_field(t) == model_type)
+    return model
+
+
 __all__ = (
     "AclIPv6Policy",
     "AclPolicy",
@@ -282,12 +310,16 @@ __all__ = (
     "AdvancedMalwareProtectionPolicy",
     "AnyPolicyDefinitionInfo",
     "AnyPolicyList",
+    "AnySecurityPolicy",
+    "AnySecurityPolicyInfo",
+    "AnySecurityPolicyInfoList",
     "AppList",
     "AppProbeClassList",
     "AppRoutePolicy",
     "ASPathList",
     "CarrierType",
     "CentralizedPolicy",
+    "CentralizedPolicyInfo",
     "CflowdPolicy",
     "ClassMapList",
     "ColorList",
@@ -312,6 +344,7 @@ __all__ = (
     "LocalAppList",
     "LocalDomainList",
     "LocalizedPolicy",
+    "LocalizedPolicyInfo",
     "MeshPolicy",
     "MirrorList",
     "MultiRegionRole",

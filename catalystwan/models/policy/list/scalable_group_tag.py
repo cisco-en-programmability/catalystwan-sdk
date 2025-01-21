@@ -15,7 +15,7 @@ class ScalableGroupTagListEntry(BaseModel):
 
 
 class ScalableGroupTagList(PolicyListBase):
-    type: Literal["scalablegrouptag", "scalableGroupTag"] = "scalablegrouptag"
+    type: Literal["scalablegrouptag", "scalableGroupTag"] = "scalableGroupTag"
     entries: List[ScalableGroupTagListEntry] = Field(default_factory=list)
 
     def add_entry(self, stg_name: str, tag: str) -> None:
