@@ -141,3 +141,34 @@ class DeviceTemplate(BaseModel):
 
 class DeviceSpecificValue(BaseModel):
     property: str
+
+
+class DeviceTemplateConfigAttached(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True)
+    host_name: Optional[str] = Field(None, serialization_alias="host-name", validation_alias="host-name")
+    device_ip: Optional[str] = Field(None, serialization_alias="deviceIP", validation_alias="deviceIP")
+    local_system_ip: Optional[str] = Field(
+        None, serialization_alias="local-system-ip", validation_alias="local-system-ip"
+    )
+    site_id: Optional[str] = Field(None, serialization_alias="site-id", validation_alias="site-id")
+    device_groups: Optional[List[str]] = Field(
+        None, serialization_alias="device-groups", validation_alias="device-groups"
+    )
+    uuid: Optional[str] = Field(None, serialization_alias="uuid", validation_alias="uuid")
+    personality: Optional[str] = Field(None, serialization_alias="personality", validation_alias="personality")
+    config_cloudx_mode: Optional[str] = Field(
+        None, serialization_alias="configCloudxMode", validation_alias="configCloudxMode"
+    )
+
+
+class AttachedDeviceValues(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True)
+    csv_device_ip: Optional[str] = Field(
+        None,
+        validation_alias="csv-deviceIP",  # Explicit validation alias
+        serialization_alias="csv-deviceIP",  # Explicit serialization alias
+    )
+    csv_device_id: Optional[str] = Field(None, validation_alias="csv-deviceId", serialization_alias="csv-deviceId")
+    csv_host_name: Optional[str] = Field(None, validation_alias="csv-host-name", serialization_alias="csv-host-name")
+    csv_status: Optional[str] = Field(None, validation_alias="csv-status", serialization_alias="csv-status")
+    values: dict
