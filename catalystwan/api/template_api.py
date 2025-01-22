@@ -12,6 +12,8 @@ from ciscoconfparse import CiscoConfParse  # type: ignore
 from catalystwan.api.task_status_api import Task
 from catalystwan.api.templates.cli_template import CLITemplate
 from catalystwan.api.templates.device_template.device_template import (
+    CreateDeviceInputPayload,
+    DeviceInputValues,
     DeviceSpecificValue,
     DeviceTemplate,
     GeneralTemplate,
@@ -698,3 +700,47 @@ class TemplatesAPI:
         config = CiscoConfParse(response["config"].splitlines())
         logger.debug(f"Template loaded from {device.hostname}.")
         return config
+
+    def get_feature_templates(self) -> DataSequence[FeatureTemplateInformation]:
+        endpoint = "/dataservice/template/feature"
+        fr_templates = self.session.get(endpoint)
+        return fr_templates.dataseq(FeatureTemplateInformation)
+
+    def get_device_templates(self) -> DataSequence[DeviceTemplateInformation]:
+        endpoint = "/dataservice/template/device"
+        params = {"feature": "all"}
+        templates = self.session.get(url=endpoint, params=params)
+        return templates.dataseq(DeviceTemplateInformation)
+
+    def get_device_template(self, template_id: str) -> DeviceTemplate:
+        endpoint = f"/dataservice/template/device/object/{template_id}"
+        response = self.session.get(endpoint)
+        return DeviceTemplate(**response.json())
+
+    def get_device_template_attached_devices_variables(self, template_id: str) -> List[DeviceInputValues]:
+        """
+        Fetches and processes attached device variables for a given device template.
+
+        Args:
+            template_id (str): The ID of the device template.
+
+        Returns:
+            List[DeviceInputValues]: A list of DeviceInputValues objects containing device variables.
+        """
+        api = self.session.endpoints.configuration_device_template
+
+        # Fetch attached devices for the template
+        attached_devices = api.get_device_config_attached(template_id)
+
+        # Prepare payload for fetching device variables
+        payload = CreateDeviceInputPayload(
+            template_id=template_id,
+            device_ids=[d.uuid for d in attached_devices if d.uuid],
+            is_edited=False,
+            is_master_edited=False,
+        )
+
+        # Fetch device variables
+        result = api.create_device_input(payload).data
+
+        return result
