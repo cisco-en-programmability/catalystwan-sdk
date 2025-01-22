@@ -5,7 +5,13 @@ from typing import Dict
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from catalystwan.endpoints import APIEndpoints, post, view
+from catalystwan.api.templates.device_template.device_template import (
+    CreateDeviceInputPayload,
+    DeviceInputValues,
+    DeviceTemplateConfigAttached,
+)
+from catalystwan.endpoints import APIEndpoints, get, post, view
+from catalystwan.typed_list import DataSequence
 from catalystwan.utils.session_type import ProviderView
 
 
@@ -22,4 +28,12 @@ class ConfigurationDeviceTemplate(APIEndpoints):
     @view({ProviderView})
     @post("/template/device/config/config/")
     def get_device_configuration_preview(self, payload: FeatureToCLIPayload) -> str:
+        ...
+
+    @get("/template/device/config/attached/{template_id}", resp_json_key="data")
+    def get_device_config_attached(self, template_id: str) -> DataSequence[DeviceTemplateConfigAttached]:
+        ...
+
+    @post("/template/device/config/input/", resp_json_key="data")
+    def create_device_input(self, payload: CreateDeviceInputPayload) -> DataSequence[DeviceInputValues]:
         ...

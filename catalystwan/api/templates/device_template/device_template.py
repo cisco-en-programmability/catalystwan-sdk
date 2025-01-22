@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING, List, Literal, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Literal, Optional
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
@@ -141,3 +141,41 @@ class DeviceTemplate(BaseModel):
 
 class DeviceSpecificValue(BaseModel):
     property: str
+
+
+class DeviceTemplateConfigAttached(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True)
+    host_name: Optional[str] = Field(None, serialization_alias="host-name", validation_alias="host-name")
+    device_ip: Optional[str] = Field(None, serialization_alias="deviceIP", validation_alias="deviceIP")
+    local_system_ip: Optional[str] = Field(
+        None, serialization_alias="local-system-ip", validation_alias="local-system-ip"
+    )
+    site_id: Optional[str] = Field(None, serialization_alias="site-id", validation_alias="site-id")
+    device_groups: Optional[List[str]] = Field(
+        None, serialization_alias="device-groups", validation_alias="device-groups"
+    )
+    uuid: Optional[str] = Field(None, serialization_alias="uuid", validation_alias="uuid")
+    personality: Optional[str] = Field(None, serialization_alias="personality", validation_alias="personality")
+    config_cloudx_mode: Optional[str] = Field(
+        None, serialization_alias="configCloudxMode", validation_alias="configCloudxMode"
+    )
+
+
+class CreateDeviceInputPayload(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+    template_id: str = Field(serialization_alias="templateId", validation_alias="templateId")
+    device_ids: List[str] = Field(serialization_alias="deviceIds", validation_alias="deviceIds")
+    is_edited: bool = Field(serialization_alias="isEdited", validation_alias="isEdited")
+    is_master_edited: bool = Field(serialization_alias="isMasterEdited", validation_alias="isMasterEdited")
+
+
+class DeviceInputValues(BaseModel):
+    model_config = ConfigDict(populate_by_name=True, extra="allow")
+    csv_device_ip: str = Field(validation_alias="csv-deviceIP", serialization_alias="csv-deviceIP")
+    csv_device_id: str = Field(validation_alias="csv-deviceId", serialization_alias="csv-deviceId")
+    csv_host_name: str = Field(validation_alias="csv-host-name", serialization_alias="csv-host-name")
+    csv_status: str = Field(validation_alias="csv-status", serialization_alias="csv-status")
+
+    @property
+    def values(self) -> Dict[str, Any]:
+        return self.__pydantic_extra__ or dict()
