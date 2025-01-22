@@ -13,7 +13,8 @@ from typing_extensions import deprecated
 from catalystwan.api.task_status_api import Task
 from catalystwan.api.templates.cli_template import CLITemplate
 from catalystwan.api.templates.device_template.device_template import (
-    AttachedDeviceValues,
+    CreateDeviceInputPayload,
+    DeviceInputValues,
     DeviceSpecificValue,
     DeviceTemplate,
     GeneralTemplate,
@@ -731,7 +732,7 @@ class TemplatesAPI:
         response = self.session.get(endpoint)
         return DeviceTemplate(**response.json())
 
-    def get_device_template_attached_devices_variables(self, template_id: str) -> List[AttachedDeviceValues]:
+    def get_device_template_attached_devices_variables(self, template_id: str) -> List[DeviceInputValues]:
         """
         Fetches and processes attached device variables for a given device template.
 
@@ -739,36 +740,22 @@ class TemplatesAPI:
             template_id (str): The ID of the device template.
 
         Returns:
-            List[AttachedDeviceValues]: A list of AttachedDeviceValues objects containing device variables.
+            List[DeviceInputValues]: A list of DeviceInputValues objects containing device variables.
         """
+        api = self.session.endpoints.configuration_device_template
+
         # Fetch attached devices for the template
-        attached_devices = self.session.endpoints.configuration_device_template.get_device_config_attached(template_id)
-        print(attached_devices)
-        devices_uuids = [d.uuid for d in attached_devices if d.uuid]
+        attached_devices = api.get_device_config_attached(template_id)
 
         # Prepare payload for fetching device variables
-        payload = {"templateId": template_id, "deviceIds": devices_uuids, "isEdited": False, "isMasterEdited": False}
+        payload = CreateDeviceInputPayload(
+            template_id=template_id,
+            device_ids=[d.uuid for d in attached_devices if d.uuid],
+            is_edited=False,
+            is_master_edited=False,
+        )
 
         # Fetch device variables
-        variables_endpoint = "dataservice/template/device/config/input/"
-        response = self.session.post(variables_endpoint, json=payload)
-        response_data = response.json().get("data", [])
-
-        # Process and map device variables to AttachedDeviceValues
-        result = []
-        for entry in response_data:
-            try:
-                # Create AttachedDeviceValues object
-                adv = AttachedDeviceValues(
-                    csv_device_ip=entry.pop("csv-deviceIP"),
-                    csv_device_id=entry.pop("csv-deviceId"),
-                    csv_host_name=entry.pop("csv-host-name"),
-                    csv_status=entry.pop("csv-status"),
-                    values=entry,  # Include remaining fields in the `values` attribute
-                )
-                result.append(adv)
-            except KeyError as e:
-                logger.warning(f"Missing expected key in device variables entry: {e}")
-                continue
+        result = api.create_device_input(payload).data
 
         return result
