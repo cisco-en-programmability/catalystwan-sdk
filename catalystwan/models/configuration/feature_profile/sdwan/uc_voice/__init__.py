@@ -16,6 +16,7 @@ from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.translation
 from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.translation_rule import TranslationRuleParcel
 from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.trunk_group import TrunkGroupParcel
 from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.voice_global import VoiceGlobalParcel
+from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.supervisory_disconnect import SupervisoryDiconnectParcel
 from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.voice_tenant import VoiceTenantParcel
 
 AnyUcVoiceParcel = Annotated[
@@ -27,6 +28,7 @@ AnyUcVoiceParcel = Annotated[
         MediaProfileParcel,
         ServerGroupParcel,
         SrstParcel,
+        SupervisoryDiconnectParcel,
         TranslationProfileParcel,
         TranslationRuleParcel,
         TrunkGroupParcel,
@@ -44,6 +46,7 @@ __all__ = (
     "DspFarmParcel",
     "MediaProfileParcel",
     "ServerGroupParcel",
+    "SupervisoryDiconnectParcel",
     "SrstParcel",
     "TranslationProfileParcel",
     "TranslationRuleParcel",
