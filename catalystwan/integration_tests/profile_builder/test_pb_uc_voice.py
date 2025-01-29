@@ -1,16 +1,23 @@
 # Copyright 2024 Cisco Systems, Inc. and its affiliates
-from catalystwan.api.configuration_groups.parcel import Global, as_global, as_variable
+from catalystwan.api.configuration_groups.parcel import Global, Variable, as_global, as_variable
 from catalystwan.integration_tests.base import TestCaseBase, create_name_with_run_id
 from catalystwan.models.configuration.feature_profile.common import FeatureProfileCreationPayload, RefIdItem
 from catalystwan.models.configuration.feature_profile.sdwan.uc_voice import (
     AnalogInterfaceParcel,
     TranslationProfileParcel,
     TranslationRuleParcel,
+    MediaProfileParcel,
+    SrstParcel
 )
 from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.analog_interface import (
     Association,
     ModuleType,
     SlotId,
+)
+from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.media_profile import Codec, MpVoiceCodec
+from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.srst import (
+    Association as SrstAssociation,
+    Pool
 )
 from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.translation_rule import Action, RuleSettings
 from catalystwan.tests.builders.uc_voice import as_default
@@ -54,6 +61,13 @@ class TestUcVoiceFeatureProfileBuilder(TestCaseBase):
                 )
             ],
         )
+        self.media_profile = MediaProfileParcel(
+            parcel_name="MediaProfile",
+            parcel_description="MediaProfile",
+            codec=as_global(["g711ulaw"]),
+            dtmf=Variable(value="{{test_1}}"),
+            media_profile_number=Variable(value="{{test_2}}")
+        )
 
     def test_when_build_profile_with_translation_profile_and_rules_expect_success(self):
         # Arrange
@@ -85,6 +99,29 @@ class TestUcVoiceFeatureProfileBuilder(TestCaseBase):
         )
         self.builder.add_translation_profile(self.tp, self.tr_calling, self.tr_called)
         self.builder.add_parcel_with_associations(ai)
+        # Act
+        report = self.builder.build()
+        # Assert
+        assert len(report.failed_parcels) == 0
+
+    def test_when_build_profile_with_srts_and_media_profile_associations_expect_success(self):
+        srst = SrstParcel(
+            parcel_name="Srst",
+            parcel_description="Srts",
+            max_dn=Global[int](value=3),
+            max_phones=Global[int](value=3),
+            pool=[Pool(
+                ipv4_oripv6prefix=Variable(value="{{test_4}}"),
+                pool_tag=as_global(1),
+            )],
+            association=[
+                SrstAssociation(
+                    media_profile=RefIdItem(ref_id=as_global(self.media_profile.parcel_name)),
+                )
+            ]
+        )
+        self.builder.add_associable_parcel(self.media_profile)
+        self.builder.add_parcel_with_associations(srst)
         # Act
         report = self.builder.build()
         # Assert

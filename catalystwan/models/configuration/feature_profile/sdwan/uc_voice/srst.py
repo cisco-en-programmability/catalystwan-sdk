@@ -33,17 +33,13 @@ class CallForward(BaseModel):
     timeout: Optional[Union[Variable, Default[int], Global[int]]] = Field(default=None)
 
 
-class TranslationProfile(BaseModel):
-    ref_id: Union[Default[None], Global[str]] = Field(validation_alias="refId", serialization_alias="refId")
-
-
 TranslationProfileDirection = Literal[
     "incoming",
     "outgoing",
 ]
 
 
-class TranslationAndMediaProfile(BaseModel):
+class Association(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
     media_profile: Optional[RefIdItem] = Field(
         default=None, validation_alias="mediaProfile", serialization_alias="mediaProfile"
@@ -51,7 +47,7 @@ class TranslationAndMediaProfile(BaseModel):
     phone_profile: Optional[Union[Variable, Global[int]]] = Field(
         default=None, validation_alias="phoneProfile", serialization_alias="phoneProfile"
     )
-    translation_profile: Optional[TranslationProfile] = Field(
+    translation_profile: Optional[RefIdItem] = Field(
         default=None, validation_alias="translationProfile", serialization_alias="translationProfile"
     )
     translation_profile_direction: Optional[
@@ -83,8 +79,9 @@ class SrstParcel(_ParcelBase):
         default=None,
         validation_alias=AliasPath("data", "systemMessage"),
     )
-    translation_and_media_profile: Optional[List[TranslationAndMediaProfile]] = Field(
+    association: Optional[List[Association]] = Field(
         default=None,
         validation_alias=AliasPath("data", "translationAndMediaProfile"),
+        serialization_alias="translationAndMediaProfile",
         description="translationProfile ID Refs and mediaProfile ID Refs",
     )

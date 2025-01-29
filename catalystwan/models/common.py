@@ -353,6 +353,10 @@ MpVoiceCodec = Literal[
     "G722",
     "G729r8",
     "ilbc",
+    "g711ulaw",
+    "g711alaw",
+    "g772",
+    "g729r8",
 ]
 
 FaxProtocols = Literal[
