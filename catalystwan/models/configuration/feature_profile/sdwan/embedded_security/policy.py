@@ -135,7 +135,9 @@ class SslDecryption(BaseModel):
 
 class AdvancedInspectionProfile(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    advanced_inspection_profile: RefIdItem = Field(validation_alias="advancedInspectionProfile")
+    advanced_inspection_profile: RefIdItem = Field(
+        validation_alias="advancedInspectionProfile", serialization_alias="advancedInspectionProfile"
+    )
 
     @classmethod
     def from_uuid(cls, uuid: UUID) -> Self:
