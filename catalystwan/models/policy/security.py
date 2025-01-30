@@ -1,9 +1,9 @@
 # Copyright 2023 Cisco Systems, Inc. and its affiliates
 
-from typing import List, Literal, Optional, Set, Union
+from typing import Any, List, Literal, Optional, Set, Union
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, IPvAnyAddress, RootModel, field_validator
+from pydantic import BaseModel, BeforeValidator, ConfigDict, Field, IPvAnyAddress, RootModel, field_validator
 from typing_extensions import Annotated
 
 from catalystwan.models.policy.policy import (
@@ -20,6 +20,15 @@ from catalystwan.models.policy.policy import (
     ZoneBasedFWAssemblyItem,
 )
 from catalystwan.typed_list import DataSequence
+
+
+def set_default_policy_mode_if_missing(values: Any):
+    if not isinstance(values, dict):
+        return values
+    if "policyMode" not in values.keys():
+        values["policyMode"] = None
+    return values
+
 
 SecurityPolicyAssemblyItem = Annotated[
     Union[
@@ -206,7 +215,14 @@ class UnifiedSecurityPolicy(PolicyCreationPayload):
         return policy_definition
 
 
-AnySecurityPolicy = Union[SecurityPolicy, UnifiedSecurityPolicy]
+AnySecurityPolicy = Annotated[
+    Union[
+        SecurityPolicy,
+        UnifiedSecurityPolicy,
+    ],
+    Field(discriminator="policy_mode"),
+    BeforeValidator(set_default_policy_mode_if_missing),
+]
 
 
 class SecurityPolicyRoot(RootModel):
@@ -233,7 +249,14 @@ class UnifiedSecurityPolicyInfo(UnifiedSecurityPolicy, PolicyInfo):
     supported_devices: List[str] = Field(serialization_alias="supportedDevices", validation_alias="supportedDevices")
 
 
-AnySecurityPolicyInfo = Union[SecurityPolicyInfo, UnifiedSecurityPolicyInfo]
+AnySecurityPolicyInfo = Annotated[
+    Union[
+        SecurityPolicyInfo,
+        UnifiedSecurityPolicyInfo,
+    ],
+    Field(discriminator="policy_mode"),
+    BeforeValidator(set_default_policy_mode_if_missing),
+]
 
 
 class AnySecurityPolicyInfoList(RootModel):
