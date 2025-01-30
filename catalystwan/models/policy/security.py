@@ -47,6 +47,7 @@ UnifiedSecurityPolicyAssemblyItem = Annotated[
         AdvancedInspectionProfileAssemblyItem,
         DNSSecurityAssemblyItem,
         NGFirewallAssemblyItem,
+        SSLDecryptionAssemblyItem,
     ],
     Field(discriminator="type"),
 ]
@@ -206,6 +207,9 @@ class UnifiedSecurityPolicy(PolicyCreationPayload):
 
     def add_dns_security(self, definition_id: UUID) -> None:
         self.add_item(DNSSecurityAssemblyItem(definition_id=definition_id))
+
+    def add_ssl_decryption(self, definition_id: UUID) -> None:
+        self.add_item(SSLDecryptionAssemblyItem(definition_id=definition_id))
 
     @field_validator("policy_definition", mode="before")
     @classmethod
