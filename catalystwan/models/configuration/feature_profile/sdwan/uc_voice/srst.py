@@ -82,6 +82,5 @@ class SrstParcel(_ParcelBase):
     association: Optional[List[Association]] = Field(
         default=None,
         validation_alias=AliasPath("data", "translationAndMediaProfile"),
-        serialization_alias="translationAndMediaProfile",
         description="translationProfile ID Refs and mediaProfile ID Refs",
     )
