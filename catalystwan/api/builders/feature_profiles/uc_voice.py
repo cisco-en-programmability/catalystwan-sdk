@@ -34,9 +34,7 @@ from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.call_routin
 from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.digital_interface import (
     Association as DigitalInterfaceAssociation,
 )
-from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.srst import (
-    Association as SrstAssociation
-)
+from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.srst import Association as SrstAssociation
 
 logger = logging.getLogger(__name__)
 

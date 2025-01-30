@@ -100,9 +100,9 @@ class TestUcVoiceFeatureProfileBuilder(TestCaseBase):
             parcel_name="TrunkGroup",
             parcel_description="TrunkGroupDescription",
             hunt_scheme_method=as_default(None),
-            max_calls_in=as_global(10),
-            max_calls_out=as_global(15),
-            max_retries=as_global(5),
+            max_calls_in=as_default(None),
+            max_calls_out=as_default(None),
+            max_retries=as_default(None),
             hunt_scheme_channel=as_default(None),
             hunt_scheme_direction=as_default(None),
         )
@@ -126,7 +126,7 @@ class TestUcVoiceFeatureProfileBuilder(TestCaseBase):
     def test_build_profile_with_digital_interface_translation_profile_and_trunk_group(self):
         digital_interface = DigitalInterfaceParcel(
             parcel_name="DigitalInterfaceParcel",
-            parcel_description="",
+            parcel_description="DigitalInterfaceParcel",
             shutdown=[],
             isdn_timer=[],
             interface=[],
