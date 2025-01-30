@@ -43,7 +43,12 @@ if TYPE_CHECKING:
 
 
 ParcelWithAssociations = Union[CallRoutingParcel, DigitalInterfaceParcel, AnalogInterfaceParcel, SrstParcel]
-Association = Union[List[DigitalInterfaceAssociation], List[AnalogInterfaceAssociation], List[CallRoutingAssociation], List[SrstAssociation]]
+Association = Union[
+    List[DigitalInterfaceAssociation],
+    List[AnalogInterfaceAssociation],
+    List[CallRoutingAssociation],
+    List[SrstAssociation],
+]
 AssociableParcel = Union[
     MediaProfileParcel,
     ServerGroupParcel,
@@ -54,6 +59,7 @@ AssociableParcel = Union[
     VoiceGlobalParcel,
     VoiceTenantParcel,
 ]
+
 
 @dataclass
 class TranslationProfile:
