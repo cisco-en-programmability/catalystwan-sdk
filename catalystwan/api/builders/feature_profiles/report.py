@@ -73,7 +73,7 @@ class FailedParcel(BaseModel):
     request_details: Optional[FailedRequestDetails] = Field(
         default=None, serialization_alias="failedRequest", validation_alias="failedRequest"
     )
-    response_details: ResponseDetails = Field(
+    response_details: Optional[ResponseDetails] = Field(
         default=None, serialization_alias="reponseStausCode", validation_alias="reponseStausCode"
     )
 
