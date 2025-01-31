@@ -34,6 +34,7 @@ from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.call_routin
 from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.digital_interface import (
     Association as DigitalInterfaceAssociation,
 )
+from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.srst import Association as SrstAssociation
 
 logger = logging.getLogger(__name__)
 
@@ -41,8 +42,23 @@ if TYPE_CHECKING:
     from catalystwan.session import ManagerSession
 
 
-ParcelWithAssociations = Union[CallRoutingParcel, DigitalInterfaceParcel, AnalogInterfaceParcel]
-Association = Union[List[DigitalInterfaceAssociation], List[AnalogInterfaceAssociation], List[CallRoutingAssociation]]
+ParcelWithAssociations = Union[CallRoutingParcel, DigitalInterfaceParcel, AnalogInterfaceParcel, SrstParcel]
+Association = Union[
+    List[DigitalInterfaceAssociation],
+    List[AnalogInterfaceAssociation],
+    List[CallRoutingAssociation],
+    List[SrstAssociation],
+]
+AssociableParcel = Union[
+    MediaProfileParcel,
+    ServerGroupParcel,
+    SrstParcel,
+    TranslationProfileParcel,
+    TranslationRuleParcel,
+    TrunkGroupParcel,
+    VoiceGlobalParcel,
+    VoiceTenantParcel,
+]
 
 
 @dataclass
@@ -101,6 +117,7 @@ class UcVoiceFeatureProfileBuilder:
         self._api = UcVoiceFeatureProfileAPI(session)
         self._endpoints = UcVoiceFeatureProfile(session)
         self._independent_parcels: List[AnyUcVoiceParcel] = []
+        self._associable_parcles: List[AssociableParcel] = []
         self._translation_profiles: List[TranslationProfile] = []
         self._pushed_associable_parcels: Dict[str, UUID] = {}  # Maps parcel names to their created UUIDs.
         self._parcels_with_associations: List[ParcelWithAssociations] = []
@@ -124,6 +141,9 @@ class UcVoiceFeatureProfileBuilder:
                 that do not require associations with other parcels.
         """
         self._independent_parcels.append(parcel)
+
+    def add_associable_parcel(self, parcel: AssociableParcel) -> None:
+        self._associable_parcles.append(parcel)
 
     def add_translation_profile(
         self,
@@ -171,15 +191,18 @@ class UcVoiceFeatureProfileBuilder:
 
         # Create independent parcels
         for ip in self._independent_parcels:
-            parcel_uuid = self._create_parcel(profile_uuid, ip)
-            if parcel_uuid and isinstance(ip, self.ASSOCIABLE_PARCELS):
-                self._pushed_associable_parcels[ip.parcel_name] = parcel_uuid
+            self._create_parcel(profile_uuid, ip)
 
         # Create translation profiles
         for tp in self._translation_profiles:
-            parcel_uuid = self._create_translation_profile(profile_uuid, tp)
-            if parcel_uuid:
-                self._pushed_associable_parcels[tp.tpp.parcel_name] = parcel_uuid
+            tp_parcel_uuid = self._create_translation_profile(profile_uuid, tp)
+            if tp_parcel_uuid:
+                self._pushed_associable_parcels[tp.tpp.parcel_name] = tp_parcel_uuid
+
+        for ap in self._associable_parcles:
+            ap_parcel_uuid = self._create_parcel(profile_uuid, ap)
+            if ap_parcel_uuid:
+                self._pushed_associable_parcels[ap.parcel_name] = ap_parcel_uuid
 
         # Create parcels with associations
         for pwa in self._parcels_with_associations:

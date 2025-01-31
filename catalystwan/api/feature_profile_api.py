@@ -2259,7 +2259,10 @@ class UcVoiceFeatureProfileAPI:
     SDWAN Feature Profile UC Voice APIs
     """
 
-    ENDPOINT_PARCEL_TYPE_MAP = {"analog-interface": "tdm-sip/analog-interface"}
+    ENDPOINT_PARCEL_TYPE_MAP = {
+        "analog-interface": "tdm-sip/analog-interface",
+        "digital-interface": "tdm-sip/digital-interface",
+    }
 
     def __init__(self, session: ManagerSession):
         self.session = session

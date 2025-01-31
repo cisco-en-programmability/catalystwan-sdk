@@ -4,7 +4,7 @@ from typing import Any, List, Optional, Tuple, Union
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
-from requests import Response
+from requests import PreparedRequest, Request, Response
 
 from catalystwan.exceptions import ManagerErrorInfo, ManagerHTTPError
 from catalystwan.models.configuration.feature_profile.parcel import AnyParcel
@@ -23,8 +23,7 @@ def handle_build_report(func):
             self.build_report.add_failed_parcel(
                 parcel_name=parcel.parcel_name,
                 parcel_type=parcel._get_parcel_type(),
-                error_info=e.info,
-                request=e.request,
+                error=e,
             )
             return None
 
@@ -36,10 +35,34 @@ class FailedRequestDetails(BaseModel):
     url: str
     body: str
 
-    @staticmethod
-    def from_response(response: Response):
-        request = response.request
-        FailedRequestDetails(method=str(request.method), url=str(request.url), body=str(request.body))
+    @classmethod
+    def from_request(cls, request: Union[Request, PreparedRequest, Any]) -> "FailedRequestDetails":
+        if isinstance(request, (Request, PreparedRequest)):
+            return cls(
+                method=str(request.method),
+                url=str(request.url),
+                body=str(request.body if hasattr(request, "body") else ""),
+            )
+        return cls.as_empty()
+
+    @classmethod
+    def as_empty(cls) -> "FailedRequestDetails":
+        return cls(method="", url="", body="")
+
+
+class ResponseDetails(BaseModel):
+    status_code: int
+    reason: str
+
+    @classmethod
+    def from_response(cls, response: Union[Response, Any]) -> "ResponseDetails":
+        if isinstance(response, Response):
+            return cls(status_code=response.status_code, reason=response.reason)
+        return cls.as_empty()
+
+    @classmethod
+    def as_empty(cls) -> "ResponseDetails":
+        return cls(status_code=-1, reason="")
 
 
 class FailedParcel(BaseModel):
@@ -50,6 +73,24 @@ class FailedParcel(BaseModel):
     request_details: Optional[FailedRequestDetails] = Field(
         default=None, serialization_alias="failedRequest", validation_alias="failedRequest"
     )
+    response_details: Optional[ResponseDetails] = Field(
+        default=None, serialization_alias="reponseStausCode", validation_alias="reponseStausCode"
+    )
+
+    @classmethod
+    def from_error(
+        cls,
+        parcel_name: str,
+        parcel_type: str,
+        error: ManagerHTTPError,
+    ):
+        return cls(
+            parcel_name=parcel_name,
+            parcel_type=parcel_type,
+            error_info=error.info,
+            request_details=FailedRequestDetails.from_request(error.request),
+            response_details=ResponseDetails.from_response(error.response),
+        )
 
 
 class FeatureProfileBuildReport(BaseModel):
@@ -70,19 +111,13 @@ class FeatureProfileBuildReport(BaseModel):
         self,
         parcel_name: str,
         parcel_type: str,
-        error_info: Union[ManagerErrorInfo, str],
-        request: Optional[Any] = None,
+        error: ManagerHTTPError,
     ) -> None:
-        if request is not None:
-            request = FailedRequestDetails(
-                method=str(request.method),
-                url=str(request.url),
-                body=str(request.body),
-            )
-
         self.failed_parcels.append(
-            FailedParcel(
-                parcel_name=parcel_name, parcel_type=parcel_type, error_info=error_info, request_details=request
+            FailedParcel.from_error(
+                parcel_name=parcel_name,
+                parcel_type=parcel_type,
+                error=error,
             )
         )
 
@@ -93,8 +128,10 @@ def handle_build_report_for_failed_subparcel(
     parent_failed_to_create_message = (
         f"Parent parcel: {parent.parcel_name} failed to create. This subparcel is dependent on it."
     )
-    build_report.add_failed_parcel(
-        parcel_name=subparcel.parcel_name,
-        parcel_type=subparcel._get_parcel_type(),
-        error_info=parent_failed_to_create_message,
+    build_report.failed_parcels.append(
+        FailedParcel(
+            parcel_name=subparcel.parcel_name,
+            parcel_type=subparcel._get_parcel_type(),
+            error_info=parent_failed_to_create_message,
+        ),
     )

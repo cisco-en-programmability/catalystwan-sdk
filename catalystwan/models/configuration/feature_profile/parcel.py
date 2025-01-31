@@ -3,7 +3,7 @@ from functools import lru_cache
 from typing import Generic, List, Literal, Optional, Sequence, TypeVar, Union, cast
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field, model_validator
 from typing_extensions import Annotated
 
 from catalystwan.models.configuration.feature_profile.sdwan.application_priority import AnyApplicationPriorityParcel
@@ -207,7 +207,7 @@ class ParcelSequence(BaseModel, Generic[T]):
 class ParcelCreationResponse(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
-    id: UUID = Field(serialization_alias="parcelId", validation_alias="parcelId")
+    id: UUID = Field(validation_alias=AliasChoices("parcelId", "featureId"))  # Accept both keys
 
 
 class ParcelAssociationPayload(BaseModel):

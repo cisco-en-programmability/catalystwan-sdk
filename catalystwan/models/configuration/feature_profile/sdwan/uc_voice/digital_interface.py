@@ -72,6 +72,7 @@ Value = Literal[
 ]
 
 CableLengthValue = Literal[
+    "0",
     "110",
     "220",
     "330",
@@ -274,13 +275,17 @@ class Association(BaseModel):
     translation_profile_direction: Optional[
         Union[Variable, Default[None], Global[TranslationProfileDirection]]
     ] = Field(
-        default=None, validation_alias="translationProfileDirection", serialization_alias="translationProfileDirection"
+        default=Default[None](value=None),
+        validation_alias="translationProfileDirection",
+        serialization_alias="translationProfileDirection"
     )
     trunk_group: Optional[RefIdItem] = Field(
         default=None, validation_alias="trunkGroup", serialization_alias="trunkGroup"
     )
     trunk_group_priority: Optional[Union[Variable, Global[int], Default[None]]] = Field(
-        default=None, validation_alias="trunkGroupPriority", serialization_alias="trunkGroupPriority"
+        default=Default[None](value=None),
+        validation_alias="trunkGroupPriority",
+        serialization_alias="trunkGroupPriority"
     )
 
 
@@ -320,5 +325,5 @@ class DigitalInterfaceParcel(_ParcelBase):
         default=None, validation_alias=AliasPath("data", "outgoingIe"), description="list of outgoing IEs and messages"
     )
     voice_interface_templates: Optional[Global[VoiceInterfaceTemplates]] = Field(
-        default=None, validation_alias="voiceInterfaceTemplates"
+        default=None, validation_alias=AliasPath("data", "voiceInterfaceTemplates")
     )
