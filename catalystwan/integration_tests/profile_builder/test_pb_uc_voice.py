@@ -42,8 +42,8 @@ from catalystwan.tests.builders.uc_voice import as_default
 
 class TestUcVoiceFeatureProfileBuilder(TestCaseBase):
     def setUp(self) -> None:
-        self.feature_profile_name = f"FeatureProfileBuilderUcVoice_{uuid4()}"
-        self.feature_profile_description = "Transport feature profile"
+        self.feature_profile_name = f"FeatureProfileBuilderUcVoice_{str(uuid4())[:5]}"
+        self.feature_profile_description = "UC Voice feature profile"
 
         self.builder = self.session.api.builders.feature_profiles.create_builder("uc-voice")
         self.builder.add_profile_name_and_description(
@@ -52,7 +52,7 @@ class TestUcVoiceFeatureProfileBuilder(TestCaseBase):
             )
         )
 
-        self.api = self.session.api.sdwan_feature_profiles.transport
+        self.api = self.session.api.sdwan_feature_profiles.uc_voice
 
         self.translation_profile = TranslationProfileParcel(
             parcel_name="TranslationProfile",

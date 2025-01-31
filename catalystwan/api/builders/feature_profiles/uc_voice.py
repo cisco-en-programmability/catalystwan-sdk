@@ -191,20 +191,18 @@ class UcVoiceFeatureProfileBuilder:
 
         # Create independent parcels
         for ip in self._independent_parcels:
-            parcel_uuid = self._create_parcel(profile_uuid, ip)
-            if parcel_uuid and isinstance(ip, self.ASSOCIABLE_PARCELS):
-                self._pushed_associable_parcels[ip.parcel_name] = parcel_uuid
+            self._create_parcel(profile_uuid, ip)
 
         # Create translation profiles
         for tp in self._translation_profiles:
-            parcel_uuid = self._create_translation_profile(profile_uuid, tp)
-            if parcel_uuid:
-                self._pushed_associable_parcels[tp.tpp.parcel_name] = parcel_uuid
+            tp_parcel_uuid = self._create_translation_profile(profile_uuid, tp)
+            if tp_parcel_uuid:
+                self._pushed_associable_parcels[tp.tpp.parcel_name] = tp_parcel_uuid
 
         for ap in self._associable_parcles:
-            parcel_uuid = self._create_parcel(profile_uuid, ap)
-            if parcel_uuid:
-                self._pushed_associable_parcels[ap.parcel_name] = parcel_uuid
+            ap_parcel_uuid = self._create_parcel(profile_uuid, ap)
+            if ap_parcel_uuid:
+                self._pushed_associable_parcels[ap.parcel_name] = ap_parcel_uuid
 
         # Create parcels with associations
         for pwa in self._parcels_with_associations:
