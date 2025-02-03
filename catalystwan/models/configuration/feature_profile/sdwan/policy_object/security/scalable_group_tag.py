@@ -12,7 +12,7 @@ class ScalableGroupTagEntry(_ParcelEntry):
 
 
 class ScalableGroupTagParcel(_ParcelBase):
-    type_: Literal["security-scalablegrouptag"] = Field(default="security-scalablegrouptag")
+    type_: Literal["security-scalablegrouptag"] = Field(default="security-scalablegrouptag", exclude=True)
     entries: List[ScalableGroupTagEntry] = Field(validation_alias=AliasPath("data", "entries"), default_factory=list)
 
     def add_entry(self, sgt_name: str, tag: str):
