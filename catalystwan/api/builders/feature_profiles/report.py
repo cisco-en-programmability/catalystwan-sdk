@@ -71,10 +71,10 @@ class FailedParcel(BaseModel):
     parcel_type: str = Field(serialization_alias="parcelType", validation_alias="parcelType")
     error_info: Union[ManagerErrorInfo, str] = Field(serialization_alias="errorInfo", validation_alias="errorInfo")
     request_details: Optional[FailedRequestDetails] = Field(
-        default=None, serialization_alias="failedRequest", validation_alias="failedRequest"
+        default=None, serialization_alias="requestDetails", validation_alias="requestDetails"
     )
     response_details: Optional[ResponseDetails] = Field(
-        default=None, serialization_alias="reponseStausCode", validation_alias="reponseStausCode"
+        default=None, serialization_alias="responseDetails", validation_alias="responseDetails"
     )
 
     @classmethod
