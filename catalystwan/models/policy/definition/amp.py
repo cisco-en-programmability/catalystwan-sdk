@@ -5,7 +5,7 @@ from typing import List, Literal, Optional
 from pydantic import BaseModel, ConfigDict, Field
 
 from catalystwan.models.common import (
-    AmpFileAnalysisAlert,
+    AmpFileAlertLevel,
     AmpFileAnalysisFileTypes,
     AmpFileAnalysisServer,
     AmpFileReputationServer,
@@ -19,7 +19,7 @@ from catalystwan.models.policy.policy_definition import (
 )
 
 OptionalAmpFileAnalysisServer = Literal["", AmpFileAnalysisServer]
-OptionalAmpAlertsLogLevel = Literal["", AmpFileAnalysisAlert]
+OptionalAmpFileAlertLevel = Literal["", AmpFileAlertLevel]
 
 
 class AdvancedMalwareProtectionDefinition(BaseModel):
@@ -31,7 +31,7 @@ class AdvancedMalwareProtectionDefinition(BaseModel):
     file_reputation_est_server: AmpFileReputationServer = Field(
         validation_alias="fileReputationEstServer", serialization_alias="fileReputationEstServer"
     )
-    file_reputation_alert: AmpFileAnalysisAlert = Field(
+    file_reputation_alert: AmpFileAlertLevel = Field(
         validation_alias="fileReputationAlert", serialization_alias="fileReputationAlert"
     )
     file_analysis_enabled: Optional[bool] = Field(
@@ -40,7 +40,7 @@ class AdvancedMalwareProtectionDefinition(BaseModel):
     file_analysis_file_types: List[AmpFileAnalysisFileTypes] = Field(
         default_factory=list, validation_alias="fileAnalysisFileTypes", serialization_alias="fileAnalysisFileTypes"
     )
-    file_analysis_alert: OptionalAmpAlertsLogLevel = Field(
+    file_analysis_alert: OptionalAmpFileAlertLevel = Field(
         default="", validation_alias="fileAnalysisAlert", serialization_alias="fileAnalysisAlert"
     )
     file_analysis_cloud_server: OptionalAmpFileAnalysisServer = Field(

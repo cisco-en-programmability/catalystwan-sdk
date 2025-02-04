@@ -6,10 +6,9 @@ from pydantic import AliasPath, ConfigDict, Field
 
 from catalystwan.api.configuration_groups.parcel import Global, _ParcelBase
 from catalystwan.models.common import (
-    AmpFileAnalysisAlert,
+    AmpFileAlertLevel,
     AmpFileAnalysisFileTypes,
     AmpFileAnalysisServer,
-    AmpFileReputationAlert,
     AmpFileReputationServer,
 )
 
@@ -29,8 +28,8 @@ class AdvancedMalwareProtectionParcel(_ParcelBase):
     file_reputation_est_server: Global[AmpFileReputationServer] = Field(
         validation_alias=AliasPath("data", "fileReputationEstServer")
     )
-    file_reputation_alert: Global[AmpFileReputationAlert] = Field(
-        default=Global[AmpFileReputationAlert](value="critical"),
+    file_reputation_alert: Global[AmpFileAlertLevel] = Field(
+        default=Global[AmpFileAlertLevel](value="critical"),
         validation_alias=AliasPath("data", "fileReputationAlert"),
     )
     file_analysis_enabled: Global[bool] = Field(
@@ -42,7 +41,7 @@ class AdvancedMalwareProtectionParcel(_ParcelBase):
     file_analysis_file_types: Optional[Global[List[AmpFileAnalysisFileTypes]]] = Field(
         default=None, validation_alias=AliasPath("data", "fileAnalysisFileTypes")
     )
-    file_analysis_alert: Optional[Global[AmpFileAnalysisAlert]] = Field(
+    file_analysis_alert: Optional[Global[AmpFileAlertLevel]] = Field(
         default=None, validation_alias=AliasPath("data", "fileAnalysisAlert")
     )
 
@@ -53,13 +52,13 @@ class AdvancedMalwareProtectionParcel(_ParcelBase):
         parcel_description: str,
         file_reputation_cloud_server: AmpFileReputationServer,
         file_reputation_est_server: AmpFileReputationServer,
-        file_reputation_alert: AmpFileReputationAlert,
+        file_reputation_alert: AmpFileAlertLevel,
         file_analysis_enabled: bool = False,
-        file_analysis_alert: Optional[AmpFileAnalysisAlert] = None,
+        file_analysis_alert: Optional[AmpFileAlertLevel] = None,
         file_analysis_cloud_server: Optional[AmpFileAnalysisServer] = None,
         file_analysis_file_types: List[AmpFileAnalysisFileTypes] = [],
     ):
-        _file_analysis_alert = Global[AmpFileAnalysisAlert](value=file_analysis_alert) if file_analysis_alert else None
+        _file_analysis_alert = Global[AmpFileAlertLevel](value=file_analysis_alert) if file_analysis_alert else None
         _file_analysis_cloud_server = (
             Global[AmpFileAnalysisServer](value=file_analysis_cloud_server) if file_analysis_cloud_server else None
         )
@@ -74,7 +73,7 @@ class AdvancedMalwareProtectionParcel(_ParcelBase):
             file_reputation_est_server=Global[AmpFileReputationServer](value=file_reputation_est_server),
             file_analysis_alert=_file_analysis_alert,
             file_analysis_cloud_server=_file_analysis_cloud_server,
-            file_reputation_alert=Global[AmpFileReputationAlert](value=file_reputation_alert),
+            file_reputation_alert=Global[AmpFileAlertLevel](value=file_reputation_alert),
             file_analysis_enabled=Global[bool](value=file_analysis_enabled),
             file_analysis_file_types=_file_analysis_file_types,
         )

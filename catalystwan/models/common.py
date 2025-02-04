@@ -670,9 +670,8 @@ SubnetMask = Literal[
 ]
 
 AmpFileReputationServer = Literal["nam", "eur", "apjc"]
-AmpFileReputationAlert = Literal["critical", "warning", "info"]
+AmpFileAlertLevel = Literal["critical", "warning", "info"]
 AmpFileAnalysisServer = Literal["nam", "eur"]
-AmpFileAnalysisAlert = Literal["critical", "warning", "info"]
 AmpFileAnalysisFileTypes = Literal[
     "pdf", "ms-exe", "new-office", "rtf", "mdb", "mscab", "msole2", "wri", "xlw", "flv", "swf"
 ]
