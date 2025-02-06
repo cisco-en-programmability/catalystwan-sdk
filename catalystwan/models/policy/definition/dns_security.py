@@ -24,7 +24,7 @@ class TargetVpn(BaseModel):
         default=True, validation_alias="localDomainBypassEnabled", serialization_alias="localDomainBypassEnabled"
     )
 
-    uid: int
+    uid: Optional[int] = Field(default=None)
     umbrella_default: bool = Field(validation_alias="umbrellaDefault", serialization_alias="umbrellaDefault")
     vpns: List[VpnId]
 
