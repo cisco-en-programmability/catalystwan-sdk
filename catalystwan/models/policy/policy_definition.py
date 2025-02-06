@@ -837,6 +837,11 @@ class SourceScalableGroupTagListEntry(BaseModel):
     ref: SpaceSeparatedUUIDList
 
 
+class SourceSecurityGroupEntry(BaseModel):
+    field: Literal["sourceSecurityGroup"] = "sourceSecurityGroup"
+    ref: SpaceSeparatedUUIDList
+
+
 class DestinationPortListEntry(BaseModel):
     field: Literal["destinationPortList"] = "destinationPortList"
     ref: SpaceSeparatedUUIDList = Field(
@@ -846,6 +851,11 @@ class DestinationPortListEntry(BaseModel):
 
 class DestinationScalableGroupTagListEntry(BaseModel):
     field: Literal["destinationScalableGroupTagList"] = "destinationScalableGroupTagList"
+    ref: SpaceSeparatedUUIDList
+
+
+class DestinationSecurityGroupEntry(BaseModel):
+    field: Literal["destinationSecurityGroup"] = "destinationSecurityGroup"
     ref: SpaceSeparatedUUIDList
 
 
@@ -1298,6 +1308,7 @@ MatchEntry = Annotated[
         DestinationPortListEntry,
         DestinationRegionEntry,
         DestinationScalableGroupTagListEntry,
+        DestinationSecurityGroupEntry,
         DestinationVpnEntry,
         DNSAppListEntry,
         DNSEntry,
@@ -1347,6 +1358,7 @@ MatchEntry = Annotated[
         SourcePortEntry,
         SourcePortListEntry,
         SourceScalableGroupTagListEntry,
+        SourceSecurityGroupEntry,
         SourceVpnEntry,
         TCPEntry,
         TLOCEntry,
