@@ -60,6 +60,12 @@ class TestUcVoiceFeatureProfileBuilder(TestCaseBase):
             translation_profile_settings=[],
         )
 
+        self.translation_profile2 = TranslationProfileParcel(
+            parcel_name="TranslationProfile2",
+            parcel_description="TranslationProfileDescription",
+            translation_profile_settings=[],
+        )
+
         self.translation_rule_calling = TranslationRuleParcel(
             parcel_name="TranslationRuleCalling",
             parcel_description="Description",
@@ -110,6 +116,19 @@ class TestUcVoiceFeatureProfileBuilder(TestCaseBase):
     def test_build_profile_with_translation_profile_and_rules(self):
         self.builder.add_translation_profile(
             self.translation_profile, self.translation_rule_calling, self.translation_rule_called
+        )
+
+        report = self.builder.build()
+
+        assert len(report.failed_parcels) == 0, "Failed to build feature profile with translation profile and rules."
+
+    def test_build_profile_with_translation_profile_and_same_rules_references(self):
+        self.builder.add_translation_profile(
+            self.translation_profile, self.translation_rule_calling, self.translation_rule_called
+        )
+
+        self.builder.add_translation_profile(
+            self.translation_profile2, self.translation_rule_calling, self.translation_rule_called
         )
 
         report = self.builder.build()
