@@ -94,7 +94,7 @@ class SecurityPolicySettings(BaseModel):
     tcp_syn_flood_limit: Optional[str] = Field(
         default=None, serialization_alias="tcpSynFloodLimit", validation_alias="tcpSynFloodLimit"
     )
-    high_speed_logging: Optional[HighSpeedLoggingEntry] = Field(
+    high_speed_logging: Union[HighSpeedLoggingEntry, HighSpeedLoggingList, None] = Field(
         default=None, serialization_alias="highSpeedLogging", validation_alias="highSpeedLogging"
     )
     audit_trail: Optional[str] = Field(default=None, serialization_alias="auditTrail", validation_alias="auditTrail")
@@ -117,7 +117,7 @@ class UnifiedSecurityPolicySettings(BaseModel):
     max_incomplete_icmp_limit: Optional[str] = Field(
         default=None, serialization_alias="maxIncompleteIcmpLimit", validation_alias="maxIncompleteIcmpLimit"
     )
-    high_speed_logging: Optional[HighSpeedLoggingList] = Field(
+    high_speed_logging: Union[HighSpeedLoggingEntry, HighSpeedLoggingList, None] = Field(
         default=None, serialization_alias="highSpeedLogging", validation_alias="highSpeedLogging"
     )
     model_config = ConfigDict(populate_by_name=True)

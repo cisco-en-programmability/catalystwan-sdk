@@ -1,6 +1,7 @@
 # Copyright 2024 Cisco Systems, Inc. and its affiliates
 from __future__ import annotations
 
+from ipaddress import IPv4Address
 from typing import Literal, Optional, Union
 
 from pydantic import AliasPath, ConfigDict, Field
@@ -52,7 +53,7 @@ class InterfaceIpsecParcel(_ParcelBase):
     ike_rekey_interval: Union[Variable, Default[int], Global[int]] = Field(
         default=as_default(14400), validation_alias=AliasPath("data", "ikeRekeyInterval")
     )
-    ike_remote_id: Union[Variable, Global[str], Default[None]] = Field(
+    ike_remote_id: Union[Variable, Global[str], Default[None], Global[IPv4Address]] = Field(
         default=Default[None](value=None), validation_alias=AliasPath("data", "ikeRemoteId")
     )
     ike_version: Union[Global[int], Default[int]] = Field(

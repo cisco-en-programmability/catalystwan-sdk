@@ -35,6 +35,7 @@ from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.digital_int
     Association as DigitalInterfaceAssociation,
 )
 from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.srst import Association as SrstAssociation
+from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.translation_profile import CallType
 
 logger = logging.getLogger(__name__)
 
@@ -118,7 +119,7 @@ class UcVoiceFeatureProfileBuilder:
         self._endpoints = UcVoiceFeatureProfile(session)
         self._independent_parcels: List[AnyUcVoiceParcel] = []
         self._associable_parcles: List[AssociableParcel] = []
-        self._translation_profiles: List[TranslationProfile] = []
+        self._translation_profiles: Dict[str, TranslationProfile] = dict()
         self._pushed_associable_parcels: Dict[str, UUID] = {}  # Maps parcel names to their created UUIDs.
         self._parcels_with_associations: List[ParcelWithAssociations] = []
 
@@ -164,7 +165,10 @@ class UcVoiceFeatureProfileBuilder:
         """
         if not calling and not called:
             raise ValueError("There must be at least one translation rule to create a translation profile.")
-        self._translation_profiles.append(TranslationProfile(tpp=tpp, called=called, calling=calling))
+        if tpp.parcel_name in self._translation_profiles:
+            logger.warning(f"Translation profile {tpp.parcel_name} was already added.")
+        else:
+            self._translation_profiles[tpp.parcel_name] = TranslationProfile(tpp=tpp, called=called, calling=calling)
 
     def add_parcel_with_associations(self, parcel: ParcelWithAssociations) -> None:
         """
@@ -194,7 +198,7 @@ class UcVoiceFeatureProfileBuilder:
             self._create_parcel(profile_uuid, ip)
 
         # Create translation profiles
-        for tp in self._translation_profiles:
+        for _, tp in self._translation_profiles.items():
             tp_parcel_uuid = self._create_translation_profile(profile_uuid, tp)
             if tp_parcel_uuid:
                 self._pushed_associable_parcels[tp.tpp.parcel_name] = tp_parcel_uuid
@@ -237,12 +241,23 @@ class UcVoiceFeatureProfileBuilder:
         Returns:
             UUID: The UUID of the created translation profile parcel.
         """
-        if tp.called:
-            if called_uuid := self._create_parcel(profile_uuid, tp.called):
-                tp.tpp.set_ref_by_call_type(called_uuid, "called")
-        if tp.calling:
-            if calling_uuid := self._create_parcel(profile_uuid, tp.calling):
-                tp.tpp.set_ref_by_call_type(calling_uuid, "calling")
+
+        def process_parcel(parcel: Optional[TranslationRuleParcel], parcel_type: CallType):
+            if not parcel:
+                return
+            parcel_name = parcel.parcel_name
+            if parcel_name in self._pushed_associable_parcels:
+                logger.debug(f"Translation rule {parcel_name} was already referenced in other profile.")
+                tp.tpp.set_ref_by_call_type(self._pushed_associable_parcels[parcel_name], parcel_type)
+            else:
+                parcel_uuid = self._create_parcel(profile_uuid, parcel)
+                if parcel_uuid:
+                    tp.tpp.set_ref_by_call_type(parcel_uuid, parcel_type)
+                    self._pushed_associable_parcels[parcel_name] = parcel_uuid
+
+        process_parcel(tp.called, "called")
+        process_parcel(tp.calling, "calling")
+
         return self._create_parcel(profile_uuid, tp.tpp)
 
     def _populate_association(self, association: Association) -> None:

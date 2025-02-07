@@ -24,6 +24,7 @@ from catalystwan.models.policy.policy_definition import (
     DestinationPortEntry,
     DestinationPortListEntry,
     DestinationScalableGroupTagListEntry,
+    DestinationSecurityGroupEntry,
     LogAction,
     Match,
     PolicyActionBase,
@@ -45,6 +46,7 @@ from catalystwan.models.policy.policy_definition import (
     SourcePortEntry,
     SourcePortListEntry,
     SourceScalableGroupTagListEntry,
+    SourceSecurityGroupEntry,
 )
 
 ZoneBasedFWPolicySequenceEntry = Annotated[
@@ -60,6 +62,7 @@ ZoneBasedFWPolicySequenceEntry = Annotated[
         DestinationPortEntry,
         DestinationPortListEntry,
         DestinationScalableGroupTagListEntry,
+        DestinationSecurityGroupEntry,
         ProtocolEntry,
         ProtocolNameEntry,
         ProtocolNameListEntry,
@@ -73,6 +76,7 @@ ZoneBasedFWPolicySequenceEntry = Annotated[
         SourcePortEntry,
         SourcePortListEntry,
         SourceScalableGroupTagListEntry,
+        SourceSecurityGroupEntry,
     ],
     Field(discriminator="field"),
 ]
@@ -169,6 +173,9 @@ class ZoneBasedFWPolicySequence(PolicyDefinitionSequenceBase):
     def match_destination_port_list(self, data_prefix_lists: List[UUID]) -> None:
         self._insert_match(DestinationPortListEntry(ref=data_prefix_lists))
 
+    def match_destination_security_group_list(self, security_group_list: List[UUID]) -> None:
+        self._insert_match(DestinationSecurityGroupEntry(ref=security_group_list))
+
     def match_protocols(self, protocols: Set[int]) -> None:
         self._insert_match(ProtocolEntry.from_protocol_set(protocols))
 
@@ -209,6 +216,9 @@ class ZoneBasedFWPolicySequence(PolicyDefinitionSequenceBase):
 
     def match_source_port_list(self, port_list_id: List[UUID]) -> None:
         self._insert_match(SourcePortListEntry(ref=port_list_id))
+
+    def match_source_security_group_list(self, security_group_list: List[UUID]) -> None:
+        self._insert_match(SourceSecurityGroupEntry(ref=security_group_list))
 
 
 class ZoneBasedFWPolicyEntry(BaseModel):

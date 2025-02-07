@@ -18,13 +18,15 @@ class ColorGroupPreference(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
     color_preference: Set[TLOCColor] = Field(serialization_alias="colorPreference", validation_alias="colorPreference")
-    path_preference: PathPreference = Field(serialization_alias="pathPreference", validation_alias="pathPreference")
+    path_preference: Optional[PathPreference] = Field(
+        default=None, serialization_alias="pathPreference", validation_alias="pathPreference"
+    )
 
     _color_pref = field_validator("color_preference", mode="before")(str_as_str_list)
 
     @staticmethod
     def from_color_set_and_path(
-        color_preference: Set[TLOCColor], path_preference: PathPreference
+        color_preference: Set[TLOCColor], path_preference: Optional[PathPreference] = None
     ) -> "ColorGroupPreference":
         return ColorGroupPreference(color_preference=color_preference, path_preference=path_preference)
 
@@ -54,9 +56,9 @@ class PreferredColorGroupList(PolicyListBase):
 
     def assign_color_groups(
         self,
-        primary: Tuple[Set[TLOCColor], PathPreference],
-        secondary: Optional[Tuple[Set[TLOCColor], PathPreference]] = None,
-        tertiary: Optional[Tuple[Set[TLOCColor], PathPreference]] = None,
+        primary: Tuple[Set[TLOCColor], Optional[PathPreference]],
+        secondary: Optional[Tuple[Set[TLOCColor], Optional[PathPreference]]] = None,
+        tertiary: Optional[Tuple[Set[TLOCColor], Optional[PathPreference]]] = None,
     ) -> PreferredColorGroupListEntry:
         primary_preference = ColorGroupPreference.from_color_set_and_path(*primary)
         secondary_preference = (
