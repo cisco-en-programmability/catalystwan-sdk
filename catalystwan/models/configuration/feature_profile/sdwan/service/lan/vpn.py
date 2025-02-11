@@ -152,6 +152,9 @@ class OmpAdvertiseIPv6(BaseModel):
     route_policy: Optional[Union[Default[None], Global[UUID]]] = Field(
         serialization_alias="routePolicy", validation_alias="routePolicy", default=None
     )
+    protocol_sub_type: Optional[Union[Variable, Default[None], Global[Literal["External"]]]] = Field(
+        default=None, validation_alias="protocolSubType", serialization_alias="protocolSubType"
+    )
     prefix_list: Optional[List[IPv6Prefix]] = None
 
 
