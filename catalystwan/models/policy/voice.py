@@ -10,11 +10,17 @@ from catalystwan.models.policy.policy_definition import VoicePortType
 
 VoiceAssemblyItemType = Literal[
     "dialPeer",
+    "dialpeer",
     "fxoPort",
+    "fxoport",
     "fxsDidPort",
+    "fxsdidport",
     "fxsPort",
+    "fxsport",
     "priIsdnPort",
+    "priisdnport",
     "srstPhoneProfile",
+    "srstphoneprofile",
 ]
 
 
