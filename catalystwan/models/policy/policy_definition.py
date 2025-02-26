@@ -172,8 +172,8 @@ class FxoTuningParams(BaseModel):
         serialization_alias="timingHookflashOut", validation_alias="timingHookflashOut"
     )
     timing_guard_out: IntStr = Field(serialization_alias="timingGuardOut", validation_alias="timingGuardOut")
-    battery_reversal_det_delay: IntStr = Field(
-        serialization_alias="batteryReversalDetDelay", validation_alias="batteryReversalDetDelay"
+    battery_reversal_det_delay: Optional[IntStr] = Field(
+        default=None, serialization_alias="batteryReversalDetDelay", validation_alias="batteryReversalDetDelay"
     )
 
 
