@@ -63,7 +63,11 @@ class Certificate(BaseModel):
 
 class EnterpriseRootCA(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
-    enterprise_root_ca: str = Field(serialization_alias="enterpriseRootCA", validation_alias="enterpriseRootCA")
+    enterprise_root_ca: Optional[str] = Field(
+        default=None,
+        serialization_alias="enterpriseRootCA",
+        validation_alias="enterpriseRootCA"
+    )
     control_connection_up: Optional[bool] = Field(
         default=False, serialization_alias="controlConnectionUp", validation_alias="controlConnectionUp"
     )
