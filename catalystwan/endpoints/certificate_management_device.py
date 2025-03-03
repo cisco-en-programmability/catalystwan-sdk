@@ -135,3 +135,7 @@ class CertificateManagementDevice(APIEndpoints):
     @post("/certificate/vsmart/list")
     def send_to_vbond(self) -> CertActionResponse:
         ...
+
+    @post("/certificate/install/signedCert")
+    def install_signed_cert(self, payload: str) -> CertActionResponse:
+        ...
