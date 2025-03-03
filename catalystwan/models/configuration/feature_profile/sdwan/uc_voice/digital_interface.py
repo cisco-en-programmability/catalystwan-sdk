@@ -369,3 +369,5 @@ class DigitalInterfaceParcel(_ParcelBase):
             template_type = "T1"
             
         validate_basic_settings_values(self.basic_settings, check_for, template_type)
+        
+        return self
