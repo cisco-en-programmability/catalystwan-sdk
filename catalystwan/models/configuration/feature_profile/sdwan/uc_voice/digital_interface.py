@@ -362,10 +362,10 @@ class DigitalInterfaceParcel(_ParcelBase):
     @model_validator(mode="after")
     def validate(self):
         if self.voice_interface_templates and "E1" in self.voice_interface_templates.value:
-            check_for = VALIDATION_DIGITAL_INTERFCATE_VIT_E1_BASIC_SETTINGS_REQUIREMENTS
+            check_for = VALIDATION_DIGITAL_INTERFACE_VIT_E1_BASIC_SETTINGS_REQUIREMENTS
             template_type = "E1"
         else:
-            check_for = VALIDATION_DIGITAL_INTERFCATE_VIT_T1_BASIC_SETTINGS_REQUIREMENTS
+            check_for = VALIDATION_DIGITAL_INTERFACE_VIT_T1_BASIC_SETTINGS_REQUIREMENTS
             template_type = "T1"
             
         validate_basic_settings_values(self.basic_settings, check_for, template_type)
