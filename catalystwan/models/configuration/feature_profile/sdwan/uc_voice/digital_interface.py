@@ -1,7 +1,7 @@
 # Copyright 2024 Cisco Systems, Inc. and its affiliates
 from typing import List, Literal, Optional, Union
 
-from pydantic import AliasPath, BaseModel, ConfigDict, Field
+from pydantic import AliasPath, BaseModel, ConfigDict, Field, model_validator
 
 from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase
 from catalystwan.models.configuration.feature_profile.common import RefIdItem
@@ -288,6 +288,37 @@ class Association(BaseModel):
         serialization_alias="trunkGroupPriority"
     )
 
+VALIDATION_DIGITAL_INTERFACE_VIT_E1_BASIC_SETTINGS_REQUIREMENTS = {
+    "line_code": {"ami", "hdb3"},
+    "framing": {"crc4", "no-crc4"},
+    "line_termination": {"120-ohm", "75-ohm"},
+    "framing_australia": {True},
+}
+
+VALIDATION_DIGITAL_INTERFACE_VIT_T1_BASIC_SETTINGS_REQUIREMENTS = {
+    "line_code": {"ami", "b8zs", "hdb3"},
+    "framing": {"esf", "sf"},
+    "cable_length_type": {"long", "short"},
+    "cable_length": {"0", "110", "220", "330", "440", "550", "660", "-7.5", "-15", "-22.5"},
+}
+
+def validate_basic_settings_values(basic_settings: List[BasicSettings], check_for: dict, template_type: str):
+    for basic_setting in basic_settings:
+        for key, values in check_for.items():
+            attribute = getattr(basic_setting, key, None)
+            if attribute is None:
+                raise ValueError(
+                    f"For {template_type} configuration, missing value for '{key}'. "
+                    f"Expected one of: {check_for[key]}."
+                )
+            current_value = attribute.value
+            if current_value not in values:
+                raise ValueError(
+                    f"For {template_type} configuration, invalid value '{current_value}' for '{key}'. "
+                    f"Expected one of: {check_for[key]}."
+                )
+
+
 
 class DigitalInterfaceParcel(_ParcelBase):
     type_: Literal["digital-interface"] = Field(default="digital-interface", exclude=True)
@@ -327,3 +358,14 @@ class DigitalInterfaceParcel(_ParcelBase):
     voice_interface_templates: Optional[Global[VoiceInterfaceTemplates]] = Field(
         default=None, validation_alias=AliasPath("data", "voiceInterfaceTemplates")
     )
+
+    @model_validator(mode="after")
+    def validate(self):
+        if self.voice_interface_templates and "E1" in self.voice_interface_templates.value:
+            check_for = VALIDATION_DIGITAL_INTERFCATE_VIT_E1_BASIC_SETTINGS_REQUIREMENTS
+            template_type = "E1"
+        else:
+            check_for = VALIDATION_DIGITAL_INTERFCATE_VIT_T1_BASIC_SETTINGS_REQUIREMENTS
+            template_type = "T1"
+            
+        validate_basic_settings_values(self.basic_settings, check_for, template_type)
