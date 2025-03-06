@@ -1,5 +1,6 @@
 # Copyright 2025 Cisco Systems, Inc. and its affiliates
 import unittest
+
 from catalystwan.api.configuration_groups.parcel import Global
 from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.digital_interface import (
     VALIDATION_DIGITAL_INTERFACE_VIT_E1_BASIC_SETTINGS_REQUIREMENTS,
