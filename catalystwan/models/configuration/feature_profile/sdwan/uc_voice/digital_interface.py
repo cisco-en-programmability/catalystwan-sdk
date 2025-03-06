@@ -302,6 +302,7 @@ VALIDATION_DIGITAL_INTERFACE_VIT_T1_BASIC_SETTINGS_REQUIREMENTS = {
     "cable_length": {"0", "110", "220", "330", "440", "550", "660", "-7.5", "-15", "-22.5"},
 }
 
+
 def validate_basic_settings_values(basic_settings: List[BasicSettings], check_for: dict, template_type: str):
     for basic_setting in basic_settings:
         for key, values in check_for.items():
@@ -317,7 +318,6 @@ def validate_basic_settings_values(basic_settings: List[BasicSettings], check_fo
                     f"For {template_type} configuration, invalid value '{current_value}' for '{key}'. "
                     f"Expected one of: {check_for[key]}."
                 )
-
 
 
 class DigitalInterfaceParcel(_ParcelBase):
@@ -367,7 +367,7 @@ class DigitalInterfaceParcel(_ParcelBase):
         else:
             check_for = VALIDATION_DIGITAL_INTERFACE_VIT_T1_BASIC_SETTINGS_REQUIREMENTS
             template_type = "T1"
-            
+
         validate_basic_settings_values(self.basic_settings, check_for, template_type)
-        
+
         return self
