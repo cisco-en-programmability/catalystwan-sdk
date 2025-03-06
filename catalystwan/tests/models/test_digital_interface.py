@@ -1,19 +1,13 @@
 # Copyright 2025 Cisco Systems, Inc. and its affiliates
 import unittest
-
-from pydantic import ValidationError
-
-from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase
-from catalystwan.models.configuration.feature_profile.sdwan.uc_voice import DigitalInterfaceParcel
+from catalystwan.api.configuration_groups.parcel import Global
 from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.digital_interface import (
     VALIDATION_DIGITAL_INTERFACE_VIT_E1_BASIC_SETTINGS_REQUIREMENTS,
-    VALIDATION_DIGITAL_INTERFACE_VIT_T1_BASIC_SETTINGS_REQUIREMENTS,
     BasicSettings,
     Framing,
     LineCode,
     LineTermination,
     SwitchType,
-    VoiceInterfaceTemplates,
     validate_basic_settings_values,
 )
 
