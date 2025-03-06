@@ -104,6 +104,14 @@ class DeviceTemplate(BaseModel):
     def get_policy_uuid(self) -> Optional[UUID]:
         return str_to_uuid(self.policy_id)
 
+    def get_voice_policy_uuid(self) -> Optional[UUID]:
+        if self.voice_policy_id is None:
+            return None
+        return str_to_uuid(self.voice_policy_id)
+
+    def has_any_policy(self) -> bool:
+        return any((self.policy_id, self.security_policy_id, self.voice_policy_id))
+
     def generate_payload(self) -> str:
         output = self.model_dump_json(by_alias=True)
         return output

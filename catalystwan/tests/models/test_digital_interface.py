@@ -1,19 +1,14 @@
 # Copyright 2025 Cisco Systems, Inc. and its affiliates
 import unittest
 
-from pydantic import ValidationError
-
-from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase
-from catalystwan.models.configuration.feature_profile.sdwan.uc_voice import DigitalInterfaceParcel
+from catalystwan.api.configuration_groups.parcel import Global
 from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.digital_interface import (
     VALIDATION_DIGITAL_INTERFACE_VIT_E1_BASIC_SETTINGS_REQUIREMENTS,
-    VALIDATION_DIGITAL_INTERFACE_VIT_T1_BASIC_SETTINGS_REQUIREMENTS,
     BasicSettings,
     Framing,
     LineCode,
     LineTermination,
     SwitchType,
-    VoiceInterfaceTemplates,
     validate_basic_settings_values,
 )
 
@@ -32,7 +27,9 @@ class TestDigitalInterfaceParcel(unittest.TestCase):
             switch_type=Global[SwitchType](value="primary-4ess"),
         )
 
-        validate_basic_settings_values([basic_settings], VALIDATION_DIGITAL_INTERFACE_VIT_E1_BASIC_SETTINGS_REQUIREMENTS, "E1")
+        validate_basic_settings_values(
+            [basic_settings], VALIDATION_DIGITAL_INTERFACE_VIT_E1_BASIC_SETTINGS_REQUIREMENTS, "E1"
+        )
 
     def test_e1_configuration_invalid(self):
         # Invalid configuration for E1
@@ -49,11 +46,11 @@ class TestDigitalInterfaceParcel(unittest.TestCase):
 
         with self.assertRaises(ValueError) as context:
             validate_basic_settings_values(
-                [basic_settings], 
-                VALIDATION_DIGITAL_INTERFACE_VIT_E1_BASIC_SETTINGS_REQUIREMENTS, 
-                "E1"
+                [basic_settings], VALIDATION_DIGITAL_INTERFACE_VIT_E1_BASIC_SETTINGS_REQUIREMENTS, "E1"
             )
-        
+
             # Assert the error message
-            expected_message = "For E1 configuration, invalid value 'b8zs' for 'line_code'. Expected one of: {'ami', 'hdb3'}."
+            expected_message = (
+                "For E1 configuration, invalid value 'b8zs' for 'line_code'. Expected one of: {'ami', 'hdb3'}."
+            )
             self.assertEqual(str(context.exception), expected_message)

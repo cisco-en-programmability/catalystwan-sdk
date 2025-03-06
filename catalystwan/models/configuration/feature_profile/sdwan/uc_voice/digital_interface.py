@@ -272,12 +272,12 @@ class Association(BaseModel):
     translation_profile: Optional[RefIdItem] = Field(
         default=None, validation_alias="translationProfile", serialization_alias="translationProfile"
     )
-    translation_profile_direction: Optional[
-        Union[Variable, Default[None], Global[TranslationProfileDirection]]
-    ] = Field(
-        default=Default[None](value=None),
-        validation_alias="translationProfileDirection",
-        serialization_alias="translationProfileDirection"
+    translation_profile_direction: Optional[Union[Variable, Default[None], Global[TranslationProfileDirection]]] = (
+        Field(
+            default=Default[None](value=None),
+            validation_alias="translationProfileDirection",
+            serialization_alias="translationProfileDirection",
+        )
     )
     trunk_group: Optional[RefIdItem] = Field(
         default=None, validation_alias="trunkGroup", serialization_alias="trunkGroup"
@@ -285,8 +285,9 @@ class Association(BaseModel):
     trunk_group_priority: Optional[Union[Variable, Global[int], Default[None]]] = Field(
         default=Default[None](value=None),
         validation_alias="trunkGroupPriority",
-        serialization_alias="trunkGroupPriority"
+        serialization_alias="trunkGroupPriority",
     )
+
 
 VALIDATION_DIGITAL_INTERFACE_VIT_E1_BASIC_SETTINGS_REQUIREMENTS = {
     "line_code": {"ami", "hdb3"},
@@ -301,6 +302,7 @@ VALIDATION_DIGITAL_INTERFACE_VIT_T1_BASIC_SETTINGS_REQUIREMENTS = {
     "cable_length_type": {"long", "short"},
     "cable_length": {"0", "110", "220", "330", "440", "550", "660", "-7.5", "-15", "-22.5"},
 }
+
 
 def validate_basic_settings_values(basic_settings: List[BasicSettings], check_for: dict, template_type: str):
     for basic_setting in basic_settings:
@@ -317,7 +319,6 @@ def validate_basic_settings_values(basic_settings: List[BasicSettings], check_fo
                     f"For {template_type} configuration, invalid value '{current_value}' for '{key}'. "
                     f"Expected one of: {check_for[key]}."
                 )
-
 
 
 class DigitalInterfaceParcel(_ParcelBase):
@@ -367,7 +368,7 @@ class DigitalInterfaceParcel(_ParcelBase):
         else:
             check_for = VALIDATION_DIGITAL_INTERFACE_VIT_T1_BASIC_SETTINGS_REQUIREMENTS
             template_type = "T1"
-            
+
         validate_basic_settings_values(self.basic_settings, check_for, template_type)
-        
+
         return self
