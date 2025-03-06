@@ -272,12 +272,12 @@ class Association(BaseModel):
     translation_profile: Optional[RefIdItem] = Field(
         default=None, validation_alias="translationProfile", serialization_alias="translationProfile"
     )
-    translation_profile_direction: Optional[
-        Union[Variable, Default[None], Global[TranslationProfileDirection]]
-    ] = Field(
-        default=Default[None](value=None),
-        validation_alias="translationProfileDirection",
-        serialization_alias="translationProfileDirection"
+    translation_profile_direction: Optional[Union[Variable, Default[None], Global[TranslationProfileDirection]]] = (
+        Field(
+            default=Default[None](value=None),
+            validation_alias="translationProfileDirection",
+            serialization_alias="translationProfileDirection",
+        )
     )
     trunk_group: Optional[RefIdItem] = Field(
         default=None, validation_alias="trunkGroup", serialization_alias="trunkGroup"
@@ -285,8 +285,9 @@ class Association(BaseModel):
     trunk_group_priority: Optional[Union[Variable, Global[int], Default[None]]] = Field(
         default=Default[None](value=None),
         validation_alias="trunkGroupPriority",
-        serialization_alias="trunkGroupPriority"
+        serialization_alias="trunkGroupPriority",
     )
+
 
 VALIDATION_DIGITAL_INTERFACE_VIT_E1_BASIC_SETTINGS_REQUIREMENTS = {
     "line_code": {"ami", "hdb3"},
