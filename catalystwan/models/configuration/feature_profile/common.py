@@ -12,6 +12,7 @@ from catalystwan.api.configuration_groups.parcel import (
     Default,
     Global,
     Variable,
+    _ParcelEntry,
     as_default,
     as_global,
     as_optional_global,
@@ -747,3 +748,43 @@ class MultilinkNimList(BaseModel):
         default=None, validation_alias="clockRate", serialization_alias="clockRate"
     )
     description: Optional[Union[Variable, Global[str], Default[None]]] = Field(default=None)
+
+
+class EntriesHost(_ParcelEntry):
+    host: Union[Global[str], Variable] = Field()
+    address_type: Optional[Global[str]] = Field(
+        default=None, validation_alias="addressType", serialization_alias="addressType"
+    )
+
+
+class EntriesIp(_ParcelEntry):
+    ip_prefix: Union[Global[str], Variable] = Field(validation_alias="ipPrefix", serialization_alias="ipPrefix")
+    address_type: Optional[Global[str]] = Field(
+        default=None, validation_alias="addressType", serialization_alias="addressType"
+    )
+
+
+class EntriesType(_ParcelEntry):
+    address_type: Optional[Global[str]] = Field(
+        default=None, validation_alias="addressType", serialization_alias="addressType"
+    )
+    object_group: Optional[RefIdItem] = Field(
+        default=None, validation_alias="objectGroup", serialization_alias="objectGroup"
+    )
+
+
+class HostRange(BaseModel):
+    end: Union[Global[str], Variable] = Field()
+    start: Union[Global[str], Variable] = Field()
+
+
+class EntriesRange(_ParcelEntry):
+    host_range: HostRange = Field(
+        validation_alias="hostRange", serialization_alias="hostRange", description="Host Address Range"
+    )
+    address_type: Optional[Global[str]] = Field(
+        default=None, validation_alias="addressType", serialization_alias="addressType"
+    )
+
+
+ObjectGroupEntries = Union[EntriesHost, EntriesIp, EntriesType, EntriesRange]

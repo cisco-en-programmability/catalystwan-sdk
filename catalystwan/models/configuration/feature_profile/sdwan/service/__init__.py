@@ -9,6 +9,7 @@ from catalystwan.models.configuration.feature_profile.sdwan.routing import AnyRo
 from ..acl import AnyAclParcel
 from .appqoe import AppqoeParcel
 from .dhcp_server import LanVpnDhcpServerParcel
+from .dual_router_ha import DualRouterHaParcel
 from .eigrp import EigrpParcel
 from .lan.ethernet import InterfaceEthernetParcel
 from .lan.gre import InterfaceGreParcel
@@ -18,19 +19,22 @@ from .lan.svi import InterfaceSviParcel
 from .lan.vpn import LanVpnParcel
 from .multicast import MulticastParcel
 from .route_policy import RoutePolicyParcel
+from .service_chain import ServiceChainParcel
 from .switchport import SwitchportParcel
 from .wireless_lan import WirelessLanParcel
 
 AnyTopLevelServiceParcel = Annotated[
     Union[
-        LanVpnDhcpServerParcel,
         AppqoeParcel,
-        LanVpnParcel,
-        RoutePolicyParcel,
+        DualRouterHaParcel,
         EigrpParcel,
+        LanVpnDhcpServerParcel,
+        LanVpnParcel,
+        MulticastParcel,
+        RoutePolicyParcel,
+        ServiceChainParcel,
         SwitchportParcel,
         WirelessLanParcel,
-        MulticastParcel,
         # TrackerGroupData,
         # WirelessLanData,
         # SwitchportData
@@ -71,6 +75,8 @@ __all__ = [
     "InterfaceSviParcel",
     "LanVpnDhcpServerParcel",
     "LanVpnParcel",
+    "ServiceChainParcel",
+    "DualRouterHaParcel",
     "MulticastParcel",
     "OspfParcel",
     "Ospfv3IPv4Parcel",
