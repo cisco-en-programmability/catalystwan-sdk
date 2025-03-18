@@ -1,9 +1,9 @@
 # Copyright 2025 Cisco Systems, Inc. and its affiliates
 from typing import List, Literal, Optional, Union
 
-from pydantic import AliasPath, BaseModel, ConfigDict, Field
+from pydantic import AliasPath, BaseModel, Field
 
-from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase
+from catalystwan.api.configuration_groups.parcel import Global, Variable, _ParcelBase
 
 ServiceType = Literal[
     "Firewall",

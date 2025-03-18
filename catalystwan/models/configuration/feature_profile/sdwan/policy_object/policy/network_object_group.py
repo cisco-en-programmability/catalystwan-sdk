@@ -1,10 +1,10 @@
 # Copyright 2025 Cisco Systems, Inc. and its affiliates
 from typing import List, Literal
 
-from pydantic import AliasPath, BaseModel, ConfigDict, Field
+from pydantic import AliasPath, Field
 
-from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase, _ParcelEntry
-from catalystwan.models.configuration.feature_profile.common import AddressWithMask, ObjectGroupEntries, RefIdItem
+from catalystwan.api.configuration_groups.parcel import _ParcelBase
+from catalystwan.models.configuration.feature_profile.common import ObjectGroupEntries
 
 
 class NetworkObjectGroupParcel(_ParcelBase):
