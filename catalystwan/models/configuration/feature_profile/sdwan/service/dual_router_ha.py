@@ -1,5 +1,4 @@
 # Copyright 2025 Cisco Systems, Inc. and its affiliates
-# Copyright 2025 Cisco Systems, Inc. and its affiliates
 from typing import List, Literal, Optional, Union
 
 from pydantic import AliasPath, BaseModel, Field

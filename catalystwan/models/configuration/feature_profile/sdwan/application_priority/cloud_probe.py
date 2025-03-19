@@ -1,10 +1,10 @@
 # Copyright 2025 Cisco Systems, Inc. and its affiliates
-# Copyright 2025 Cisco Systems, Inc. and its affiliates
 from typing import List, Literal, Optional, Union
 
 from pydantic import AliasPath, BaseModel, Field
 
 from catalystwan.api.configuration_groups.parcel import Global, Variable, _ParcelBase
+from catalystwan.models.common import TLOCColor
 
 CloudSaaSDeviceRole = Literal[
     "client",
@@ -15,32 +15,6 @@ CloudSaaSDeviceRole = Literal[
 VpnType = Literal[
     "service-vpn",
     "vpn-0",
-]
-
-Value = Literal[
-    "3g",
-    "all",
-    "biz-internet",
-    "blue",
-    "bronze",
-    "custom1",
-    "custom2",
-    "custom3",
-    "default",
-    "gold",
-    "green",
-    "lte",
-    "metro-ethernet",
-    "mpls",
-    "private1",
-    "private2",
-    "private3",
-    "private4",
-    "private5",
-    "private6",
-    "public-internet",
-    "red",
-    "silver",
 ]
 
 
@@ -79,7 +53,7 @@ class CloudProbeParcel(_ParcelBase):
         default=None,
         validation_alias=AliasPath("data", "sigTunnelList"),
     )
-    tloc_list: Optional[Union[Global[List[Value]], Variable]] = Field(
+    tloc_list: Optional[Union[Global[List[TLOCColor]], Variable]] = Field(
         default=None, validation_alias=AliasPath("data", "tlocList")
     )
     vpn_type: Optional[Union[Variable, Global[VpnType]]] = Field(
