@@ -19,6 +19,7 @@ from .policy.mirror import MirrorParcel
 from .policy.policer import PolicerEntry, PolicerParcel
 from .policy.prefered_group_color import Preference, PreferredColorGroupEntry, PreferredColorGroupParcel
 from .policy.prefix_list import PrefixListEntry, PrefixListParcel
+from .policy.service_object_group import ServiceObjectGroupParcel
 from .policy.sla_class import SLAClassListEntry, SLAClassParcel
 from .policy.standard_community import StandardCommunityEntry, StandardCommunityParcel
 from .policy.tloc_list import TlocEntry, TlocParcel
@@ -80,6 +81,7 @@ AnyPolicyObjectParcel = Annotated[
         SecurityDataPrefixParcel,
         SecurityPortParcel,
         SecurityPortParcel,
+        ServiceObjectGroupParcel,
         SecurityZoneListParcel,
         SecurityZoneListParcel,
         SLAClassParcel,
@@ -146,6 +148,7 @@ __all__ = (
     "ProtocolListParcel",
     "ScalableGroupTagEntry",
     "ScalableGroupTagParcel",
+    "ServiceObjectGroupParcel",
     "SecurityApplicationFamilyListEntry",
     "SecurityApplicationListEntry",
     "SecurityApplicationListParcel",
