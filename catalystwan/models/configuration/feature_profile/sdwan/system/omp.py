@@ -15,13 +15,17 @@ class AdvertiseIp(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
     )
-    bgp: Union[Variable, Global[bool], Default[bool]] = Field(default=as_default(False), description="BGP")
-    ospf: Union[Variable, Global[bool], Default[bool]] = Field(default=as_default(False), description="OSPF")
-    connected: Union[Variable, Global[bool], Default[bool]] = Field(default=as_default(False), description="Variable")
-    static: Union[Variable, Global[bool], Default[bool]] = Field(default=as_default(False), description="Variable")
-    eigrp: Union[Variable, Global[bool], Default[bool]] = Field(default=as_default(False), description="EIGRP")
-    lisp: Union[Variable, Global[bool], Default[bool]] = Field(default=as_default(False), description="LISP")
-    isis: Union[Variable, Global[bool], Default[bool]] = Field(default=as_default(False), description="ISIS")
+    bgp: Union[Variable, Global[bool], Default[bool]] = Field(default=Default[bool](value=False), description="BGP")
+    ospf: Union[Variable, Global[bool], Default[bool]] = Field(default=Default[bool](value=False), description="OSPF")
+    connected: Union[Variable, Global[bool], Default[bool]] = Field(
+        default=Default[bool](value=False), description="Variable"
+    )
+    static: Union[Variable, Global[bool], Default[bool]] = Field(
+        default=Default[bool](value=False), description="Variable"
+    )
+    eigrp: Union[Variable, Global[bool], Default[bool]] = Field(default=Default[bool](value=False), description="EIGRP")
+    lisp: Union[Variable, Global[bool], Default[bool]] = Field(default=Default[bool](value=False), description="LISP")
+    isis: Union[Variable, Global[bool], Default[bool]] = Field(default=Default[bool](value=False), description="ISIS")
 
 
 class AdvertiseIpv6(AdvertiseIp):
@@ -29,7 +33,7 @@ class AdvertiseIpv6(AdvertiseIp):
 
 
 class AdvertiseIpv4(AdvertiseIp):
-    ospfv3: Union[Variable, Global[bool], Default[bool]] = Field(default=as_default(False), description="OSPF")
+    ospfv3: Union[Variable, Global[bool], Default[bool]] = Field(default=Default[bool](value=False), description="OSPF")
 
 
 class OMPParcel(_ParcelBase):
@@ -40,7 +44,7 @@ class OMPParcel(_ParcelBase):
         populate_by_name=True,
     )
     graceful_restart: Union[Variable, Global[bool], Default[bool]] = Field(
-        default=as_default(True),
+        default=Default[bool](value=True),
         validation_alias=AliasPath("data", "gracefulRestart"),
         description="Graceful Restart for OMP",
     )
@@ -50,43 +54,45 @@ class OMPParcel(_ParcelBase):
         description="Overlay AS Number",
     )
     send_path_limit: Union[Variable, Global[int], Default[int]] = Field(
-        default=as_default(4),
+        default=Default[int](value=4),
         validation_alias=AliasPath("data", "sendPathLimit"),
         description="Number of Paths Advertised per Prefix",
     )
     ecmp_limit: Union[Variable, Global[float], Default[int]] = Field(
-        default=as_default(4),
+        default=Default[int](value=4),
         validation_alias=AliasPath("data", "ecmpLimit"),
         description="Set maximum number of OMP paths to install in cEdge route table",
     )
     shutdown: Union[Variable, Global[bool], Default[bool]] = Field(
-        default=as_default(False), validation_alias=AliasPath("data", "shutdown"), description="Variable"
+        default=Default[bool](value=False), validation_alias=AliasPath("data", "shutdown"), description="Variable"
     )
     omp_admin_distance_ipv4: Union[Variable, Global[int], Default[int]] = Field(
-        default=as_default(251),
+        default=Default[int](value=251),
         validation_alias=AliasPath("data", "ompAdminDistanceIpv4"),
         description="OMP Admin Distance IPv4",
     )
     omp_admin_distance_ipv6: Union[Variable, Global[int], Default[int]] = Field(
-        default=as_default(251),
+        default=Default[int](value=251),
         validation_alias=AliasPath("data", "ompAdminDistanceIpv6"),
         description="OMP Admin Distance IPv6",
     )
     advertisement_interval: Union[Variable, Global[int], Default[int]] = Field(
-        default=as_default(1),
+        default=Default[int](value=1),
         validation_alias=AliasPath("data", "advertisementInterval"),
         description="Advertisement Interval (seconds)",
     )
     graceful_restart_timer: Union[Variable, Global[int], Default[int]] = Field(
-        default=as_default(43200),
+        default=Default[int](value=43200),
         validation_alias=AliasPath("data", "gracefulRestartTimer"),
         description="Graceful Restart Timer (seconds)",
     )
     eor_timer: Union[Variable, Global[int], Default[int]] = Field(
-        default=as_default(300), validation_alias=AliasPath("data", "eorTimer"), description="EOR Timer"
+        default=Default[int](value=300), validation_alias=AliasPath("data", "eorTimer"), description="EOR Timer"
     )
     holdtime: Union[Variable, Global[int], Default[int]] = Field(
-        default=as_default(60), validation_alias=AliasPath("data", "holdtime"), description="Hold Time (seconds)"
+        default=Default[int](value=60),
+        validation_alias=AliasPath("data", "holdtime"),
+        description="Hold Time (seconds)",
     )
     advertise_ipv4: AdvertiseIpv4 = Field(
         default_factory=AdvertiseIpv4, validation_alias=AliasPath("data", "advertiseIpv4")
@@ -109,3 +115,6 @@ class OMPParcel(_ParcelBase):
             Default[None],
         ]
     ] = Field(None, validation_alias=AliasPath("data", "siteTypesForVariable"), description="Site Types")
+    site_types: Optional[Union[Global[List[SiteTypesForTransportGateway]], Variable, Default[None]]] = Field(
+        default=None, validation_alias=AliasPath("data", "siteTypes")
+    )

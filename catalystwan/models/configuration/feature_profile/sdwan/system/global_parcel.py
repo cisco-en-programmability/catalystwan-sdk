@@ -1,11 +1,22 @@
 # Copyright 2024 Cisco Systems, Inc. and its affiliates
 from __future__ import annotations
 
-from typing import Literal, Union
+from typing import Literal, Optional, Union
 
 from pydantic import AliasPath, BaseModel, ConfigDict, Field
 
 from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase, as_default
+
+EtherchannelFlowLoadBalance = Literal[
+    "dst-ip",
+    "dst-mac",
+    "sdwan",
+    "src-dst-ip",
+    "src-dst-mac",
+    "src-dst-mixed-ip-port",
+    "src-ip",
+    "src-mac",
+]
 
 
 class ServicesIp(BaseModel):
@@ -14,47 +25,47 @@ class ServicesIp(BaseModel):
         populate_by_name=True,
     )
     http_server: Union[Variable, Global[bool], Default[bool]] = Field(
-        default=as_default(False),
+        default=Default[bool](value=False),
         serialization_alias="servicesGlobalServicesIpHttpServer",
         validation_alias="servicesGlobalServicesIpHttpServer",
     )
     https_server: Union[Variable, Global[bool], Default[bool]] = Field(
-        default=as_default(False),
+        default=Default[bool](value=False),
         serialization_alias="servicesGlobalServicesIpHttpsServer",
         validation_alias="servicesGlobalServicesIpHttpsServer",
     )
     ftp_passive: Union[Variable, Global[bool], Default[bool]] = Field(
-        default=as_default(False),
+        default=Default[bool](value=False),
         serialization_alias="servicesGlobalServicesIpFtpPassive",
         validation_alias="servicesGlobalServicesIpFtpPassive",
     )
     domain_lookup: Union[Variable, Global[bool], Default[bool]] = Field(
-        default=as_default(False),
+        default=Default[bool](value=False),
         serialization_alias="servicesGlobalServicesIpDomainLookup",
         validation_alias="servicesGlobalServicesIpDomainLookup",
     )
     arp_proxy: Union[Variable, Global[bool], Default[bool]] = Field(
-        default=as_default(False),
+        default=Default[bool](value=False),
         serialization_alias="servicesGlobalServicesIpArpProxy",
         validation_alias="servicesGlobalServicesIpArpProxy",
     )
     rcmd: Union[Variable, Global[bool], Default[bool]] = Field(
-        default=as_default(False),
+        default=Default[bool](value=False),
         serialization_alias="servicesGlobalServicesIpRcmd",
         validation_alias="servicesGlobalServicesIpRcmd",
     )
     line_vty: Union[Variable, Global[bool], Default[bool]] = Field(
-        default=as_default(False),
+        default=Default[bool](value=False),
         serialization_alias="servicesGlobalServicesIpLineVty",
         validation_alias="servicesGlobalServicesIpLineVty",
     )
     cdp: Union[Variable, Global[bool], Default[bool]] = Field(
-        default=as_default(True),
+        default=Default[bool](value=True),
         serialization_alias="servicesGlobalServicesIpCdp",
         validation_alias="servicesGlobalServicesIpCdp",
     )
     lldp: Union[Variable, Global[bool], Default[bool]] = Field(
-        default=as_default(True),
+        default=Default[bool](value=True),
         serialization_alias="servicesGlobalServicesIpLldp",
         validation_alias="servicesGlobalServicesIpLldp",
     )
@@ -64,57 +75,57 @@ class ServicesIp(BaseModel):
         validation_alias="servicesGlobalServicesIpSourceIntrf",
     )
     tcp_keepalives_in: Union[Variable, Global[bool], Default[bool]] = Field(
-        default=as_default(True),
+        default=Default[bool](value=True),
         serialization_alias="globalOtherSettingsTcpKeepalivesIn",
         validation_alias="globalOtherSettingsTcpKeepalivesIn",
     )
     keepalives_out: Union[Variable, Global[bool], Default[bool]] = Field(
-        default=as_default(True),
+        default=Default[bool](value=True),
         serialization_alias="globalOtherSettingsTcpKeepalivesOut",
         validation_alias="globalOtherSettingsTcpKeepalivesOut",
     )
     small_servers: Union[Variable, Global[bool], Default[bool]] = Field(
-        default=as_default(False),
+        default=Default[bool](value=False),
         serialization_alias="globalOtherSettingsTcpSmallServers",
         validation_alias="globalOtherSettingsTcpSmallServers",
     )
     udp_small_servers: Union[Variable, Global[bool], Default[bool]] = Field(
-        default=as_default(False),
+        default=Default[bool](value=False),
         serialization_alias="globalOtherSettingsUdpSmallServers",
         validation_alias="globalOtherSettingsUdpSmallServers",
     )
     console_logging: Union[Variable, Global[bool], Default[bool]] = Field(
-        default=as_default(True),
+        default=Default[bool](value=True),
         serialization_alias="globalOtherSettingsConsoleLogging",
         validation_alias="globalOtherSettingsConsoleLogging",
     )
     ip_source_route: Union[Variable, Global[bool], Default[bool]] = Field(
-        default=as_default(False),
+        default=Default[bool](value=False),
         serialization_alias="globalOtherSettingsIPSourceRoute",
         validation_alias="globalOtherSettingsIPSourceRoute",
     )
     vty_line_logging: Union[Variable, Global[bool], Default[bool]] = Field(
-        default=as_default(False),
+        default=Default[bool](value=False),
         serialization_alias="globalOtherSettingsVtyLineLogging",
         validation_alias="globalOtherSettingsVtyLineLogging",
     )
     snmp_ifindex_persist: (Union[Variable, Global[bool], Default[bool]]) = Field(
-        default=as_default(True),
+        default=Default[bool](value=True),
         serialization_alias="globalOtherSettingsSnmpIfindexPersist",
         validation_alias="globalOtherSettingsSnmpIfindexPersist",
     )
     ignore_bootp: Union[Variable, Global[bool], Default[bool]] = Field(
-        default=as_default(True),
+        default=Default[bool](value=True),
         serialization_alias="globalOtherSettingsIgnoreBootp",
         validation_alias="globalOtherSettingsIgnoreBootp",
     )
     nat64_udp_timeout: Union[Variable, Global[int], Default[int]] = Field(
-        default=as_default(300),
+        default=Global[int](value=300),
         serialization_alias="globalSettingsNat64UdpTimeout",
         validation_alias="globalSettingsNat64UdpTimeout",
     )
     nat64_tcp_timeout: Union[Variable, Global[int], Default[int]] = Field(
-        default=as_default(3600),
+        default=Global[int](value=3600),
         serialization_alias="globalSettingsNat64TcpTimeout",
         validation_alias="globalSettingsNat64TcpTimeout",
     )
@@ -127,6 +138,9 @@ class ServicesIp(BaseModel):
         default=Default[None](value=None),
         serialization_alias="globalSettingsSSHVersion",
         validation_alias="globalSettingsSSHVersion",
+    )
+    lacp_system_priority: Optional[Union[Variable, Global[int], Default[None]]] = Field(
+        default=None, validation_alias="lacpSystemPriority", serialization_alias="lacpSystemPriority"
     )
 
 

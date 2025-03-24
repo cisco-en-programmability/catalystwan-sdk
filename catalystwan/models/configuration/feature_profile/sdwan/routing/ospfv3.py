@@ -195,6 +195,9 @@ class RedistributedRoute(BaseModel):
         serialization_alias="routePolicy",
         validation_alias="routePolicy",
     )
+    translate_rib_metric: Optional[Union[Variable, Global[bool], Default[bool]]] = Field(
+        default=None, validation_alias="translateRibMetric", serialization_alias="translateRibMetric"
+    )
 
 
 class RedistributedRouteIPv6(BaseModel):
