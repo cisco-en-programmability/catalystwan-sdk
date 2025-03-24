@@ -5,7 +5,7 @@ from typing import Literal, Optional, Union
 
 from pydantic import AliasPath, BaseModel, ConfigDict, Field
 
-from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase, as_default
+from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase
 
 EtherchannelFlowLoadBalance = Literal[
     "dst-ip",

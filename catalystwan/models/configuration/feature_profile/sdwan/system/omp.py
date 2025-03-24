@@ -5,7 +5,7 @@ from typing import List, Literal, Optional, Union
 
 from pydantic import AliasPath, BaseModel, ConfigDict, Field
 
-from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase, as_default
+from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase
 
 SiteTypesForTransportGateway = Literal["type-1", "type-2", "type-3", "cloud", "branch", "br", "spoke"]
 TransportGateway = Literal["prefer", "ecmp-with-direct-path"]
