@@ -24,6 +24,7 @@ from catalystwan.models.configuration.feature_profile.common import (
     InterfaceDynamicIPv4Address,
     InterfaceDynamicIPv6Address,
     InterfaceStaticIPv4Address,
+    RefIdItem,
     StaticIPv4Address,
     StaticIPv4AddressConfig,
     StaticIPv6Address,
@@ -32,6 +33,111 @@ from catalystwan.models.configuration.feature_profile.sdwan.service.lan.common i
     VrrpIPv6Address,
     VrrpTrackingObject,
 )
+
+LoadBalance = Literal[
+    "flow",
+    "vlan",
+]
+
+LacpMode = Literal[
+    "active",
+    "passive",
+]
+
+
+LacpRate = Literal[
+    "fast",
+    "normal",
+]
+
+
+class PortChannelMemberLinksLacp(BaseModel):
+    lacp_mode: Union[Global[LacpMode], Default[Literal["active"]], Variable] = Field(
+        validation_alias="lacpMode", serialization_alias="lacpMode"
+    )
+    interface: Optional[RefIdItem] = Field(default=None)
+    lacp_port_priority: Optional[Union[Variable, Global[int], Default[None]]] = Field(
+        default=None, validation_alias="lacpPortPriority", serialization_alias="lacpPortPriority"
+    )
+    lacp_rate: Optional[Union[Variable, Global[LacpRate], Default[None]]] = Field(
+        default=None, validation_alias="lacpRate", serialization_alias="lacpRate"
+    )
+
+
+class LacpModeMainInterface(BaseModel):
+    port_channel_member_links: List[PortChannelMemberLinksLacp] = Field(
+        validation_alias="portChannelMemberLinks",
+        serialization_alias="portChannelMemberLinks",
+        description="Configure Port-Channel member links",
+    )
+    lacp_fast_switchover: Optional[Union[Global[bool], Default[bool], Variable]] = Field(
+        default=None, validation_alias="lacpFastSwitchover", serialization_alias="lacpFastSwitchover"
+    )
+    lacp_max_bundle: Optional[Union[Variable, Global[int], Default[None]]] = Field(
+        default=None, validation_alias="lacpMaxBundle", serialization_alias="lacpMaxBundle"
+    )
+    lacp_min_bundle: Optional[Union[Variable, Global[int], Default[None]]] = Field(
+        default=None, validation_alias="lacpMinBundle", serialization_alias="lacpMinBundle"
+    )
+    load_balance: Optional[Union[Variable, Global[LoadBalance], Default[None]]] = Field(
+        default=None, validation_alias="loadBalance", serialization_alias="loadBalance"
+    )
+    port_channel_qos_aggregate: Optional[Union[Global[bool], Default[bool], Variable]] = Field(
+        default=None, validation_alias="portChannelQosAggregate", serialization_alias="portChannelQosAggregate"
+    )
+
+
+class MainInterfaceLcap(BaseModel):
+    lacp_mode_main_interface: LacpModeMainInterface = Field(
+        validation_alias="lacpModeMainInterface", serialization_alias="lacpModeMainInterface"
+    )
+
+
+class PortChannelMemberLinksMain(BaseModel):
+    interface: Optional[RefIdItem] = Field(default=None)
+
+
+class StaticModeMainInterface(BaseModel):
+    port_channel_member_links: List[PortChannelMemberLinksMain] = Field(
+        validation_alias="portChannelMemberLinks",
+        serialization_alias="portChannelMemberLinks",
+        description="Configure Port-Channel member links",
+    )
+    load_balance: Optional[Union[Variable, Global[LoadBalance], Default[None]]] = Field(
+        default=None, validation_alias="loadBalance", serialization_alias="loadBalance"
+    )
+    port_channel_qos_aggregate: Optional[Union[Global[bool], Default[bool], Variable]] = Field(
+        default=None, validation_alias="portChannelQosAggregate", serialization_alias="portChannelQosAggregate"
+    )
+
+
+class MainInterfaceStatic(BaseModel):
+    static_mode_main_interface: StaticModeMainInterface = Field(
+        validation_alias="staticModeMainInterface", serialization_alias="staticModeMainInterface"
+    )
+
+
+MainInterface = Union[MainInterfaceLcap, MainInterfaceStatic]
+
+
+class PortChannelMainIntf(BaseModel):
+    main_interface: MainInterface = Field(validation_alias="mainInterface", serialization_alias="mainInterface")
+
+
+class SubInterface(BaseModel):
+    primary_interface_name: Optional[Union[Global[str], Variable, Default[None]]] = Field(
+        default=None, validation_alias="primaryInterfaceName", serialization_alias="primaryInterfaceName"
+    )
+    secondary_interface_name: Optional[Union[Global[str], Variable, Default[None]]] = Field(
+        default=None, validation_alias="secondaryInterfaceName", serialization_alias="secondaryInterfaceName"
+    )
+
+
+class PortChannelSubIntf(BaseModel):
+    sub_interface: SubInterface = Field(validation_alias="subInterface", serialization_alias="subInterface")
+
+
+PortChannel = Union[PortChannelSubIntf, PortChannelMainIntf]
 
 
 class Dhcpv6Helper(BaseModel):
@@ -97,6 +203,14 @@ class VrrpIPv6(BaseModel):
         serialization_alias="trackOmp", validation_alias="trackOmp", default=Default[bool](value=False)
     )
     ipv6: List[VrrpIPv6Address]
+    follow_dual_router_h_a_availability: Optional[Union[Global[bool], Default[bool]]] = Field(
+        default=None,
+        validation_alias="followDualRouterHAAvailability",
+        serialization_alias="followDualRouterHAAvailability",
+    )
+    min_preempt_delay: Optional[Union[Variable, Global[int], Default[None]]] = Field(
+        default=None, validation_alias="minPreemptDelay", serialization_alias="minPreemptDelay"
+    )
 
 
 class VrrpIPv4(BaseModel):
@@ -124,6 +238,14 @@ class VrrpIPv4(BaseModel):
     )
     tracking_object: Optional[List[VrrpTrackingObject]] = Field(
         serialization_alias="trackingObject", validation_alias="trackingObject", default=None
+    )
+    follow_dual_router_h_a_availability: Optional[Union[Global[bool], Default[bool]]] = Field(
+        default=None,
+        validation_alias="followDualRouterHAAvailability",
+        serialization_alias="followDualRouterHAAvailability",
+    )
+    min_preempt_delay: Optional[Union[Variable, Global[int], Default[None]]] = Field(
+        default=None, validation_alias="minPreemptDelay", serialization_alias="minPreemptDelay"
     )
 
     @model_serializer(mode="wrap", when_used="json")
@@ -241,6 +363,13 @@ class InterfaceEthernetParcel(_ParcelBase):
     trustsec: Optional[Trustsec] = Field(validation_alias=AliasPath("data", "trustsec"), default=None)
     advanced: AdvancedEthernetAttributes = Field(
         validation_alias=AliasPath("data", "advanced"), default_factory=AdvancedEthernetAttributes
+    )
+    port_channel: Optional[PortChannel] = Field(default=None, validation_alias=AliasPath("data", "portChannel"))
+    port_channel_interface: Optional[Union[Global[bool], Default[bool]]] = Field(
+        default=None, validation_alias=AliasPath("data", "portChannelInterface")
+    )
+    port_channel_member_interface: Optional[Union[Global[bool], Default[bool]]] = Field(
+        default=None, validation_alias=AliasPath("data", "portChannelMemberInterface")
     )
 
     def set_dynamic_interface_ip_address(self, dhcp_distance: Union[Global[int], Variable]) -> None:

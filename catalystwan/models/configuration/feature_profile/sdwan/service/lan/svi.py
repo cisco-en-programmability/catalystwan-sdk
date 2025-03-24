@@ -52,6 +52,11 @@ class VrrpIPv4(BaseModel):
     )
 
     prefix_list: Optional[Union[Global[str], Variable, Default[None]]] = Default[None](value=None)
+    follow_dual_router_h_a_availability: Optional[Union[Global[bool], Default[bool]]] = Field(
+        default=None,
+        validation_alias="followDualRouterHAAvailability",
+        serialization_alias="followDualRouterHAAvailability",
+    )
 
 
 class VrrpIPv6(BaseModel):
@@ -68,6 +73,11 @@ class VrrpIPv6(BaseModel):
     )
     ipv6: List[VrrpIPv6Address]
     ipv6_secondary: Optional[List[VrrpIPv6SecondaryAddress]]
+    follow_dual_router_h_a_availability: Optional[Union[Global[bool], Default[bool]]] = Field(
+        default=None,
+        validation_alias="followDualRouterHAAvailability",
+        serialization_alias="followDualRouterHAAvailability",
+    )
 
 
 class Dhcpv6Helper(BaseModel):

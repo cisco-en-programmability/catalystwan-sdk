@@ -47,6 +47,9 @@ class DnsParcel(_ParcelBase):
         validation_alias="description",
         description="Set the parcel description",
     )
+    cg_fp_pp_name_def: Optional[str] = Field(
+        default=None, pattern='^[^&<>! "]+$', validation_alias=AliasPath("data", "cgFpPpNameDef")
+    )
     child_org_id: Optional[Global[str]] = Field(default=None, validation_alias=AliasPath("data", "childOrgId"))
     dns_crypt: Global[bool] = Field(validation_alias=AliasPath("data", "dnsCrypt"))
     dns_server_ip: Optional[Global[str]] = Field(default=None, validation_alias=AliasPath("data", "dnsServerIP"))

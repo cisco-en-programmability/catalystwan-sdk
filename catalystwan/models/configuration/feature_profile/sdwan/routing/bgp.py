@@ -350,6 +350,13 @@ class NetworkItem(BaseModel):
     prefix: AddressWithMask = Field(..., description="Configure the prefixes for BGP to announce")
 
 
+OspfMatchRoute = Literal[
+    "External-type1",
+    "External-type2",
+    "Internal",
+]
+
+
 class RedistributeItem(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
@@ -365,6 +372,10 @@ class RedistributeItem(BaseModel):
         serialization_alias="routePolicy",
         validation_alias="routePolicy",
         description="Configure policy to apply to prefixes received from BGP neighbor",
+    )
+    metric: Optional[Union[Variable, Global[int], Default[None]]] = Field(default=None)
+    ospf_match_route: Optional[Union[Global[List[OspfMatchRoute]], Variable, Default[None]]] = Field(
+        default=None, validation_alias="ospfMatchRoute", serialization_alias="ospfMatchRoute"
     )
 
 
@@ -444,6 +455,10 @@ class Ipv6RedistributeItem(BaseModel):
         serialization_alias="routePolicy",
         validation_alias="routePolicy",
         description="Configure policy to apply to prefixes received from BGP neighbor",
+    )
+    metric: Optional[Union[Variable, Global[int], Default[None]]] = Field(default=None)
+    ospf_match_route: Optional[Union[Global[List[OspfMatchRoute]], Variable, Default[None]]] = Field(
+        default=None, validation_alias="ospfMatchRoute", serialization_alias="ospfMatchRoute"
     )
 
 

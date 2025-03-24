@@ -115,6 +115,9 @@ class RedistributedRoute(BaseModel):
     route_policy: Optional[Union[Default[None], RefIdItem]] = Field(
         serialization_alias="routePolicy", validation_alias="routePolicy", default=None
     )
+    translate_rib_metric: Optional[Union[Variable, Global[bool], Default[bool]]] = Field(
+        default=None, validation_alias="translateRibMetric", serialization_alias="translateRibMetric"
+    )
 
 
 class RoutingOspfParcel(_ParcelBase):

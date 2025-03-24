@@ -4,7 +4,7 @@ from typing import List, Literal, Optional, Union
 
 from pydantic import AliasPath, BaseModel, ConfigDict, Field
 
-from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase, as_default
+from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase
 from catalystwan.models.common import (
     CarrierType,
     EncapType,
@@ -24,8 +24,109 @@ from catalystwan.models.configuration.feature_profile.common import (
     InterfaceDynamicIPv6Address,
     InterfaceStaticIPv4Address,
     MultiRegionFabric,
+    RefIdItem,
     StaticIPv6Address,
 )
+
+LoadBalance = Literal[
+    "flow",
+    "vlan",
+]
+
+LacpMode = Literal[
+    "active",
+    "passive",
+]
+
+
+LacpRate = Literal[
+    "fast",
+    "normal",
+]
+
+
+class PortChannelMemberLinksLacp(BaseModel):
+    lacp_mode: Union[Global[LacpMode], Default[Literal["active"]], Variable] = Field(
+        validation_alias="lacpMode", serialization_alias="lacpMode"
+    )
+    interface: Optional[RefIdItem] = Field(default=None)
+    lacp_port_priority: Optional[Union[Variable, Global[int], Default[None]]] = Field(
+        default=None, validation_alias="lacpPortPriority", serialization_alias="lacpPortPriority"
+    )
+    lacp_rate: Optional[Union[Variable, Global[LacpRate], Default[None]]] = Field(
+        default=None, validation_alias="lacpRate", serialization_alias="lacpRate"
+    )
+
+
+class LacpModeMainInterface(BaseModel):
+    port_channel_member_links: List[PortChannelMemberLinksLacp] = Field(
+        validation_alias="portChannelMemberLinks",
+        serialization_alias="portChannelMemberLinks",
+        description="Configure Port-Channel member links",
+    )
+    lacp_fast_switchover: Optional[Union[Global[bool], Default[bool], Variable]] = Field(
+        default=None, validation_alias="lacpFastSwitchover", serialization_alias="lacpFastSwitchover"
+    )
+    lacp_max_bundle: Optional[Union[Variable, Global[int], Default[None]]] = Field(
+        default=None, validation_alias="lacpMaxBundle", serialization_alias="lacpMaxBundle"
+    )
+    lacp_min_bundle: Optional[Union[Variable, Global[int], Default[None]]] = Field(
+        default=None, validation_alias="lacpMinBundle", serialization_alias="lacpMinBundle"
+    )
+    load_balance: Optional[Union[Variable, Global[LoadBalance], Default[None]]] = Field(
+        default=None, validation_alias="loadBalance", serialization_alias="loadBalance"
+    )
+    port_channel_qos_aggregate: Optional[Union[Global[bool], Default[bool], Variable]] = Field(
+        default=None, validation_alias="portChannelQosAggregate", serialization_alias="portChannelQosAggregate"
+    )
+
+
+class MainInterfaceLacp(BaseModel):
+    lacp_mode_main_interface: LacpModeMainInterface = Field(
+        validation_alias="lacpModeMainInterface", serialization_alias="lacpModeMainInterface"
+    )
+
+
+class PortChannelMemberLinks(BaseModel):
+    interface: Optional[RefIdItem] = Field(default=None)
+
+
+class StaticModeMainInterface(BaseModel):
+    port_channel_member_links: List[PortChannelMemberLinks] = Field(
+        validation_alias="portChannelMemberLinks",
+        serialization_alias="portChannelMemberLinks",
+        description="Configure Port-Channel member links",
+    )
+    load_balance: Optional[Union[Variable, Global[LoadBalance], Default[None]]] = Field(
+        default=None, validation_alias="loadBalance", serialization_alias="loadBalance"
+    )
+    port_channel_qos_aggregate: Optional[Union[Global[bool], Default[bool], Variable]] = Field(
+        default=None, validation_alias="portChannelQosAggregate", serialization_alias="portChannelQosAggregate"
+    )
+
+
+class MainInterfaceStatic(BaseModel):
+    static_mode_main_interface: StaticModeMainInterface = Field(
+        validation_alias="staticModeMainInterface", serialization_alias="staticModeMainInterface"
+    )
+
+
+MainInterface = Union[MainInterfaceLacp, MainInterfaceStatic]
+
+
+class PortChannelMain(BaseModel):
+    main_interface: MainInterface = Field(validation_alias="mainInterface", serialization_alias="mainInterface")
+
+
+class SubInterface(BaseModel):
+    wan: Optional[Default[bool]] = Field(default=None)
+
+
+class PortChannelSub(BaseModel):
+    sub_interface: SubInterface = Field(validation_alias="subInterface", serialization_alias="subInterface")
+
+
+PortChannel = Union[PortChannelMain, PortChannelSub]
 
 
 class Static(BaseModel):
@@ -214,13 +315,13 @@ class InterfaceEthernetParcel(_ParcelBase):
         default=None, validation_alias=AliasPath("data", "description")
     )
     nat: Union[Variable, Global[bool], Default[bool]] = Field(
-        default=as_default(False), validation_alias=AliasPath("data", "nat")
+        default=Global[bool](value=False), validation_alias=AliasPath("data", "nat")
     )
     shutdown: Union[Variable, Global[bool], Default[bool]] = Field(
-        default=as_default(True), validation_alias=AliasPath("data", "shutdown")
+        default=Global[bool](value=True), validation_alias=AliasPath("data", "shutdown")
     )
     tunnel_interface: Union[Global[bool], Default[bool]] = Field(
-        default=as_default(False), validation_alias=AliasPath("data", "tunnelInterface")
+        default=Global[bool](value=False), validation_alias=AliasPath("data", "tunnelInterface")
     )
     acl_qos: Optional[AclQos] = Field(default=None, validation_alias=AliasPath("data", "aclQos"), description="ACL/QOS")
     advanced: Optional[Advanced] = Field(
@@ -270,6 +371,13 @@ class InterfaceEthernetParcel(_ParcelBase):
     )
     tunnel: Optional[Tunnel] = Field(
         default=None, validation_alias=AliasPath("data", "tunnel"), description="Tunnel Interface Attributes"
+    )
+    port_channel: Optional[PortChannel] = Field(default=None, validation_alias=AliasPath("data", "portChannel"))
+    port_channel_interface: Optional[Union[Global[bool], Default[bool]]] = Field(
+        default=None, validation_alias=AliasPath("data", "portChannelInterface")
+    )
+    port_channel_member_interface: Optional[Union[Global[bool], Default[bool]]] = Field(
+        default=None, validation_alias=AliasPath("data", "portChannelMemberInterface")
     )
 
     def add_encapsulation(
