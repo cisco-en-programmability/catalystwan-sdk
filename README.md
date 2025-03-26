@@ -384,7 +384,7 @@ tenants = [
 create_task = api.create(tenants)
 create_task.wait_for_completed()
 # list all tenants
-tenants_data = api.get_all()
+tenants_data = api.get()
 # pick tenant from list by name
 tenant = tenants_data.filter(name="tenant1").single_or_default()
 # get selected tenant id
