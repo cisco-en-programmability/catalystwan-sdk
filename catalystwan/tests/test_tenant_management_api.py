@@ -76,7 +76,7 @@ class TenantManagementAPITest(unittest.TestCase):
         self.api.update(tenant_update_request=tenant_update_request)
         # Assert
         self.api._endpoints.update_tenant.assert_called_once_with(
-            tenant_id=tenant_update_request.tenant_id, tenant_update_request=tenant_update_request
+            tenant_id=tenant_update_request.tenant_id, payload=tenant_update_request
         )
 
     def test_update_vsmart_placement(self):
@@ -93,7 +93,7 @@ class TenantManagementAPITest(unittest.TestCase):
         self.api.update_vsmart_placement(tenant_id=tenant_id, src_vsmart_uuid=src_uuid, dst_vsmart_uuid=dst_uuid)
         # Assert
         self.api._endpoints.update_tenant_vsmart_placement.assert_called_once_with(
-            tenant_id=tenant_id, vsmart_placement_update_request=vsmart_placement_update
+            tenant_id=tenant_id, payload=vsmart_placement_update
         )
 
     def test_delete(self):
