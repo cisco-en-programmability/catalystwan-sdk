@@ -59,7 +59,7 @@ class TenantManagementAPI:
             Tenant: Updated tenant data
         """
         return self._endpoints.update_tenant(
-            tenant_id=tenant_update_request.tenant_id, tenant_update_request=tenant_update_request
+            tenant_id=tenant_update_request.tenant_id, payload=tenant_update_request
         )
 
     def delete(self, tenant_id_list: List[str], password: str) -> Task:
@@ -102,7 +102,7 @@ class TenantManagementAPI:
         """
         self._endpoints.update_tenant_vsmart_placement(
             tenant_id=tenant_id,
-            vsmart_placement_update_request=vSmartPlacementUpdateRequest(
+            payload=vSmartPlacementUpdateRequest(
                 src_vsmart_uuid=src_vsmart_uuid, dest_vsmart_uuid=dst_vsmart_uuid
             ),
         )
