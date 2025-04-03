@@ -86,7 +86,9 @@ class ApiGwAuth(AuthBase, AuthProtocol):
         except JSONDecodeError:
             raise CatalystwanException(f"Incorrect response type from ApiGateway login request, ({response.text})")
         except HTTPError as ex:
-            raise CatalystwanException(f"Problem with connection to ApiGateway login endpoint, ({ex})")
+            raise CatalystwanException(
+                f"Problem with connection to ApiGateway login endpoint, ({ex}). Response: ({response.text})"
+            )
         except KeyError as ex:
             raise CatalystwanException(f"Not found token in login response from ApiGateway, ({ex})")
         else:
