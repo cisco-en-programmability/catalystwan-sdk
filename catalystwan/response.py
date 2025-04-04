@@ -148,7 +148,7 @@ class ManagerResponse(Response, APIEndpointClientResponse):
     def __init__(self, response: Response):
         self.__dict__.update(response.__dict__)
         self.jsessionid_expired = self._detect_expired_jsessionid()
-        self.api_gw_unauthorized = self._detect_apigw_unauthorized()
+        self.api_gw_unauthorized = self._detect_expired_apigw_token()
         try:
             self.payload = JsonPayload(response.json())
         except JSONDecodeError:
@@ -173,9 +173,10 @@ class ManagerResponse(Response, APIEndpointClientResponse):
         jar.update(parse_cookies_to_dict(cookies_string))
         return jar
 
-    def _detect_apigw_unauthorized(self) -> bool:
-        """Determines if server sent unauthorized response"""
-        return self.status_code == 401 and self.json().get("message", "") == "failed to validate user"
+    def _detect_expired_apigw_token(self) -> bool:
+        return (
+            self.status_code == 401 and self.json().get("message", "") == "token has invalid claims: token is expired"
+        )
 
     def info(self, history: bool = False) -> str:
         """Returns human readable string containing Request-Response contents
