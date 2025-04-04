@@ -464,7 +464,7 @@ class ManagerSession(ManagerResponseAdapter, APIEndpointClient):
             if self.state == ManagerSessionState.LOGIN_IN_PROGRESS:
                 self.state = ManagerSessionState.AUTH_SYNC
             else:
-                self.logger.warning("Logging to API GW session. Reason: unauthorized detected in response headers")
+                self.logger.warning("Logging to API GW session. Reason: token is expired")
                 self.state = ManagerSessionState.LOGIN
             return self.request(method, url, *args, **_kwargs)
 
