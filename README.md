@@ -384,7 +384,7 @@ tenants = [
 create_task = api.create(tenants)
 create_task.wait_for_completed()
 # list all tenants
-tenants_data = api.get_all()
+tenants_data = api.get()
 # pick tenant from list by name
 tenant = tenants_data.filter(name="tenant1").single_or_default()
 # get selected tenant id
@@ -392,7 +392,7 @@ tenant_id = tenant.tenant_id
 # get vsession id of selected tenant
 vsessionid = api.vsession_id(tenant_id)
 # delete tenant by ids
-delete_task = api.delete([tenant_id])
+delete_task = api.delete([tenant_id], password="Pr0v1d3Rp4$s")
 delete_task.wait_for_completed()
 # others
 api.get_hosting_capacity_on_vsmarts()
