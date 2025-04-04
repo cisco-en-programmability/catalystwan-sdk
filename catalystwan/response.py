@@ -23,6 +23,7 @@ from catalystwan.utils.creation_tools import create_dataclass
 T = TypeVar("T")
 PRINTABLE_CONTENT = re.compile(r"(text\/.+)|(application\/(json|html|xhtml|xml|x-www-form-urlencoded))", re.IGNORECASE)
 SENSITIVE_URL_PATHS = ["/dataservice/settings/configuration/smartaccountcredentials"]
+APIGW_EXPIRED_TOKEN_MESSAGE = "token has invalid claims: token is expired"
 
 
 def response_debug(response: Optional[Response], request: Union[Request, PreparedRequest, None]) -> str:
@@ -174,9 +175,7 @@ class ManagerResponse(Response, APIEndpointClientResponse):
         return jar
 
     def _detect_expired_apigw_token(self) -> bool:
-        return (
-            self.status_code == 401 and self.json().get("message", "") == "token has invalid claims: token is expired"
-        )
+        return self.status_code == 401 and self.json().get("message", "") == APIGW_EXPIRED_TOKEN_MESSAGE
 
     def info(self, history: bool = False) -> str:
         """Returns human readable string containing Request-Response contents
