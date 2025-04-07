@@ -24,7 +24,7 @@ class ApiGwLogin(BaseModel):
     username: Optional[str] = None
     session: Optional[str] = None
     tenant_user: Optional[bool] = None
-    token_duration: PositiveInt = Field(default=10, description="in minutes")
+    token_duration: PositiveInt = Field(default=60 * 30, description="in seconds")
 
 
 class ApiGwAuth(AuthBase, AuthProtocol):
