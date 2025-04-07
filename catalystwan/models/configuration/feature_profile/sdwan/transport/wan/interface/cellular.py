@@ -15,6 +15,13 @@ from catalystwan.models.configuration.feature_profile.common import (
     MultiRegionFabric,
 )
 
+CellularTLOCColor = Literal[
+    TLOCColor,
+    "metro ethernet",  # workaround for mistyped schema <20.14
+    "biz internet",  # workaround for mistyped schema <20.14
+    "public internet",  # workaround for mistyped schema <20.14
+]
+
 
 class Tunnel(BaseModel):
     model_config = ConfigDict(
@@ -27,7 +34,7 @@ class Tunnel(BaseModel):
     clear_dont_fragment: Optional[Union[Default[bool], Global[bool], Variable]] = Field(
         default=None, validation_alias="clearDontFragment", serialization_alias="clearDontFragment"
     )
-    color: Optional[Union[Default[TLOCColor], Global[TLOCColor], Variable]] = Field(default=None)
+    color: Optional[Union[Default[CellularTLOCColor], Global[CellularTLOCColor], Variable]] = Field(default=None)
     exclude_controller_group_list: Optional[Union[Global[List[int]], Default[None], Variable]] = Field(
         default=None, validation_alias="excludeControllerGroupList", serialization_alias="excludeControllerGroupList"
     )
