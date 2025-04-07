@@ -325,9 +325,6 @@ Protocol = Literal["tcp", "udp"]
 TLOCColor = Literal[
     "default",
     "mpls",
-    "metro ethernet",
-    "biz internet",
-    "public internet",
     "metro-ethernet",
     "biz-internet",
     "public-internet",
