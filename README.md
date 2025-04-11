@@ -478,10 +478,10 @@ from catalystwan.api.templates.device_template.device_template import DeviceTemp
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 # Define vManage connection details
-url = "1.1.1.1"
+url = "localhost"
 username = "username"
 password = "password"
-port = 1111
+port = 443
 
 
 def save_csv_template(response: dict, template_name: str) -> None:
