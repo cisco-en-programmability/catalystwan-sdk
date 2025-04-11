@@ -468,24 +468,20 @@ migrate_task.wait_for_completed()
 import os
 import json
 import logging
-import urllib3
 import csv
 from typing import List
 from catalystwan.api.template_api import TemplatesAPI
 from catalystwan.session import create_manager_session
 from catalystwan.api.templates.device_template.device_template import DeviceTemplate
 
-# Disable warnings for unverified HTTPS requests
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 # Define vManage connection details
-url = "172.22.219.97"
-username = "admin"
-password = "Cisco#123@Viptela"
-port = 10100
+url = "1.1.1.1"
+username = "username"
+password = "password"
+port = 1111
 
 
 def save_csv_template(response: dict, template_name: str) -> None:
