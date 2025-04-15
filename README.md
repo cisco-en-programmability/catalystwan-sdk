@@ -461,6 +461,98 @@ migrate_task.wait_for_completed()
 ```
 </details>
 
+<details>
+    <summary> <b>Export Templates to CSV</b> <i>(click to expand)</i></summary>
+
+```python
+import os
+import json
+import logging
+import csv
+from typing import List
+from catalystwan.api.template_api import TemplatesAPI
+from catalystwan.session import create_manager_session
+from catalystwan.api.templates.device_template.device_template import DeviceTemplate
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+
+# Define vManage connection details
+url = "localhost"
+username = "username"
+password = "password"
+port = 443
+
+
+def save_csv_template(response: dict, template_name: str) -> None:
+    """Save the response data to a CSV file."""
+    try:
+        columns = [col["property"] for col in response.get("header", {}).get("columns", [])]
+        data = response.get("data", [])
+        if not columns or not data:
+            logging.warning(f"No data found for template '{template_name}'. Skipping CSV creation.")
+
+        csv_file = f"{template_name}.csv"
+        with open(csv_file, mode="w", newline="") as file:
+            writer = csv.DictWriter(file, fieldnames=columns)
+            writer.writeheader()
+            for row in data:
+                writer.writerow(row)
+        logging.info(f"CSV file '{csv_file}' has been created.")
+    except Exception as e:
+        logging.error(f"Failed to save CSV for template '{template_name}': {e}")
+
+
+def get_non_default_device_templates(session) -> List[DeviceTemplate]:
+    """Retrieve all non-default device templates."""
+    try:
+        device_templates = session.api.templates.get(DeviceTemplate).filter(factory_default=False)
+        logging.info(f"Retrieved {len(device_templates)} non-default device templates.")
+        return device_templates
+    except Exception as e:
+        logging.error(f"Failed to retrieve device templates: {e}")
+        return []
+
+
+def get_device_ids_attached(session, template: DeviceTemplate) -> bool:
+    """Retrieve device IDs attached to a template and save the configuration as a CSV."""
+    try:
+        # Fetch attached devices
+        response = session.get(f"dataservice/template/device/config/attached/{template.id}").json()
+        device_ids = [device["uuid"] for device in response.get("data", []) if device.get("uuid")]
+        # Prepare payload
+        payload = {
+            "deviceIds": device_ids,
+            "templateId": template.id,
+            "isEdited": False,
+            "isMasterEdited": False,
+        }
+
+        # Send POST request
+        response = session.post("dataservice/template/device/config/input/", json=payload)
+        response.raise_for_status()  # Raise an exception for HTTP errors
+
+        # Save the response as a CSV
+        save_csv_template(response.json(), template.name)
+        return True
+    except Exception as e:
+        logging.error(f"Error occurred while processing template '{template.name}': {e}")
+        return False
+
+
+def main():
+    """Main function to retrieve and process device templates."""
+    with create_manager_session(url=url, username=username, password=password, port=port) as session:
+        device_templates = get_non_default_device_templates(session)
+        for template in device_templates:
+            get_device_ids_attached(session, template)
+
+
+if __name__ == "__main__":
+    main()
+```
+The script will generate CSV files for each non-default device template in the current directory.
+</details>
 
 ### Note:
 To remove `InsecureRequestWarning`, you can include in your scripts (warning is suppressed when `catalystwan_devel` environment variable is set):
