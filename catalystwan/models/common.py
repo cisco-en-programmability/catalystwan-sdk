@@ -211,6 +211,36 @@ SpaceSeparatedIPv6 = Annotated[
     Field(min_length=1),
 ]
 
+Ipv4PrefixLen = Annotated[
+    int,
+    Field(ge=0, le=32),
+]
+
+Ipv4LePrefixRangeLen = Annotated[
+    int,
+    Field(ge=1, le=32),
+]
+
+Ipv4GePrefixRangeLen = Annotated[
+    int,
+    Field(ge=1, le=32),
+]
+
+Ipv6PrefixLen = Annotated[
+    int,
+    Field(ge=0, le=128),
+]
+
+Ipv6LePrefixRangeLen = Annotated[
+    int,
+    Field(ge=1, le=128),
+]
+
+Ipv6GePrefixRangeLen = Annotated[
+    int,
+    Field(ge=1, le=128),
+]
+
 
 def int_range_str_validator(value: Union[str, int, IntRange], ascending: bool = True) -> IntRange:
     """
