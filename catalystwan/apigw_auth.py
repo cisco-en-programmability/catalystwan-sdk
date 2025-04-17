@@ -41,6 +41,7 @@ class ApiGwAuth(AuthBase, AuthProtocol):
         self.logger = logger or logging.getLogger(__name__)
         self.verify = verify
         self.session_count: int = 0
+        self.request_timeout: int = 10
         self.lock: RLock = RLock()
 
     def __str__(self) -> str:
@@ -82,14 +83,18 @@ class ApiGwAuth(AuthBase, AuthProtocol):
 
     @staticmethod
     def get_token(
-        base_url: str, apigw_login: ApiGwLogin, logger: Optional[logging.Logger] = None, verify: bool = False
+        base_url: str,
+        apigw_login: ApiGwLogin,
+        logger: Optional[logging.Logger] = None,
+        verify: bool = False,
+        timeout: int = 10,
     ) -> str:
         try:
             response = post(
                 url=f"{base_url}/apigw/login",
                 verify=verify,
                 json=apigw_login.model_dump(exclude_none=True),
-                timeout=10,
+                timeout=timeout,
             )
             if logger is not None:
                 logger.debug(auth_response_debug(response))
