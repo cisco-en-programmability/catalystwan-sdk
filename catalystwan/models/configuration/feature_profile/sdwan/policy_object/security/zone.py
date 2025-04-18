@@ -2,9 +2,9 @@
 
 from typing import List, Literal, Optional, Union
 
-from pydantic import AliasPath, ConfigDict, Field, field_validator, model_validator
+from pydantic import AliasPath, ConfigDict, Field, model_validator
 
-from catalystwan.api.configuration_groups.parcel import Global, _ParcelBase, _ParcelEntry, as_global
+from catalystwan.api.configuration_groups.parcel import Global, _ParcelBase, _ParcelEntry
 from catalystwan.models.common import InterfaceStr, check_fields_exclusive
 
 
