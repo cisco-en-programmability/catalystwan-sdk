@@ -1,6 +1,6 @@
 # Copyright 2024 Cisco Systems, Inc. and its affiliates
 
-from typing import List, Literal, Optional
+from typing import List, Literal, Optional, Union
 
 from pydantic import AliasPath, ConfigDict, Field, field_validator, model_validator
 
@@ -9,14 +9,8 @@ from catalystwan.models.common import InterfaceStr, check_fields_exclusive
 
 
 class SecurityZoneListEntry(_ParcelEntry):
-    vpn: Optional[Global[str]] = Field(default=None, description="0-65530 single number")
-    interface: Optional[Global[InterfaceStr]] = None
-
-    @field_validator("vpn")
-    @classmethod
-    def check_vpn_range(cls, vpn: Global[str]):
-        assert 0 <= int(vpn.value) <= 65530
-        return vpn
+    vpn: Optional[Global[str]] = Field(default=None)
+    interface: Optional[Global[InterfaceStr]] = Field(default=None)
 
     @model_validator(mode="after")
     def check_vpn_xor_interface(self):
@@ -36,9 +30,9 @@ class SecurityZoneListParcel(_ParcelBase):
             )
         )
 
-    def add_vpn(self, vpn: str):
+    def add_vpn(self, vpn: Union[str, int]):
         self.entries.append(
             SecurityZoneListEntry(
-                vpn=as_global(vpn),
+                vpn=Global[str](value=str(vpn)),
             )
         )
