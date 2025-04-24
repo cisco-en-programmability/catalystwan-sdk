@@ -65,14 +65,14 @@ CableLengthType = Literal[
 ]
 
 
-Value = Literal[
+ShortCableLengthValue = Literal[
     "-15",
     "-22.5",
     "-7.5",
     "0",
 ]
 
-CableLengthValue = Literal[
+LongCableLengthValue = Literal[
     "0",
     "110",
     "220",
@@ -81,6 +81,8 @@ CableLengthValue = Literal[
     "550",
     "660",
 ]
+
+CableLengthValue = Literal[ShortCableLengthValue, LongCableLengthValue]
 
 
 LineTermination = Literal[
