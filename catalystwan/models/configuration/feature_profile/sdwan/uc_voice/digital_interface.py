@@ -316,6 +316,8 @@ def validate_basic_settings_values(basic_settings: List[BasicSettings], check_fo
                     f"For {template_type} configuration, missing value for '{key}'. "
                     f"Expected one of: {check_for[key]}."
                 )
+            if attribute.option_type == "variable":
+                continue
             current_value = attribute.value
             if current_value not in values:
                 raise ValueError(

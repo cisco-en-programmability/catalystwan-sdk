@@ -377,17 +377,7 @@ TLOCColor = Literal[
     "private6",
 ]
 
-MpVoiceCodec = Literal[
-    "G711aLaw",
-    "G711uLaw",
-    "G722",
-    "G729r8",
-    "ilbc",
-    "g711ulaw",
-    "g711alaw",
-    "g772",
-    "g729r8",
-]
+MpVoiceCodec = Literal["g711ulaw", "g711alaw", "g729r8", "g729br8", "g722-64", "clear-channel", "isac", "ilbc"]
 
 FaxProtocols = Literal[
     "Fax Pass-through G711alaw No ECM",
@@ -433,20 +423,22 @@ FaxFallBackProtocols = Literal[
 MpDtmf = Literal[
     "inband",
     "rtp-nte",
-    "rtp-nte sip-kpml",
-    "rtp-nte sip-kpml sip-notify",
-    "rtp-nte sip-notify",
-    "rtp-nte sip-notify sip-kpml",
-    "sip-kpml",
-    "sip-kpml rtp-nte",
-    "sip-kpml rtp-nte sip-notify",
-    "sip-kpml sip-notify",
-    "sip-kpml sip-notify rtp-nte",
     "sip-notify",
-    "sip-notify rtp-nte",
-    "sip-notify rtp-nte sip-kpml",
-    "sip-notify sip-kpml",
-    "sip-notify sip-kpml rtp-nte",
+    "sip-kpml",
+]
+
+
+def str_as_mp_dmtf_list(val: Union[str, Sequence[MpDtmf]]) -> Sequence[MpDtmf]:
+    if isinstance(val, str):
+        return [cast(MpDtmf, dtmf) for dtmf in val.split()]
+    return val
+
+
+SpaceSeparatedMpDtmfList = Annotated[
+    List[MpDtmf],
+    PlainSerializer(lambda x: " ".join(map(str, x)), return_type=MpDtmf, when_used="json-unless-none"),
+    BeforeValidator(str_as_mp_dmtf_list),
+    Field(min_length=1),
 ]
 
 HuntSchemeMethod = Literal[
