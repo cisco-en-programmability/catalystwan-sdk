@@ -25,10 +25,10 @@ from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.digital_int
 from catalystwan.models.configuration.feature_profile.sdwan.uc_voice.digital_interface import (
     BasicSettings,
     CableLengthType,
+    CableLengthValue,
     DigitalInterfaceParcel,
     Framing,
     LineCode,
-    LongCableLengthValue,
     ModuleLocation,
     SwitchType,
     VoiceInterfaceTemplates,
@@ -162,7 +162,7 @@ class TestUcVoiceFeatureProfileBuilder(TestCaseBase):
                     network_side=as_default(False),
                     port_range=as_global("0-0"),
                     switch_type=as_default("primary-ni", SwitchType),
-                    cable_length=as_default("0", LongCableLengthValue),
+                    cable_length=as_default("0", CableLengthValue),
                     cable_length_type=as_default("long", CableLengthType),
                     timeslots=as_global("1-24"),
                 )
