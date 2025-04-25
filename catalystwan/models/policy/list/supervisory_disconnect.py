@@ -5,7 +5,7 @@ from typing import List, Literal, Union
 from pydantic import BaseModel, ConfigDict, Field
 from typing_extensions import Annotated
 
-from catalystwan.models.common import IntStr, SpaceSeparatedNonNegativeIntList
+from catalystwan.models.common import IntStr, SpaceSeparatedCustomCadenceRanges
 from catalystwan.models.policy.policy_list import PolicyListBase, PolicyListId, PolicyListInfo
 
 
@@ -36,7 +36,7 @@ class CustomModeEntry(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
     mode: Literal["custom_mode"] = "custom_mode"
     dualtone_type: str = Field(validation_alias="dualtoneType", serialization_alias="dualtoneType")
-    cadence: SpaceSeparatedNonNegativeIntList
+    cadence: SpaceSeparatedCustomCadenceRanges
     dualtone_frequency1: IntStr = Field(
         ge=300, le=3600, validation_alias="dualtoneFrequency1", serialization_alias="dualtoneFrequency1"
     )

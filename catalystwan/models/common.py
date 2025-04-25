@@ -183,6 +183,31 @@ IntStr = Annotated[
 
 IntRange = Tuple[int, Optional[int]]
 
+DualToneCadenceInterval = Annotated[int, Field(ge=50, le=10_000)]
+DualToneCadenceStartStop = Tuple[DualToneCadenceInterval, DualToneCadenceInterval]
+
+
+def str_as_cadence_pairs(val: Union[str, Sequence[DualToneCadenceStartStop]]) -> Sequence[DualToneCadenceStartStop]:
+    if isinstance(val, str):
+        tab = val.split()
+        val = list()
+        assert len(tab) % 2 == 0, "cadence contain on/off interval pairs, odd number of entries detected"
+        for start, stop in zip(tab, tab[1:]):
+            val.append((int(start), int(stop)))
+    return val
+
+
+def tuple_to_str(val: Tuple[Any, ...]) -> str:
+    return " ".join(map(str, val))
+
+
+SpaceSeparatedCustomCadenceRanges = Annotated[
+    List[DualToneCadenceStartStop],
+    PlainSerializer(lambda x: " ".join(map(tuple_to_str, x)), return_type=str, when_used="json-unless-none"),
+    BeforeValidator(str_as_cadence_pairs),
+    Field(min_length=1),
+]
+
 SpaceSeparatedUUIDList = Annotated[
     List[UUID],
     PlainSerializer(lambda x: " ".join(map(str, x)), return_type=str, when_used="json-unless-none"),

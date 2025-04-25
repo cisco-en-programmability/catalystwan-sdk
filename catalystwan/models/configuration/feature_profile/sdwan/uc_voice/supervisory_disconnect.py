@@ -4,6 +4,7 @@ from typing import List, Literal, Optional, Union
 from pydantic import AliasPath, BaseModel, ConfigDict, Field
 
 from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase
+from catalystwan.models.common import SpaceSeparatedCustomCadenceRanges
 
 DualTone = Literal[
     "Busy",
@@ -17,7 +18,7 @@ DualTone = Literal[
 
 class SupervisoryCustomCPTone(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
-    cadence: Union[Variable, Global[str]] = Field()
+    cadence: Union[Variable, Global[SpaceSeparatedCustomCadenceRanges]] = Field()
     dual_tone: Union[Variable, Global[DualTone]] = Field(validation_alias="dualTone", serialization_alias="dualTone")
     dualtone_frequency_in: Union[Variable, Global[int]] = Field(
         validation_alias="dualtoneFrequencyIn", serialization_alias="dualtoneFrequencyIn"
