@@ -183,6 +183,31 @@ IntStr = Annotated[
 
 IntRange = Tuple[int, Optional[int]]
 
+DualToneCadenceInterval = Annotated[int, Field(ge=50, le=10_000)]
+DualToneCadenceStartStop = Tuple[DualToneCadenceInterval, DualToneCadenceInterval]
+
+
+def str_as_cadence_pairs(val: Union[str, Sequence[DualToneCadenceStartStop]]) -> Sequence[DualToneCadenceStartStop]:
+    if isinstance(val, str):
+        tab = val.split()
+        val = list()
+        assert len(tab) % 2 == 0, "cadence contain on/off interval pairs, odd number of entries detected"
+        for start, stop in zip(tab, tab[1:]):
+            val.append((int(start), int(stop)))
+    return val
+
+
+def tuple_to_str(val: Tuple[Any, ...]) -> str:
+    return " ".join(map(str, val))
+
+
+SpaceSeparatedCustomCadenceRanges = Annotated[
+    List[DualToneCadenceStartStop],
+    PlainSerializer(lambda x: " ".join(map(tuple_to_str, x)), return_type=str, when_used="json-unless-none"),
+    BeforeValidator(str_as_cadence_pairs),
+    Field(min_length=1),
+]
+
 SpaceSeparatedUUIDList = Annotated[
     List[UUID],
     PlainSerializer(lambda x: " ".join(map(str, x)), return_type=str, when_used="json-unless-none"),
@@ -209,6 +234,36 @@ SpaceSeparatedIPv6 = Annotated[
     PlainSerializer(lambda x: " ".join(map(str, x)), return_type=str, when_used="json-unless-none"),
     BeforeValidator(str_as_ipv6_list),
     Field(min_length=1),
+]
+
+Ipv4PrefixLen = Annotated[
+    int,
+    Field(ge=0, le=32),
+]
+
+Ipv4LePrefixRangeLen = Annotated[
+    int,
+    Field(ge=1, le=32),
+]
+
+Ipv4GePrefixRangeLen = Annotated[
+    int,
+    Field(ge=1, le=32),
+]
+
+Ipv6PrefixLen = Annotated[
+    int,
+    Field(ge=0, le=128),
+]
+
+Ipv6LePrefixRangeLen = Annotated[
+    int,
+    Field(ge=1, le=128),
+]
+
+Ipv6GePrefixRangeLen = Annotated[
+    int,
+    Field(ge=1, le=128),
 ]
 
 
@@ -347,17 +402,7 @@ TLOCColor = Literal[
     "private6",
 ]
 
-MpVoiceCodec = Literal[
-    "G711aLaw",
-    "G711uLaw",
-    "G722",
-    "G729r8",
-    "ilbc",
-    "g711ulaw",
-    "g711alaw",
-    "g772",
-    "g729r8",
-]
+MpVoiceCodec = Literal["g711ulaw", "g711alaw", "g729r8", "g729br8", "g722-64", "clear-channel", "isac", "ilbc"]
 
 FaxProtocols = Literal[
     "Fax Pass-through G711alaw No ECM",
@@ -403,20 +448,22 @@ FaxFallBackProtocols = Literal[
 MpDtmf = Literal[
     "inband",
     "rtp-nte",
-    "rtp-nte sip-kpml",
-    "rtp-nte sip-kpml sip-notify",
-    "rtp-nte sip-notify",
-    "rtp-nte sip-notify sip-kpml",
-    "sip-kpml",
-    "sip-kpml rtp-nte",
-    "sip-kpml rtp-nte sip-notify",
-    "sip-kpml sip-notify",
-    "sip-kpml sip-notify rtp-nte",
     "sip-notify",
-    "sip-notify rtp-nte",
-    "sip-notify rtp-nte sip-kpml",
-    "sip-notify sip-kpml",
-    "sip-notify sip-kpml rtp-nte",
+    "sip-kpml",
+]
+
+
+def str_as_mp_dmtf_list(val: Union[str, Sequence[MpDtmf]]) -> Sequence[MpDtmf]:
+    if isinstance(val, str):
+        return [cast(MpDtmf, dtmf) for dtmf in val.split()]
+    return val
+
+
+SpaceSeparatedMpDtmfList = Annotated[
+    List[MpDtmf],
+    PlainSerializer(lambda x: " ".join(map(str, x)), return_type=MpDtmf, when_used="json-unless-none"),
+    BeforeValidator(str_as_mp_dmtf_list),
+    Field(min_length=1),
 ]
 
 HuntSchemeMethod = Literal[

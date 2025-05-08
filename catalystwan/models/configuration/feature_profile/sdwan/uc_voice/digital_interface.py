@@ -65,14 +65,14 @@ CableLengthType = Literal[
 ]
 
 
-Value = Literal[
+ShortCableLengthValue = Literal[
     "-15",
     "-22.5",
     "-7.5",
     "0",
 ]
 
-CableLengthValue = Literal[
+LongCableLengthValue = Literal[
     "0",
     "110",
     "220",
@@ -81,6 +81,8 @@ CableLengthValue = Literal[
     "550",
     "660",
 ]
+
+CableLengthValue = Literal[ShortCableLengthValue, LongCableLengthValue]
 
 
 LineTermination = Literal[
@@ -314,6 +316,8 @@ def validate_basic_settings_values(basic_settings: List[BasicSettings], check_fo
                     f"For {template_type} configuration, missing value for '{key}'. "
                     f"Expected one of: {check_for[key]}."
                 )
+            if attribute.option_type == "variable":
+                continue
             current_value = attribute.value
             if current_value not in values:
                 raise ValueError(
