@@ -21,10 +21,17 @@ jobs:
         uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Set Up Poetry
+      - name: Install Poetry manually for Python 3.8
+        if: matrix.python-version == '3.8'
+        run: |
+          python -m pip install --upgrade "pip<23" "setuptools<60" "virtualenv<20.25" "installer<0.7"
+          pip install poetry==1.8.5
+
+      - name: Set Up Poetry (abatilo) for >= 3.9
+        if: matrix.python-version != '3.8'
         uses: abatilo/actions-poetry@e78f54a89cb052fff327414dd9ff010b5d2b4dbd # v3.0.1
         with:
-          poetry-version: 1.3.1
+          poetry-version: 2.1.3
       - name: Install dependencies
         run: poetry install --sync -v
       - name: Run Tests
