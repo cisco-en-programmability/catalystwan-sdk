@@ -50,6 +50,9 @@ class SwitchportInterface(BaseModel):
     control_direction: Optional[Union[Global[ControlDirection], Default[None], Variable]] = Field(
         default=None, validation_alias="controlDirection", serialization_alias="controlDirection"
     )
+    enable_dot1x: Optional[Union[Global[bool], Default[bool]]] = Field(
+        default=None, validation_alias="enableDot1x", serialization_alias="enableDot1x"
+    )
     critical_vlan: Optional[Union[Global[int], Default[None], Variable]] = Field(
         default=None, validation_alias="criticalVlan", serialization_alias="criticalVlan"
     )
