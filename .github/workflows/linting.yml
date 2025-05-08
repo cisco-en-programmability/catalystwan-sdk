@@ -24,7 +24,7 @@ jobs:
       - name: Set Up Poetry
         uses: abatilo/actions-poetry@e78f54a89cb052fff327414dd9ff010b5d2b4dbd # v3.0.1
         with:
-          poetry-version: 1.3.1
+          poetry-version: 2.1.3
       - name: Install dependencies
         run: |
           poetry install --sync -v
