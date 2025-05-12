@@ -12,7 +12,7 @@ DEFAULT_USER_PRIVILEGE = "15"
 
 class PubkeyChainItem(BaseModel):
     model_config = ConfigDict(
-        extra="forbid",
+        extra="forbid", populate_by_name=True
     )
     key_string: Global[str] = Field(
         validation_alias="keyString",
