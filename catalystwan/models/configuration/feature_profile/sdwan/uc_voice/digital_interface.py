@@ -35,7 +35,8 @@ ClockType = Literal[
 
 
 class Interface(BaseModel):
-    port_id: Union[Variable, Global[int], Default[None]] = Field(
+    model_config = ConfigDict(populate_by_name=True)
+    port_id: Global[int] = Field(
         validation_alias="portId", serialization_alias="portId"
     )
     clock_type: Optional[Union[Variable, Default[None], Global[ClockType]]] = Field(
@@ -203,7 +204,7 @@ class IsdnMap(BaseModel):
 class Shutdown(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
     controller: Union[Variable, Default[bool], Global[bool]] = Field()
-    port_id: Union[Variable, Global[int], Default[None]] = Field(
+    port_id: Global[int] = Field(
         validation_alias="portId", serialization_alias="portId"
     )
     serial: Union[Variable, Default[bool], Global[bool]] = Field()
