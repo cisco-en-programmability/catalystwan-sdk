@@ -37,6 +37,7 @@ class ApiGwAuth(AuthBase, AuthProtocol):
     def __init__(self, login: ApiGwLogin, logger: Optional[logging.Logger] = None, verify: bool = False):
         self.login = login
         self.token = ""
+        self.org_registered: bool = False
         self.logger = logger or logging.getLogger(__name__)
         self.verify = verify
         self.session_count: int = 0
@@ -53,14 +54,25 @@ class ApiGwAuth(AuthBase, AuthProtocol):
         return request
 
     def handle_auth(self, request: PreparedRequest) -> None:
+        if not self.org_registered:
+            self.register(request)
         if self.token == "":
             self.authenticate(request)
 
     def authenticate(self, request: PreparedRequest):
+        base_url = self.get_base_url(request)
+        self.token = self.get_token(base_url, self.login, self.logger, self.verify, self.request_timeout)
+
+    def register(self, request: PreparedRequest):
+        base_url = self.get_base_url(request)
+        self.register_org(base_url, self.login, self.logger, self.verify, self.request_timeout)
+        self.org_registered = True
+
+    def get_base_url(self, request: PreparedRequest):
         assert request.url is not None
         url = urlparse(request.url)
         base_url = f"{url.scheme}://{url.netloc}"  # noqa: E231
-        self.token = self.get_token(base_url, self.login, self.logger, self.verify, self.request_timeout)
+        return base_url
 
     def build_digest_header(self, request: PreparedRequest) -> None:
         header = {
@@ -100,6 +112,35 @@ class ApiGwAuth(AuthBase, AuthProtocol):
             if not token or not isinstance(token, str):
                 raise CatalystwanException("Failed to get bearer token")
         return token
+
+    @staticmethod
+    def register_org(
+        base_url: str,
+        apigw_login: ApiGwLogin,
+        logger: Optional[logging.Logger] = None,
+        verify: bool = False,
+        timeout: int = 10,
+    ) -> None:
+        try:
+            payload = apigw_login.model_dump(include={"client_id", "client_secret", "org_name"})
+            response = post(
+                url=f"{base_url}/apigw/organization/registration",
+                json=payload,
+                verify=verify,
+                timeout=timeout,
+            )
+            if logger is not None:
+                logger.debug(auth_response_debug(response))
+
+            response.raise_for_status()
+
+        except HTTPError as ex:
+            raise CatalystwanException(
+                f"Problem with connecting to API GW organization registration endpoint, ({ex}).\
+                  Response: ({response.text})"
+            )
+        except Exception as ex:
+            raise CatalystwanException(f"Org registration to API-GW failed: {ex}")
 
     def logout(self, client: APIEndpointClient) -> None:
         return None
