@@ -78,6 +78,7 @@ class ApiGwAuth(AuthBase, AuthProtocol):
         timeout: int = 10,
     ) -> str:
         try:
+            ApiGwAuth.register_org(base_url, apigw_login, logger, verify)
             response = post(
                 url=f"{base_url}/apigw/login",
                 verify=verify,
@@ -100,6 +101,38 @@ class ApiGwAuth(AuthBase, AuthProtocol):
             if not token or not isinstance(token, str):
                 raise CatalystwanException("Failed to get bearer token")
         return token
+
+    @staticmethod
+    def register_org(
+        base_url: str, apigw_login: ApiGwLogin, logger: Optional[logging.Logger] = None, verify: bool = False
+    ) -> None:
+        try:
+            payload = apigw_login.model_dump(include={"client_id", "client_secret", "org_name"})
+            headers = {"Content-Type": "application/json"}
+            if logger is not None:
+                logger.info(f"Org registration on API-GW. payload: {payload}")
+
+            response = post(
+                url=f"{base_url}/apigw/organization/registration",
+                json=payload,
+                headers=headers,
+                verify=verify,
+                timeout=10,
+            )
+            if response.status_code == 200:
+                if logger is not None:
+                    logger.info("Org successfully registered to API-GW.")
+            else:
+                raise CatalystwanException(f"Org registration to API-GW failed with status: {response.status_code}")
+        except HTTPError as ex:
+            raise CatalystwanException(
+                f"Problem with connecting to API GW organization registration endpoint, ({ex}).\
+                  Response: ({response.text})"
+            )
+        except Exception as ex:
+            if logger is not None:
+                logger.error("Org registration to API-GW failed " + str(ex))
+            raise CatalystwanException(f"Org registration to API-GW failed: {ex}")
 
     def logout(self, client: APIEndpointClient) -> None:
         return None
