@@ -123,8 +123,7 @@ class ApiGwAuth(AuthBase, AuthProtocol):
             if logger is not None:
                 logger.debug(auth_response_debug(response))
 
-            if response.status_code != 200:
-                raise CatalystwanException(f"Org registration to API-GW failed with status: {response.status_code}")
+            response.raise_for_status()
 
         except HTTPError as ex:
             raise CatalystwanException(
