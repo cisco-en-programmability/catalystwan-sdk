@@ -17,6 +17,7 @@ from catalystwan.models.configuration.feature_profile.sdwan.service import AnySe
 from catalystwan.models.configuration.feature_profile.sdwan.sig_security import AnySIGSecurityParcel
 from catalystwan.models.configuration.feature_profile.sdwan.system import AnySystemParcel
 from catalystwan.models.configuration.feature_profile.sdwan.topology import AnyTopologyParcel
+from catalystwan.models.configuration.feature_profile.sdwan.trackers import AnyTrackerParcel
 from catalystwan.models.configuration.feature_profile.sdwan.transport import AnyTransportParcel
 from catalystwan.models.configuration.feature_profile.sdwan.uc_voice import AnyUcVoiceParcel
 from catalystwan.models.configuration.network_hierarchy import AnyNetworkHierarchyParcel
@@ -108,6 +109,8 @@ ParcelType = Literal[
     "tloc",
     "tracker",
     "trackergroup",
+    "ipv6-tracker",
+    "ipv6-trackergroup",
     "traffic-policy",
     "trunk-group",
     "unified/advanced-inspection-profile",
@@ -144,6 +147,7 @@ AnyParcel = Annotated[
         AnyOtherParcel,
         AnyPolicyObjectParcel,
         AnyRoutingParcel,
+        AnyTrackerParcel,
         AnyServiceParcel,
         AnySIGSecurityParcel,
         AnySystemParcel,
