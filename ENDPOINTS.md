@@ -1,10 +1,6 @@
 **THIS FILE WAS AUTO-GENERATED DO NOT EDIT**
 
-<<<<<<< HEAD
-Generated for: catalystwan-0.40.2
-=======
-Generated for: catalystwan-0.40.2.dev3
->>>>>>> 202455d8 (dev: parametrized apigw auth request timeout (#67))
+Generated for: catalystwan-0.41.0
 
 All URIs are relative to */dataservice*
 HTTP request | Supported Versions | Method | Payload Type | Return Type | Tenancy Mode
