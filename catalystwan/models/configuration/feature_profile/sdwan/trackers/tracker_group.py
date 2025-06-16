@@ -56,7 +56,7 @@ class TrackerGroupIPv6(_ParcelBase):
         validation_alias=AliasPath("data", "combineBoolean")
     )
     tracker_group_name: Optional[Union[Variable, Global[str]]] = Field(
-        validation_alias=AliasPath("data", "trackerGroupName")
+        default=None, validation_alias=AliasPath("data", "trackerGroupName")
     )
     tracker_refs: List[TrackerRefs] = Field(
         validation_alias=AliasPath("data", "trackerRefs"), description="trackers ref list"
