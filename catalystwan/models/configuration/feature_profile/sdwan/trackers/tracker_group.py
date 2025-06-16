@@ -53,7 +53,7 @@ class TrackerGroupIPv6(_ParcelBase):
     )
     type_: Literal["ipv6-trackergroup"] = Field(default="ipv6-trackergroup", exclude=True, frozen=True)
     combine_boolean: Union[Global[CombineBoolean], Variable, Default[Literal["or"]]] = Field(
-        validation_alias=AliasPath("data", "combineBoolean")
+        default=Default[Literal["or"]](value="or"), validation_alias=AliasPath("data", "combineBoolean")
     )
     tracker_group_name: Optional[Union[Variable, Global[str]]] = Field(
         default=None, validation_alias=AliasPath("data", "trackerGroupName")
