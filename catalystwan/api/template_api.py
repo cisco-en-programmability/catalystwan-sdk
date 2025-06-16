@@ -380,6 +380,9 @@ class TemplatesAPI:
         if isinstance(template, DeviceTemplate):
             return self._edit_device_template(template)
 
+        if isinstance(template, CLITemplate):
+            return self._edit_cli_template(template, template_info)
+
         raise NotImplementedError()
 
     def _edit_device_template(self, template: DeviceTemplate):
@@ -396,6 +399,11 @@ class TemplatesAPI:
             payload = json.loads(template.generate_payload(self.session))
 
         response = self.session.put(f"/dataservice/template/feature/{data.id}", json=payload)
+        return response
+
+    def _edit_cli_template(self, template: CLITemplate, data: TemplateInformation) -> ManagerResponse:
+        response = self.session.put(f"/dataservice/template/device/{data.id}", json=template.generate_payload())
+
         return response
 
     @overload
