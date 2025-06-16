@@ -28,10 +28,10 @@ RUN_ID: str = str(uuid4())[:4]
 
 def load_config() -> dict:
     """Load the configuration from the environment variables"""
-    url = os.environ.get("VMANAGE_URL", "172.22.219.75")
-    port = os.environ.get("VMANAGE_PORT", "9912")
-    username = os.environ.get("VMANAGE_USERNAME", "admin")
-    password = os.environ.get("VMANAGE_PASSWORD", "Cisco#123@Viptela")
+    url = os.environ.get("VMANAGE_URL")
+    port = os.environ.get("VMANAGE_PORT")
+    username = os.environ.get("VMANAGE_USERNAME")
+    password = os.environ.get("VMANAGE_PASSWORD")
     if url is None or port is None or username is None or password is None:
         raise CatalystwanException("Missing environment variables")
     return dict(

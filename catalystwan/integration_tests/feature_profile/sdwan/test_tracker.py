@@ -20,6 +20,8 @@ class TestTransportFeatureProfileTracker(TestCaseBase):
         tracker = Tracker(
             parcel_name="TestTracker",
             parcel_description="Test Tracker Description",
+            tracker_name=Global[str](value="TestTracker"),
+            interval=Global[int](value=100),
             endpoint_api_url=Global[str](value="https://example.com/api"),
         )
 
@@ -31,12 +33,16 @@ class TestTransportFeatureProfileTracker(TestCaseBase):
         tracker1 = Tracker(
             parcel_name="TestTracker1",
             parcel_description="Test Tracker Description",
+            tracker_name=Global[str](value="TestTracker1"),
+            interval=Global[int](value=100),
             endpoint_api_url=Global[str](value="https://example.com/api"),
         )
 
         tracker2 = Tracker(
             parcel_name="TestTracker2",
             parcel_description="Test Tracker Description",
+            tracker_name=Global[str](value="TestTracker2"),
+            interval=Global[int](value=100),
             endpoint_api_url=Global[str](value="https://example.com/api"),
         )
 
@@ -45,9 +51,9 @@ class TestTransportFeatureProfileTracker(TestCaseBase):
         tracker_group = TrackerGroup(
             parcel_name="TestTrackerGroup",
             parcel_description="Test Tracker Group Description",
-            trackers=[
-                TrackerRefs(tracker_ref=RefIdItem(ref_id=Global[str](value=tracker1_uuid))),
-                TrackerRefs(tracker_ref=RefIdItem(ref_id=Global[str](value=tracker2_uuid))),
+            tracker_refs=[
+                TrackerRefs(tracker_ref=RefIdItem(ref_id=Global[str](value=str(tracker1_uuid)))),
+                TrackerRefs(tracker_ref=RefIdItem(ref_id=Global[str](value=str(tracker2_uuid)))),
             ],
         )
 
@@ -74,6 +80,8 @@ class TestServiceFeatureProfileModels(TestCaseBase):
         tracker = Tracker(
             parcel_name="TestTracker",
             parcel_description="Test Tracker Description",
+            tracker_name=Global[str](value="TestTracker"),
+            interval=Global[int](value=100),
             endpoint_api_url=Global[str](value="https://example.com/api"),
         )
 
@@ -85,12 +93,16 @@ class TestServiceFeatureProfileModels(TestCaseBase):
         tracker1 = Tracker(
             parcel_name="TestTracker1",
             parcel_description="Test Tracker Description",
+            tracker_name=Global[str](value="TestTracker1"),
+            interval=Global[int](value=100),
             endpoint_api_url=Global[str](value="https://example.com/api"),
         )
 
         tracker2 = Tracker(
             parcel_name="TestTracker2",
             parcel_description="Test Tracker Description",
+            tracker_name=Global[str](value="TestTracker2"),
+            interval=Global[int](value=100),
             endpoint_api_url=Global[str](value="https://example.com/api"),
         )
 
@@ -99,9 +111,9 @@ class TestServiceFeatureProfileModels(TestCaseBase):
         tracker_group = TrackerGroup(
             parcel_name="TestTrackerGroup",
             parcel_description="Test Tracker Group Description",
-            trackers=[
-                TrackerRefs(tracker_ref=RefIdItem(ref_id=Global[str](value=tracker1_uuid))),
-                TrackerRefs(tracker_ref=RefIdItem(ref_id=Global[str](value=tracker2_uuid))),
+            tracker_refs=[
+                TrackerRefs(tracker_ref=RefIdItem(ref_id=Global[str](value=str(tracker1_uuid)))),
+                TrackerRefs(tracker_ref=RefIdItem(ref_id=Global[str](value=str(tracker2_uuid)))),
             ],
         )
 

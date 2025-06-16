@@ -1,5 +1,6 @@
 # Copyright 2025 Cisco Systems, Inc. and its affiliates
 from typing import List, Literal, Optional, Union
+from uuid import UUID
 
 from pydantic import AliasPath, BaseModel, ConfigDict, Field
 
@@ -8,7 +9,13 @@ from catalystwan.models.configuration.feature_profile.common import RefIdItem
 
 
 class TrackerRefs(BaseModel):
-    tracker_ref: Optional[RefIdItem] = Field(default=None, validation_alias="trackerRef")
+    model_config = ConfigDict(
+        extra="forbid",
+        populate_by_name=True,
+    )
+    tracker_ref: Optional[RefIdItem] = Field(
+        default=None, validation_alias="trackerRef", serialization_alias="trackerRef"
+    )
 
 
 CombineBoolean = Literal[
@@ -24,14 +31,19 @@ class TrackerGroup(_ParcelBase):
     )
     type_: Literal["trackergroup"] = Field(default="trackergroup", exclude=True, frozen=True)
     combine_boolean: Union[Global[CombineBoolean], Variable, Default[Literal["or"]]] = Field(
-        validation_alias=AliasPath("data", "combineBoolean")
+        default=Default[Literal["or"]](value="or"), validation_alias=AliasPath("data", "combineBoolean")
     )
     tracker_group_name: Optional[Union[Variable, Global[str]]] = Field(
-        validation_alias=AliasPath("data", "trackerGroupName")
+        default=None, validation_alias=AliasPath("data", "trackerGroupName")
     )
     tracker_refs: List[TrackerRefs] = Field(
         validation_alias=AliasPath("data", "trackerRefs"), description="trackers ref list"
     )
+
+    def add_ref(self, ref: UUID) -> TrackerRefs:
+        tracker_refs = TrackerRefs(tracker_ref=RefIdItem.from_uuid(ref))
+        self.tracker_refs.append(tracker_refs)
+        return tracker_refs
 
 
 class TrackerGroupIPv6(_ParcelBase):

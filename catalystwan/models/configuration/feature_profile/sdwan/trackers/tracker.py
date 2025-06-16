@@ -30,7 +30,7 @@ class Tracker(_ParcelBase):
     type_: Literal["tracker"] = Field(default="tracker", exclude=True, frozen=True)
     tracker_name: Union[Variable, Global[str]] = Field(validation_alias=AliasPath("data", "trackerName"))
     tracker_type: Union[Default[Literal["endpoint"]], Variable, Global[Literal["endpoint"]]] = Field(
-        validation_alias=AliasPath("data", "trackerType")
+        default=Default[Literal["endpoint"]](value="endpoint"), validation_alias=AliasPath("data", "trackerType")
     )
     endpoint_api_url: Optional[Union[Variable, Global[str]]] = Field(
         default=None, validation_alias=AliasPath("data", "endpointApiUrl")

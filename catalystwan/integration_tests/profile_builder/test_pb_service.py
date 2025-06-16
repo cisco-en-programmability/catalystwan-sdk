@@ -12,6 +12,7 @@ from catalystwan.models.configuration.feature_profile.sdwan.service.dhcp_server 
 )
 from catalystwan.models.configuration.feature_profile.sdwan.service.lan.ethernet import InterfaceEthernetParcel
 from catalystwan.models.configuration.feature_profile.sdwan.service.lan.vpn import LanVpnParcel
+from catalystwan.models.configuration.feature_profile.sdwan.trackers import Tracker, TrackerGroup
 
 
 class TestServiceFeatureProfileBuilder(TestCaseBase):
@@ -69,6 +70,74 @@ class TestServiceFeatureProfileBuilder(TestCaseBase):
         # Act
         report = self.builder.build()
         # Assert
+        assert len(report.failed_parcels) == 0
+
+    def test_when_vpn_interfaces_and_attached_tracker_expect_success(self):
+        service_vpn_parcel = LanVpnParcel(
+            parcel_name="MinimumSpecifiedTransportVpnParcel",
+            description="Description",
+            vpn_id=as_global(50),
+        )
+        ethernet_parcel = InterfaceEthernetParcel(
+            parcel_name="TestEthernetParcel",
+            parcel_description="Test Ethernet Parcel",
+            interface_name=as_global("HundredGigE"),
+            ethernet_description=as_global("Test Ethernet Description"),
+            shutdown=as_variable("{{vpn1_gi3_lan_ip_192.168.X.1/24_}}"),
+        )
+        vpn_tag = self.builder.add_parcel_vpn(service_vpn_parcel)
+        ethernet_tag = self.builder.add_parcel_vpn_subparcel(vpn_tag, ethernet_parcel)
+        tracker = Tracker(
+            parcel_name="TestTracker1",
+            parcel_description="Test Tracker Description",
+            tracker_name=Global[str](value="TestTracker1"),
+            interval=Global[int](value=100),
+            endpoint_api_url=Global[str](value="https://example.com/api"),
+        )
+        self.builder.add_tracker(associate_tags=[ethernet_tag], parcel=tracker)
+        report = self.builder.build()
+
+        assert len(report.failed_parcels) == 0
+
+    def test_when_vpn_interfaces_and_attached_tracker_group_expect_success(self):
+        service_vpn_parcel = LanVpnParcel(
+            parcel_name="MinimumSpecifiedTransportVpnParcel",
+            description="Description",
+            vpn_id=as_global(50),
+        )
+        ethernet_parcel = InterfaceEthernetParcel(
+            parcel_name="TestEthernetParcel",
+            parcel_description="Test Ethernet Parcel",
+            interface_name=as_global("HundredGigE"),
+            ethernet_description=as_global("Test Ethernet Description"),
+            shutdown=as_variable("{{vpn1_gi3_lan_ip_192.168.X.1/24_}}"),
+        )
+        vpn_tag = self.builder.add_parcel_vpn(service_vpn_parcel)
+        ethernet_tag = self.builder.add_parcel_vpn_subparcel(vpn_tag, ethernet_parcel)
+        tracker1 = Tracker(
+            parcel_name="TestTracker1",
+            parcel_description="Test Tracker Description",
+            tracker_name=Global[str](value="TestTracker1"),
+            interval=Global[int](value=100),
+            endpoint_api_url=Global[str](value="https://example.com/api"),
+        )
+        tracker2 = Tracker(
+            parcel_name="TestTracker2",
+            parcel_description="Test Tracker Description",
+            tracker_name=Global[str](value="TestTracker2"),
+            interval=Global[int](value=100),
+            endpoint_api_url=Global[str](value="https://example.com/api"),
+        )
+        tracker_group = TrackerGroup(
+            parcel_name="TestTrackerGroup",
+            parcel_description="Test Tracker Group Description",
+            tracker_refs=[],
+        )
+        self.builder.add_tracker_group(
+            associate_tags=[ethernet_tag], group=tracker_group, trackers=[tracker1, tracker2]
+        )
+        report = self.builder.build()
+
         assert len(report.failed_parcels) == 0
 
     def tearDown(self) -> None:
