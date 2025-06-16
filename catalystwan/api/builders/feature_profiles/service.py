@@ -136,7 +136,7 @@ class ServiceFeatureProfileBuilder:
         """
 
         subparcel_tag = uuid4()
-        logger.debug(f"Adding vpn sub-parcel {parcel.parcel_name} with tag {vpn_tag}")
+        logger.debug(f"Adding vpn sub-parcel {parcel.parcel_name} with tag {subparcel_tag}")
         self._dependent_items_on_vpns[vpn_tag].append((subparcel_tag, parcel))
         return subparcel_tag
 
