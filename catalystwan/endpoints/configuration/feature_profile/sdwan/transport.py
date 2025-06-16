@@ -212,3 +212,20 @@ class TransportFeatureProfile(APIEndpoints):
         self, profile_id: UUID, vpn_id: UUID, parcel_type: str, payload: ParcelAssociationPayload
     ) -> ParcelCreationResponse:
         ...
+
+    # Tracker, TrackerGroup, IPv6Tracker, TrackerGroupIPv6
+    @versions(supported_versions=(">=20.9"), raises=False)
+    @post(
+        "/v1/feature-profile/sdwan/service/{profile_uuid}/wan/vpn/"
+        "{vpn_uuid}/{interface_parcel_type}/{interface_uuid}/{tracker_type}"
+    )
+    def associate_tracker_with_vpn_interface(
+        self,
+        profile_uuid: UUID,
+        vpn_uuid: UUID,
+        interface_parcel_type: str,
+        interface_uuid: UUID,
+        tracker_type: str,
+        payload: ParcelAssociationPayload,
+    ) -> ParcelCreationResponse:
+        ...
