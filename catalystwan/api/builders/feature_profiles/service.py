@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import logging
 from collections import defaultdict
-from typing import TYPE_CHECKING, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Dict, List, Optional, Set, Tuple, Union
 from uuid import UUID, uuid4
 
 from pydantic import Field
@@ -30,6 +30,7 @@ from catalystwan.models.configuration.feature_profile.sdwan.service import (
     LanVpnParcel,
 )
 from catalystwan.models.configuration.feature_profile.sdwan.service.multicast import MulticastParcel
+from catalystwan.models.configuration.feature_profile.sdwan.trackers import AnyTrackerParcel, Tracker, TrackerGroup
 
 if TYPE_CHECKING:
     from catalystwan.session import ManagerSession
@@ -61,9 +62,12 @@ class ServiceFeatureProfileBuilder:
         self._endpoints = ServiceFeatureProfile(session)
         self._independent_items: List[IndependedParcels] = []
         self._independent_items_vpns: Dict[UUID, LanVpnParcel] = {}
-        self._dependent_items_on_vpns: Dict[UUID, List[DependedVpnSubparcels]] = defaultdict(list)
+        self._dependent_items_on_vpns: Dict[UUID, List[Tuple[UUID, DependedVpnSubparcels]]] = defaultdict(list)
         self._dependent_routing_items_on_vpns: Dict[UUID, List[AnyRoutingParcel]] = defaultdict(list)
         self._interfaces_with_attached_dhcp_server: Dict[str, LanVpnDhcpServerParcel] = {}
+        self._trackers: List[Tuple[Set[UUID], AnyTrackerParcel]] = []
+        self._tracker_groups: List[Tuple[Set[UUID], TrackerGroup, List[Tracker]]] = []
+        self._interface_tag_to_existing_tracker: Dict[UUID, Tuple[UUID, str]] = {}
 
     def add_profile_name_and_description(self, feature_profile: FeatureProfileCreationPayload) -> None:
         """
@@ -119,7 +123,7 @@ class ServiceFeatureProfileBuilder:
         logger.debug(f"Adding routing parcel {parcel.parcel_name} to VPN {vpn_tag}")
         self._dependent_routing_items_on_vpns[vpn_tag].append(parcel)
 
-    def add_parcel_vpn_subparcel(self, vpn_tag: UUID, parcel: DependedVpnSubparcels) -> None:
+    def add_parcel_vpn_subparcel(self, vpn_tag: UUID, parcel: DependedVpnSubparcels) -> UUID:
         """
         Adds an subparcel parcel dependent on a VPN to the builder.
 
@@ -130,8 +134,11 @@ class ServiceFeatureProfileBuilder:
         Returns:
             None
         """
-        logger.debug(f"Adding subparcel parcel {parcel.parcel_name} to VPN {vpn_tag}")
-        self._dependent_items_on_vpns[vpn_tag].append(parcel)
+
+        subparcel_tag = uuid4()
+        logger.debug(f"Adding vpn sub-parcel {parcel.parcel_name} with tag {subparcel_tag}")
+        self._dependent_items_on_vpns[vpn_tag].append((subparcel_tag, parcel))
+        return subparcel_tag
 
     def add_parcel_dhcp_server(self, interface_parcel_name: str, parcel: LanVpnDhcpServerParcel) -> None:
         """
@@ -147,6 +154,22 @@ class ServiceFeatureProfileBuilder:
         logger.debug(f"Adding DHCP server parcel {parcel.parcel_name} to interface {interface_parcel_name}")
         self._interfaces_with_attached_dhcp_server[interface_parcel_name] = parcel
 
+    def add_tracker(self, associate_tags: Set[UUID], parcel: AnyTrackerParcel) -> None:
+        """
+        Adds a tracker parcel to the feature profile.
+
+        Args:
+            associate_tags (Set[UUID]): The UUIDs of the interfaces to which the tracker should be added.
+            parcel (AnyTrackerParcel): The tracker parcel to add.
+
+        Returns:
+            None
+        """
+        self._trackers.append((associate_tags, parcel))
+
+    def add_tracker_group(self, associate_tags: Set[UUID], group: TrackerGroup, trackers: List[Tracker]) -> None:
+        self._tracker_groups.append((associate_tags, group, trackers))
+
     def build(self) -> FeatureProfileBuildReport:
         """
         Builds the feature profile by creating parcels for independent items,
@@ -159,6 +182,28 @@ class ServiceFeatureProfileBuilder:
         self.build_report = FeatureProfileBuildReport(profile_uuid=profile_uuid, profile_name=self._profile.name)
         for parcel in self._independent_items:
             self._create_parcel(profile_uuid, parcel)
+
+        for tracker_group_tags, tracker_group, trackers in self._tracker_groups:
+            trackers_uuids: List[UUID] = []
+            for tracker_ in trackers:
+                tracker_uuid = self._create_parcel(profile_uuid, tracker_)
+                if tracker_uuid:
+                    trackers_uuids.append(tracker_uuid)
+
+            for tracker_uuid in trackers_uuids:
+                tracker_group.add_ref(tracker_uuid)
+
+            tracker_group_uuid = self._create_parcel(profile_uuid, tracker_group)
+            if tracker_group_uuid:
+                for tag in tracker_group_tags:
+                    self._interface_tag_to_existing_tracker[tag] = tracker_group_uuid, tracker_group._get_parcel_type()
+
+        for tracker_tags, tracker in self._trackers:
+            tracker_uuid = self._create_parcel(profile_uuid, tracker)
+            if tracker_uuid:
+                for tag in tracker_tags:
+                    self._interface_tag_to_existing_tracker[tag] = (tracker_uuid, tracker._get_parcel_type())
+
         for vpn_tag, vpn_parcel in self._independent_items_vpns.items():
             vpn_uuid = self._create_parcel(profile_uuid, vpn_parcel)
 
@@ -176,35 +221,41 @@ class ServiceFeatureProfileBuilder:
                         payload=ParcelAssociationPayload(parcel_id=routing_uuid),
                     )
 
-            for sub_parcel in self._dependent_items_on_vpns[vpn_tag]:
+            for subparcel_tag, sub_parcel in self._dependent_items_on_vpns[vpn_tag]:
                 if vpn_uuid is None:
                     handle_build_report_for_failed_subparcel(self.build_report, vpn_parcel, sub_parcel)
                 else:
                     parcel_uuid = self._create_parcel(profile_uuid, sub_parcel, vpn_uuid)
                     dhcp_server = self._interfaces_with_attached_dhcp_server.get(sub_parcel.parcel_name)
-
-                    if dhcp_server is None:
-                        # The interface does not have a DHCP server attached
-                        continue
-
-                    if parcel_uuid is None:
+                    if parcel_uuid is None and dhcp_server:
                         # The parent could not be created
                         handle_build_report_for_failed_subparcel(self.build_report, sub_parcel, dhcp_server)
                         continue
 
-                    dhcp_server_uuid = self._create_parcel(profile_uuid, dhcp_server)
+                    if dhcp_server:
+                        dhcp_server_uuid = self._create_parcel(profile_uuid, dhcp_server)
+                        if dhcp_server_uuid is not None:
+                            # The DHCP server could not be created
+                            self._endpoints.associate_dhcp_server_with_vpn_interface(
+                                profile_uuid=profile_uuid,
+                                vpn_uuid=vpn_uuid,
+                                interface_parcel_type=sub_parcel._get_parcel_type().replace("lan/vpn/", ""),
+                                interface_uuid=parcel_uuid,
+                                payload=ParcelAssociationPayload(parcel_id=dhcp_server_uuid),
+                            )
 
-                    if dhcp_server_uuid is None:
-                        # The DHCP server could not be created
-                        continue
-
-                    self._endpoints.associate_dhcp_server_with_vpn_interface(
-                        profile_uuid=profile_uuid,
-                        vpn_uuid=vpn_uuid,
-                        interface_parcel_type=sub_parcel._get_parcel_type().replace("lan/vpn/", ""),
-                        interface_uuid=parcel_uuid,
-                        payload=ParcelAssociationPayload(parcel_id=dhcp_server_uuid),
-                    )
+                    # Associate tracker with VPN interface if it exists
+                    if subparcel_tag in self._interface_tag_to_existing_tracker and parcel_uuid:
+                        tracker_uuid, tracker_type = self._interface_tag_to_existing_tracker[subparcel_tag]
+                        sub_parcel_type = sub_parcel._get_parcel_type().replace("lan/vpn/", "")
+                        self._endpoints.associate_tracker_with_vpn_interface(
+                            profile_uuid,
+                            vpn_uuid,
+                            sub_parcel_type,
+                            parcel_uuid,
+                            tracker_type,
+                            ParcelAssociationPayload(parcel_id=tracker_uuid),
+                        )
 
         return self.build_report
 
