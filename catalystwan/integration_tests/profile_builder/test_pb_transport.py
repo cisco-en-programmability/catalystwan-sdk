@@ -102,7 +102,7 @@ class TestTransportFeatureProfileBuilder(TestCaseBase):
             interval=Global[int](value=100),
             endpoint_api_url=Global[str](value="https://example.com/api"),
         )
-        self.builder.add_tracker(associate_tags=[gre_tag], parcel=tracker)
+        self.builder.add_tracker(associate_tags=[gre_tag], tracker=tracker)
         report = self.builder.build()
 
         assert len(report.failed_parcels) == 0
@@ -146,6 +146,75 @@ class TestTransportFeatureProfileBuilder(TestCaseBase):
         self.builder.add_tracker_group(
             associate_tags=[cellular_tag], group=tracker_group, trackers=[tracker1, tracker2]
         )
+        report = self.builder.build()
+
+        assert len(report.failed_parcels) == 0
+
+    def test_when_shared_tracker_expect_success(self):
+        service_vpn_parcel = TransportVpnParcel(
+            parcel_name="MinimumSpecifiedTransportVpnParcel",
+            description="Description",
+        )
+        vpn_tag = self.builder.add_parcel_vpn(service_vpn_parcel)
+        gre_parcel = InterfaceGreParcel(
+            parcel_name="InterfaceGreParcel",
+            parcel_description="Description",
+            basic=Basic(
+                address=AddressWithMask(
+                    address=Global[IPv4Address](value=IPv4Address("39.5.0.97")),
+                    mask=Variable(value="{{QPg11165441vY1}}"),
+                ),
+                if_name=Global[str](value="gre23"),
+                tunnel_destination=Global[IPv4Address](value=IPv4Address("3.3.3.3")),
+                clear_dont_fragment=Global[bool](value=True),
+                description=Global[str](value="QsLBBBBBCF"),
+                mtu=Global[int](value=1500),
+                shutdown=Global[bool](value=True),
+                tcp_mss_adjust=Global[int](value=600),
+                tunnel_source_type=TunnelSourceType(
+                    source_loopback=SourceLoopback(
+                        tunnel_route_via=Global[str](value="xSVIxuF"),
+                        tunnel_source_interface=Global[str](value="YnBabgxBUm"),
+                    )
+                ),
+            ),
+            advanced=AdvancedGre(application=Global[Literal["none", "sig"]](value="sig")),
+        )
+        gre_tag = self.builder.add_vpn_subparcel(vpn_tag, gre_parcel)
+        cellular_parcel = InterfaceCellularParcel(
+            parcel_name="InterfaceCellularParcel",
+            parcel_description="Description",
+            encapsulation=[],
+            interface_description=Global[str](value="CkmMzlz"),
+            interface_name=Global[str](value="xnaohVUa"),
+            nat=Global[bool](value=True),
+            shutdown=Global[bool](value=False),
+            tunnel_interface=Global[bool](value=True),
+        )
+        cellular_tag = self.builder.add_vpn_subparcel(vpn_tag, cellular_parcel)
+        tracker1 = Tracker(
+            parcel_name="TestTracker1",
+            parcel_description="Test Tracker Description",
+            tracker_name=Global[str](value="TestTracker1"),
+            interval=Global[int](value=100),
+            endpoint_api_url=Global[str](value="https://example.com/api"),
+        )
+        tracker2 = Tracker(
+            parcel_name="TestTracker2",
+            parcel_description="Test Tracker Description",
+            tracker_name=Global[str](value="TestTracker2"),
+            interval=Global[int](value=100),
+            endpoint_api_url=Global[str](value="https://example.com/api"),
+        )
+        tracker_group = TrackerGroup(
+            parcel_name="TestTrackerGroup",
+            parcel_description="Test Tracker Group Description",
+            tracker_refs=[],
+        )
+        self.builder.add_tracker_group(
+            associate_tags=set([cellular_tag]), group=tracker_group, trackers=[tracker1, tracker2]
+        )
+        self.builder.add_tracker(associate_tags=set([gre_tag]), tracker=tracker1)
         report = self.builder.build()
 
         assert len(report.failed_parcels) == 0

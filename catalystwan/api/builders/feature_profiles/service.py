@@ -9,6 +9,7 @@ from uuid import UUID, uuid4
 from pydantic import Field
 from typing_extensions import Annotated
 
+from catalystwan.api.builders.feature_profiles.mixins import TrackerMixin
 from catalystwan.api.builders.feature_profiles.report import (
     FeatureProfileBuildReport,
     handle_build_report,
@@ -30,7 +31,7 @@ from catalystwan.models.configuration.feature_profile.sdwan.service import (
     LanVpnParcel,
 )
 from catalystwan.models.configuration.feature_profile.sdwan.service.multicast import MulticastParcel
-from catalystwan.models.configuration.feature_profile.sdwan.trackers import AnyTrackerParcel, Tracker, TrackerGroup
+from catalystwan.models.configuration.feature_profile.sdwan.trackers import Tracker, TrackerGroup
 
 if TYPE_CHECKING:
     from catalystwan.session import ManagerSession
@@ -44,7 +45,7 @@ DependedVpnSubparcels = Annotated[
 ]
 
 
-class ServiceFeatureProfileBuilder:
+class ServiceFeatureProfileBuilder(TrackerMixin):
     """
     A class for building service feature profiles.
     """
@@ -65,9 +66,8 @@ class ServiceFeatureProfileBuilder:
         self._dependent_items_on_vpns: Dict[UUID, List[Tuple[UUID, DependedVpnSubparcels]]] = defaultdict(list)
         self._dependent_routing_items_on_vpns: Dict[UUID, List[AnyRoutingParcel]] = defaultdict(list)
         self._interfaces_with_attached_dhcp_server: Dict[str, LanVpnDhcpServerParcel] = {}
-        self._trackers: List[Tuple[Set[UUID], AnyTrackerParcel]] = []
-        self._tracker_groups: List[Tuple[Set[UUID], TrackerGroup, List[Tracker]]] = []
-        self._interface_tag_to_existing_tracker: Dict[UUID, Tuple[UUID, str]] = {}
+        # Trackers
+        self.init_tracker()
 
     def add_profile_name_and_description(self, feature_profile: FeatureProfileCreationPayload) -> None:
         """
@@ -154,18 +154,18 @@ class ServiceFeatureProfileBuilder:
         logger.debug(f"Adding DHCP server parcel {parcel.parcel_name} to interface {interface_parcel_name}")
         self._interfaces_with_attached_dhcp_server[interface_parcel_name] = parcel
 
-    def add_tracker(self, associate_tags: Set[UUID], parcel: AnyTrackerParcel) -> None:
+    def add_tracker(self, associate_tags: Set[UUID], tracker: Tracker) -> None:
         """
         Adds a tracker parcel to the feature profile.
 
         Args:
             associate_tags (Set[UUID]): The UUIDs of the interfaces to which the tracker should be added.
-            parcel (AnyTrackerParcel): The tracker parcel to add.
+            tracker (Tracker): The tracker parcel to add.
 
         Returns:
             None
         """
-        self._trackers.append((associate_tags, parcel))
+        self._trackers.append((associate_tags, tracker))
 
     def add_tracker_group(self, associate_tags: Set[UUID], group: TrackerGroup, trackers: List[Tracker]) -> None:
         self._tracker_groups.append((associate_tags, group, trackers))
@@ -183,26 +183,7 @@ class ServiceFeatureProfileBuilder:
         for parcel in self._independent_items:
             self._create_parcel(profile_uuid, parcel)
 
-        for tracker_group_tags, tracker_group, trackers in self._tracker_groups:
-            trackers_uuids: List[UUID] = []
-            for tracker_ in trackers:
-                tracker_uuid = self._create_parcel(profile_uuid, tracker_)
-                if tracker_uuid:
-                    trackers_uuids.append(tracker_uuid)
-
-            for tracker_uuid in trackers_uuids:
-                tracker_group.add_ref(tracker_uuid)
-
-            tracker_group_uuid = self._create_parcel(profile_uuid, tracker_group)
-            if tracker_group_uuid:
-                for tag in tracker_group_tags:
-                    self._interface_tag_to_existing_tracker[tag] = tracker_group_uuid, tracker_group._get_parcel_type()
-
-        for tracker_tags, tracker in self._trackers:
-            tracker_uuid = self._create_parcel(profile_uuid, tracker)
-            if tracker_uuid:
-                for tag in tracker_tags:
-                    self._interface_tag_to_existing_tracker[tag] = (tracker_uuid, tracker._get_parcel_type())
+        self.create_trackers(profile_uuid=profile_uuid)
 
         for vpn_tag, vpn_parcel in self._independent_items_vpns.items():
             vpn_uuid = self._create_parcel(profile_uuid, vpn_parcel)
