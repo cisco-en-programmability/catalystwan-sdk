@@ -12,8 +12,9 @@ from typing_extensions import Annotated
 from catalystwan.api.builders.feature_profiles.mixins import TrackerMixin
 from catalystwan.api.builders.feature_profiles.report import (
     FeatureProfileBuildReport,
-    handle_build_report,
-    handle_build_report_for_failed_subparcel,
+    hande_failed_sub_parcel,
+    handle_association_request,
+    handle_create_parcel,
 )
 from catalystwan.api.feature_profile_api import ServiceFeatureProfileAPI
 from catalystwan.endpoints.configuration.feature_profile.sdwan.service import ServiceFeatureProfile
@@ -190,56 +191,58 @@ class ServiceFeatureProfileBuilder(TrackerMixin):
 
             for routing_parcel in self._dependent_routing_items_on_vpns[vpn_tag]:
                 if vpn_uuid is None:
-                    handle_build_report_for_failed_subparcel(self.build_report, vpn_parcel, routing_parcel)
+                    hande_failed_sub_parcel(self.build_report, vpn_parcel, routing_parcel)
                 else:
                     routing_uuid = self._create_parcel(profile_uuid, routing_parcel)
                     if not routing_uuid:
                         continue
-                    self._endpoints.associate_with_vpn(
-                        profile_uuid,
-                        vpn_uuid,
-                        routing_parcel._get_parcel_type(),
-                        payload=ParcelAssociationPayload(parcel_id=routing_uuid),
-                    )
+                    with handle_association_request(self.build_report, routing_parcel):
+                        self._endpoints.associate_with_vpn(
+                            profile_uuid,
+                            vpn_uuid,
+                            routing_parcel._get_parcel_type(),
+                            payload=ParcelAssociationPayload(parcel_id=routing_uuid),
+                        )
 
             for subparcel_tag, sub_parcel in self._dependent_items_on_vpns[vpn_tag]:
                 if vpn_uuid is None:
-                    handle_build_report_for_failed_subparcel(self.build_report, vpn_parcel, sub_parcel)
+                    hande_failed_sub_parcel(self.build_report, vpn_parcel, sub_parcel)
                 else:
                     parcel_uuid = self._create_parcel(profile_uuid, sub_parcel, vpn_uuid)
                     dhcp_server = self._interfaces_with_attached_dhcp_server.get(sub_parcel.parcel_name)
                     if parcel_uuid is None and dhcp_server:
                         # The parent could not be created
-                        handle_build_report_for_failed_subparcel(self.build_report, sub_parcel, dhcp_server)
+                        hande_failed_sub_parcel(self.build_report, sub_parcel, dhcp_server)
                         continue
 
                     if dhcp_server:
                         dhcp_server_uuid = self._create_parcel(profile_uuid, dhcp_server)
                         if dhcp_server_uuid is not None:
-                            # The DHCP server could not be created
-                            self._endpoints.associate_dhcp_server_with_vpn_interface(
-                                profile_uuid=profile_uuid,
-                                vpn_uuid=vpn_uuid,
-                                interface_parcel_type=sub_parcel._get_parcel_type().replace("lan/vpn/", ""),
-                                interface_uuid=parcel_uuid,
-                                payload=ParcelAssociationPayload(parcel_id=dhcp_server_uuid),
-                            )
+                            with handle_association_request(self.build_report, sub_parcel):
+                                self._endpoints.associate_dhcp_server_with_vpn_interface(
+                                    profile_uuid=profile_uuid,
+                                    vpn_uuid=vpn_uuid,
+                                    interface_parcel_type=sub_parcel._get_parcel_type().replace("lan/vpn/", ""),
+                                    interface_uuid=parcel_uuid,
+                                    payload=ParcelAssociationPayload(parcel_id=dhcp_server_uuid),
+                                )
 
                     # Associate tracker with VPN interface if it exists
                     if subparcel_tag in self._interface_tag_to_existing_tracker and parcel_uuid:
                         tracker_uuid, tracker_type = self._interface_tag_to_existing_tracker[subparcel_tag]
                         sub_parcel_type = sub_parcel._get_parcel_type().replace("lan/vpn/", "")
-                        self._endpoints.associate_tracker_with_vpn_interface(
-                            profile_uuid,
-                            vpn_uuid,
-                            sub_parcel_type,
-                            parcel_uuid,
-                            tracker_type,
-                            ParcelAssociationPayload(parcel_id=tracker_uuid),
-                        )
+                        with handle_association_request(self.build_report, sub_parcel):
+                            self._endpoints.associate_tracker_with_vpn_interface(
+                                profile_uuid,
+                                vpn_uuid,
+                                sub_parcel_type,
+                                parcel_uuid,
+                                tracker_type,
+                                ParcelAssociationPayload(parcel_id=tracker_uuid),
+                            )
 
         return self.build_report
 
-    @handle_build_report
+    @handle_create_parcel
     def _create_parcel(self, profile_uuid: UUID, parcel: AnyServiceParcel, vpn_uuid: Optional[None] = None) -> UUID:
         return self._api.create_parcel(profile_uuid, parcel, vpn_uuid).id

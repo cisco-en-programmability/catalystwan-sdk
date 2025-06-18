@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Dict, List, Optional, Union
 from uuid import UUID
 
-from catalystwan.api.builders.feature_profiles.report import FeatureProfileBuildReport, handle_build_report
+from catalystwan.api.builders.feature_profiles.report import FeatureProfileBuildReport, handle_create_parcel
 from catalystwan.api.configuration_groups.parcel import as_default
 from catalystwan.api.feature_profile_api import UcVoiceFeatureProfileAPI
 from catalystwan.endpoints.configuration.feature_profile.sdwan.uc_voice import UcVoiceFeatureProfile
@@ -216,7 +216,7 @@ class UcVoiceFeatureProfileBuilder:
 
         return self.build_report
 
-    @handle_build_report
+    @handle_create_parcel
     def _create_parcel(self, profile_uuid: UUID, parcel: AnyUcVoiceParcel) -> UUID:
         """
         Internal method to create a parcel.

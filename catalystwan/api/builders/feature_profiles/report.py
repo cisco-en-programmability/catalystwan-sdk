@@ -1,5 +1,6 @@
 # Copyright 2023 Cisco Systems, Inc. and its affiliates
 import functools
+import logging
 from typing import Any, List, Optional, Tuple, Union
 from uuid import UUID
 
@@ -9,10 +10,10 @@ from requests import PreparedRequest, Request, Response
 from catalystwan.exceptions import ManagerErrorInfo, ManagerHTTPError
 from catalystwan.models.configuration.feature_profile.parcel import AnyParcel
 
+logger = logging.getLogger(__name__)
 
-def handle_build_report(func):
-    """Wrapper to make creating report simple and keep it DRY."""
 
+def handle_create_parcel(func):
     @functools.wraps(func)
     def wrapper(self, profile_uuid: UUID, parcel: AnyParcel, *args, **kwargs) -> Optional[UUID]:
         try:
@@ -122,9 +123,7 @@ class FeatureProfileBuildReport(BaseModel):
         )
 
 
-def handle_build_report_for_failed_subparcel(
-    build_report: FeatureProfileBuildReport, parent: AnyParcel, subparcel: AnyParcel
-) -> None:
+def hande_failed_sub_parcel(build_report: FeatureProfileBuildReport, parent: AnyParcel, subparcel: AnyParcel) -> None:
     parent_failed_to_create_message = (
         f"Parent parcel: {parent.parcel_name} failed to create. This subparcel is dependent on it."
     )
@@ -135,3 +134,22 @@ def handle_build_report_for_failed_subparcel(
             error_info=parent_failed_to_create_message,
         ),
     )
+
+
+class handle_association_request:
+    def __init__(self, build_report: FeatureProfileBuildReport, parcel: AnyParcel) -> None:
+        self.build_report = build_report
+        self.parcel = parcel
+
+    def __enter__(self) -> "handle_association_request":
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type is not None:
+            if issubclass(exc_type, ManagerHTTPError):
+                self.build_report.add_failed_parcel(
+                    parcel_name=self.parcel.parcel_name, parcel_type=self.parcel._get_parcel_type(), error=exc_val
+                )
+            else:
+                logger.exception(exc_val)
+        return True
