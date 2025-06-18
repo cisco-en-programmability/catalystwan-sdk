@@ -4,7 +4,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, List
 from uuid import UUID
 
-from catalystwan.api.builders.feature_profiles.report import FeatureProfileBuildReport, handle_build_report
+from catalystwan.api.builders.feature_profiles.report import FeatureProfileBuildReport, handle_create_parcel
 from catalystwan.api.feature_profile_api import CliFeatureProfileAPI
 from catalystwan.endpoints.configuration.feature_profile.sdwan.cli import CliFeatureProfile
 from catalystwan.models.configuration.feature_profile.common import FeatureProfileCreationPayload
@@ -71,6 +71,6 @@ class CliFeatureProfileBuilder:
             self._create_parcel(profile_uuid, config_parcel)
         return self.build_report
 
-    @handle_build_report
+    @handle_create_parcel
     def _create_parcel(self, profile_uuid: UUID, parcel: AnyCliParcel) -> UUID:
         return self._api.create_parcel(profile_uuid, parcel).id

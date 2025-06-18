@@ -9,8 +9,9 @@ from uuid import UUID, uuid4
 from catalystwan.api.builders.feature_profiles.mixins import TrackerMixin
 from catalystwan.api.builders.feature_profiles.report import (
     FeatureProfileBuildReport,
-    handle_build_report,
-    handle_build_report_for_failed_subparcel,
+    hande_failed_sub_parcel,
+    handle_association_request,
+    handle_create_parcel,
 )
 from catalystwan.api.feature_profile_api import TransportFeatureProfileAPI
 from catalystwan.endpoints.configuration.feature_profile.sdwan.transport import TransportFeatureProfile
@@ -196,7 +197,7 @@ class TransportAndManagementProfileBuilder(TrackerMixin):
             vpn_uuid = self._create_parcel(profile_uuid, vpn_parcel)
             for vpn_subparcel_tag, vpn_subparcel in self._dependent_items_on_vpns[vpn_tag]:
                 if vpn_uuid is None:
-                    handle_build_report_for_failed_subparcel(self.build_report, vpn_parcel, vpn_subparcel)
+                    hande_failed_sub_parcel(self.build_report, vpn_parcel, vpn_subparcel)
                 else:
                     vpn_subparcel_uuid = self._create_parcel(profile_uuid, vpn_subparcel, vpn_uuid)
 
@@ -206,49 +207,50 @@ class TransportAndManagementProfileBuilder(TrackerMixin):
                         vpn_subparcel_type = (
                             vpn_subparcel._get_parcel_type().replace("wan/vpn/", "").replace("management/vpn/", "")
                         )
-                        self._endpoints.associate_tracker_with_vpn_interface(
-                            profile_uuid,
-                            vpn_uuid,
-                            vpn_subparcel_type,
-                            vpn_subparcel_uuid,
-                            tracker_type,
-                            ParcelAssociationPayload(parcel_id=tracker_uuid),
-                        )
+                        with handle_association_request(self.build_report, vpn_subparcel):
+                            self._endpoints.associate_tracker_with_vpn_interface(
+                                profile_uuid,
+                                vpn_uuid,
+                                vpn_subparcel_type,
+                                vpn_subparcel_uuid,
+                                tracker_type,
+                                ParcelAssociationPayload(parcel_id=tracker_uuid),
+                            )
 
             for routing_parcel in self._dependent_routing_items_on_vpns[vpn_tag]:
                 if vpn_uuid is None:
-                    handle_build_report_for_failed_subparcel(self.build_report, vpn_parcel, routing_parcel)
+                    hande_failed_sub_parcel(self.build_report, vpn_parcel, routing_parcel)
                 else:
                     routing_uuid = self._create_parcel(profile_uuid, routing_parcel)
                     if not routing_uuid:
                         continue
-                    self._endpoints.associate_with_vpn(
-                        profile_uuid,
-                        vpn_uuid,
-                        routing_parcel._get_parcel_type(),
-                        payload=ParcelAssociationPayload(parcel_id=routing_uuid),
-                    )
+                    with handle_association_request(self.build_report, routing_parcel):
+                        self._endpoints.associate_with_vpn(
+                            profile_uuid,
+                            vpn_uuid,
+                            routing_parcel._get_parcel_type(),
+                            payload=ParcelAssociationPayload(parcel_id=routing_uuid),
+                        )
 
         for cellular_controller_tag, cellular_controller_parcel in self._independent_items_cellular_controllers.items():
             controller_uuid = self._create_parcel(profile_uuid, cellular_controller_parcel)
             for cellular_subparcel in self._dependent_items_on_cellular_controllers[cellular_controller_tag]:
                 if controller_uuid is None:
-                    handle_build_report_for_failed_subparcel(
-                        self.build_report, cellular_controller_parcel, cellular_subparcel
-                    )
+                    hande_failed_sub_parcel(self.build_report, cellular_controller_parcel, cellular_subparcel)
                 else:
                     parcel_uuid = self._create_parcel(profile_uuid, cellular_subparcel)
                     if not parcel_uuid:
                         continue
-                    self._endpoints.associate_with_cellular_controller(
-                        profile_uuid,
-                        controller_uuid,
-                        cellular_subparcel._get_parcel_type(),
-                        ParcelAssociationPayload(parcel_id=parcel_uuid),
-                    )
+                    with handle_association_request(self.build_report, cellular_subparcel):
+                        self._endpoints.associate_with_cellular_controller(
+                            profile_uuid,
+                            controller_uuid,
+                            cellular_subparcel._get_parcel_type(),
+                            ParcelAssociationPayload(parcel_id=parcel_uuid),
+                        )
 
         return self.build_report
 
-    @handle_build_report
+    @handle_create_parcel
     def _create_parcel(self, profile_uuid: UUID, parcel: AnyTransportParcel, vpn_uuid: Optional[None] = None) -> UUID:
         return self._api.create_parcel(profile_uuid, parcel, vpn_uuid).id

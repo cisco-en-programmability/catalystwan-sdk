@@ -8,7 +8,7 @@ from catalystwan.models.configuration.feature_profile.sdwan.trackers import Trac
 
 
 class TrackerMixin:
-    def init_tracker(self):
+    def init_tracker(self) -> None:
         self._shared_trackers: Dict[str, UUID] = {}
         self._trackers: List[Tuple[Set[UUID], Tracker]] = []
         self._tracker_groups: List[Tuple[Set[UUID], TrackerGroup, List[Tracker]]] = []
