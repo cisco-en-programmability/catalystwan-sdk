@@ -1,5 +1,4 @@
 # Copyright 2025 Cisco Systems, Inc. and its affiliates
-# Copyright 2025 Cisco Systems, Inc. and its affiliates
 from unittest.mock import MagicMock
 from uuid import UUID
 
