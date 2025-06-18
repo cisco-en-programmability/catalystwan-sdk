@@ -6,6 +6,7 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, Dict, List, Optional, Set, Tuple, Union
 from uuid import UUID, uuid4
 
+from catalystwan.api.builders.feature_profiles.mixins import TrackerMixin
 from catalystwan.api.builders.feature_profiles.report import (
     FeatureProfileBuildReport,
     handle_build_report,
@@ -35,7 +36,7 @@ if TYPE_CHECKING:
     from catalystwan.session import ManagerSession
 
 
-class TransportAndManagementProfileBuilder:
+class TransportAndManagementProfileBuilder(TrackerMixin):
     """
     A class for building system feature profiles.
     """
@@ -59,9 +60,8 @@ class TransportAndManagementProfileBuilder:
         self._dependent_items_on_cellular_controllers: Dict[
             UUID, List[Union[CellularProfileParcel, GpsParcel]]
         ] = defaultdict(list)
-        self._trackers: List[Tuple[Set[UUID], Tracker]] = []
-        self._tracker_groups: List[Tuple[Set[UUID], TrackerGroup, List[Tracker]]] = []
-        self._interface_tag_to_existing_tracker: Dict[UUID, Tuple[UUID, str]] = {}
+        # Trackers
+        self.init_tracker()
 
     def add_profile_name_and_description(self, feature_profile: FeatureProfileCreationPayload) -> None:
         """
@@ -161,18 +161,18 @@ class TransportAndManagementProfileBuilder:
         self._dependent_items_on_vpns[vpn_tag].append((subparcel_tag, parcel))
         return subparcel_tag
 
-    def add_tracker(self, associate_tags: Set[UUID], parcel: Tracker) -> None:
+    def add_tracker(self, associate_tags: Set[UUID], tracker: Tracker) -> None:
         """
         Adds a tracker parcel to the feature profile.
 
         Args:
             associate_tags (Set[UUID]): The UUIDs of the interfaces to which the tracker should be added.
-            parcel (AnyTrackerParcel): The tracker parcel to add.
+            tracker (Tracker): The tracker parcel to add.
 
         Returns:
             None
         """
-        self._trackers.append((associate_tags, parcel))
+        self._trackers.append((associate_tags, tracker))
 
     def add_tracker_group(self, associate_tags: Set[UUID], group: TrackerGroup, trackers: List[Tracker]) -> None:
         self._tracker_groups.append((associate_tags, group, trackers))
@@ -190,26 +190,7 @@ class TransportAndManagementProfileBuilder:
         for parcel in self._independent_items:
             self._create_parcel(profile_uuid, parcel)
 
-        for tracker_group_tags, tracker_group, trackers in self._tracker_groups:
-            trackers_uuids: List[UUID] = []
-            for tracker in trackers:
-                tracker_uuid = self._create_parcel(profile_uuid, tracker)
-                if tracker_uuid:
-                    trackers_uuids.append(tracker_uuid)
-
-            for tracker_uuid in trackers_uuids:
-                tracker_group.add_ref(tracker_uuid)
-
-            tracker_group_uuid = self._create_parcel(profile_uuid, tracker_group)
-            if tracker_group_uuid:
-                for tag in tracker_group_tags:
-                    self._interface_tag_to_existing_tracker[tag] = tracker_group_uuid, tracker_group._get_parcel_type()
-
-        for tracker_tags, tracker in self._trackers:
-            tracker_uuid = self._create_parcel(profile_uuid, tracker)
-            if tracker_uuid:
-                for tag in tracker_tags:
-                    self._interface_tag_to_existing_tracker[tag] = tracker_uuid, tracker._get_parcel_type()
+        self.create_trackers(profile_uuid=profile_uuid)
 
         for vpn_tag, vpn_parcel in self._independent_items_vpns.items():
             vpn_uuid = self._create_parcel(profile_uuid, vpn_parcel)
@@ -222,7 +203,9 @@ class TransportAndManagementProfileBuilder:
                     # Associate tracker with VPN interface if it exists
                     if vpn_subparcel_tag in self._interface_tag_to_existing_tracker and vpn_subparcel_uuid:
                         tracker_uuid, tracker_type = self._interface_tag_to_existing_tracker[vpn_subparcel_tag]
-                        vpn_subparcel_type = vpn_subparcel._get_parcel_type().replace("wan/vpn/", "")
+                        vpn_subparcel_type = (
+                            vpn_subparcel._get_parcel_type().replace("wan/vpn/", "").replace("management/vpn/", "")
+                        )
                         self._endpoints.associate_tracker_with_vpn_interface(
                             profile_uuid,
                             vpn_uuid,

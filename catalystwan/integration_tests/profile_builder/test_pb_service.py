@@ -94,7 +94,7 @@ class TestServiceFeatureProfileBuilder(TestCaseBase):
             interval=Global[int](value=100),
             endpoint_api_url=Global[str](value="https://example.com/api"),
         )
-        self.builder.add_tracker(associate_tags=[ethernet_tag], parcel=tracker)
+        self.builder.add_tracker(associate_tags=[ethernet_tag], tracker=tracker)
         report = self.builder.build()
 
         assert len(report.failed_parcels) == 0
@@ -136,6 +136,56 @@ class TestServiceFeatureProfileBuilder(TestCaseBase):
         self.builder.add_tracker_group(
             associate_tags=[ethernet_tag], group=tracker_group, trackers=[tracker1, tracker2]
         )
+        report = self.builder.build()
+
+        assert len(report.failed_parcels) == 0
+
+    def test_when_shared_tracker_expect_success(self):
+        service_vpn_parcel = LanVpnParcel(
+            parcel_name="MinimumSpecifiedTransportVpnParcel",
+            description="Description",
+            vpn_id=as_global(50),
+        )
+        ethernet_parcel_1 = InterfaceEthernetParcel(
+            parcel_name="TestEthernetParcel1",
+            parcel_description="Test Ethernet Parcel",
+            interface_name=as_global("HundredGigE"),
+            ethernet_description=as_global("Test Ethernet Description"),
+            shutdown=as_variable("{{vpn1_gi3_lan_ip_192.168.X.1/24_}}"),
+        )
+        ethernet_parcel_2 = InterfaceEthernetParcel(
+            parcel_name="TestEthernetParcel2",
+            parcel_description="Test Ethernet Parcel",
+            interface_name=as_global("HundredGigE"),
+            ethernet_description=as_global("Test Ethernet Description"),
+            shutdown=as_variable("{{vpn1_gi3_lan_ip_192.168.X.1/24_}}"),
+        )
+        vpn_tag = self.builder.add_parcel_vpn(service_vpn_parcel)
+        ethernet_tag_1 = self.builder.add_parcel_vpn_subparcel(vpn_tag, ethernet_parcel_1)
+        ethernet_tag_2 = self.builder.add_parcel_vpn_subparcel(vpn_tag, ethernet_parcel_2)
+        tracker1 = Tracker(
+            parcel_name="TestTracker1",
+            parcel_description="Test Tracker Description",
+            tracker_name=Global[str](value="TestTracker1"),
+            interval=Global[int](value=100),
+            endpoint_api_url=Global[str](value="https://example.com/api"),
+        )
+        tracker2 = Tracker(
+            parcel_name="TestTracker2",
+            parcel_description="Test Tracker Description",
+            tracker_name=Global[str](value="TestTracker2"),
+            interval=Global[int](value=100),
+            endpoint_api_url=Global[str](value="https://example.com/api"),
+        )
+        tracker_group = TrackerGroup(
+            parcel_name="TestTrackerGroup",
+            parcel_description="Test Tracker Group Description",
+            tracker_refs=[],
+        )
+        self.builder.add_tracker_group(
+            associate_tags=[ethernet_tag_1], group=tracker_group, trackers=[tracker1, tracker2]
+        )
+        self.builder.add_tracker(associate_tags=[ethernet_tag_2], tracker=tracker2)
         report = self.builder.build()
 
         assert len(report.failed_parcels) == 0
