@@ -9,15 +9,16 @@ from catalystwan.models.policy.policy_list import PolicyListBase, PolicyListId, 
 
 
 class ZoneListEntry(BaseModel):
-    vpn: Optional[IntRangeStr] = Field(default=None, description="0-65530 single number")
+    vpn: Optional[IntRangeStr] = Field(default=None, description="0-65530 hypenated range or single number")
     interface: Optional[str] = None
 
     @field_validator("vpn")
     @classmethod
-    def check_vpn_range(cls, vpn: IntRangeStr):
-        for i in vpn:
-            if i is not None:
-                assert 0 <= i <= 65_530
+    def check_vpn_range(cls, vpn: Optional[IntRangeStr]):
+        if vpn is not None:
+            for i in vpn:
+                if i is not None:
+                    assert 0 <= i <= 65_530
         return vpn
 
     @model_validator(mode="after")
