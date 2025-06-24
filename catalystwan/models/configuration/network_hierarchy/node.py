@@ -51,8 +51,8 @@ class Address(BaseModel):
 
 
 class GpsLocation(BaseModel):
-    latitude: int = Field(ge=-90, le=90, description="Set the site physical latitude")
-    longitude: int = Field(ge=-180, le=180, description="Set the site physical longitude")
+    latitude: float = Field(ge=-90, le=90, description="Set the site physical latitude")
+    longitude: float = Field(ge=-180, le=180, description="Set the site physical longitude")
 
 
 class Node(BaseModel):
