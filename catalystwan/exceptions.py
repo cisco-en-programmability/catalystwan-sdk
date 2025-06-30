@@ -189,6 +189,12 @@ class ManagerReadyTimeout(CatalystwanException):
     pass
 
 
+class ApiGwAuthTimeout(CatalystwanException):
+    """Raised when waiting for API gateway authentication took longer than expected"""
+
+    pass
+
+
 class CatalystwanDeprecationWarning(DeprecationWarning):
     """Warning issued when using deprecated features or functionality in the Catalystwan SDK.
 

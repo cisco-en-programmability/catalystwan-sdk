@@ -7,10 +7,10 @@ from urllib.parse import urlparse
 from pydantic import BaseModel, Field, PositiveInt
 from requests import HTTPError, PreparedRequest, post
 from requests.auth import AuthBase
-from requests.exceptions import JSONDecodeError
+from requests.exceptions import JSONDecodeError, Timeout
 
 from catalystwan.abstractions import APIEndpointClient, AuthProtocol
-from catalystwan.exceptions import CatalystwanException
+from catalystwan.exceptions import ApiGwAuthTimeout, CatalystwanException
 from catalystwan.response import auth_response_debug
 
 LoginMode = Literal["machine", "user", "session"]
@@ -106,6 +106,8 @@ class ApiGwAuth(AuthBase, AuthProtocol):
             raise CatalystwanException(
                 f"Problem with connection to ApiGateway login endpoint, ({ex}). Response: ({response.text})"
             )
+        except Timeout as ex:
+            raise ApiGwAuthTimeout(f"The request to the API GW login timeout, ({ex}).")
         except KeyError as ex:
             raise CatalystwanException(f"Not found token in login response from ApiGateway, ({ex})")
         else:
@@ -139,6 +141,8 @@ class ApiGwAuth(AuthBase, AuthProtocol):
                 f"Problem with connecting to API GW organization registration endpoint, ({ex}).\
                   Response: ({response.text})"
             )
+        except Timeout as ex:
+            raise ApiGwAuthTimeout(f"The request to the API GW organization registration timeout, ({ex}).")
         except Exception as ex:
             raise CatalystwanException(f"Org registration to API-GW failed: {ex}")
 
