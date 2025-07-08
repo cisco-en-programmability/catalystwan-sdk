@@ -85,6 +85,7 @@ ParcelType = Literal[
     "routing/ospf",
     "routing/ospfv3/ipv4",
     "routing/ospfv3/ipv6",
+    "security-data-ip-prefix",
     "security-fqdn",
     "security-geolocation",
     "security-identity",
@@ -168,6 +169,7 @@ class Parcel(BaseModel, Generic[T]):
     last_updated_by: Optional[str] = Field(default=None, alias="lastUpdatedBy")
     created_on: int = Field(alias="createdOn")
     last_updated_on: Optional[int] = Field(default=None, alias="lastUpdatedOn")
+    origin: Optional[str] = Field(default=None)
     payload: T
 
     @model_validator(mode="before")

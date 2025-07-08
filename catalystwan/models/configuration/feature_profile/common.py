@@ -78,6 +78,7 @@ class FeatureProfileInfo(BaseModel):
     reference_count: Optional[int] = Field(
         default=None, serialization_alias="referenceCount", validation_alias="referenceCount"
     )
+    origin: Optional[str] = Field(default=None)
 
 
 class FeatureProfileDetail(BaseModel):
@@ -100,6 +101,7 @@ class FeatureProfileDetail(BaseModel):
     cached_profile: Optional[str] = Field(
         default=None, serialization_alias="cachedProfile", validation_alias="cachedProfile"
     )
+    origin: Optional[str] = Field(default=None)
 
 
 class FromFeatureProfile(BaseModel):
