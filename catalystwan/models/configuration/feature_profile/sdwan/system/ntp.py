@@ -18,14 +18,14 @@ class ServerItem(BaseModel):
         ..., description="Set hostname or IP address of server"
     )
     key: Optional[Union[Variable, Global[int], Default[None]]] = Field(
-        None, description="Set authentication key for the server"
+        default=as_default(None), description="Set authentication key for the server"
     )
     vpn: Union[Variable, Global[int], Default[int]] = Field(
         default=as_default(0), description="Set VPN in which NTP server is located"
     )
     version: Union[Variable, Global[int], Default[int]] = Field(default=as_default(4), description="Set NTP version")
     source_interface: Optional[Union[Variable, Global[str], Default[None]]] = Field(
-        None,
+        default=as_default(None),
         serialization_alias="sourceInterface",
         validation_alias="sourceInterface",
         description="Set interface to use to reach NTP server",
