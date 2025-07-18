@@ -122,7 +122,7 @@ class BasicParcel(_ParcelBase):
         populate_by_name=True,
     )
     clock: Clock = Field(default_factory=Clock, validation_alias=AliasPath("data", "clock"))
-    description: Union[Variable, Global[str], Default[None]] = Field(
+    device_description: Union[Variable, Global[str], Default[None]] = Field(
         default=Default[None](value=None),
         validation_alias=AliasPath("data", "description"),
         description="Set a text description of the device",
