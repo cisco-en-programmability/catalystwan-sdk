@@ -19,7 +19,7 @@ class OidItem(BaseModel):
         populate_by_name=True,
     )
     id: Union[Global[str], Variable] = Field(..., description="Configure identifier of subtree of MIB objects")
-    exclude: Optional[Union[Global[bool], Variable]] = Field(default=None, description="Exclude the OID")
+    exclude: Optional[Union[Global[bool], Variable, Default[bool]]] = Field(default=None, description="Exclude the OID")
 
 
 class ViewItem(BaseModel):
