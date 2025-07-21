@@ -964,7 +964,7 @@ class Sequence(BaseModel):
         self._insert_action(CflowdAction(cflowd=as_global(cflowd)))
 
     def associate_cloud_probe_action(self) -> None:
-        pass  # TODO
+        self._insert_action(CloudProbeAction(cloud_probe=as_global(True)))
 
     def associate_cloud_saas_action(self) -> None:
         self._insert_action(CloudSaasAction(cloud_saas=as_global(True)))
