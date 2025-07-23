@@ -9,8 +9,9 @@ from pydantic import BaseModel, Field
 
 class PolicyListBase(BaseModel):
     name: str = Field(
-        pattern="^[a-zA-Z0-9_-]{1,32}$",
-        description="Can include only alpha-numeric characters, hyphen '-' or underscore '_'; maximum 32 characters",
+        pattern="^[a-zA-Z0-9._-]{1,32}$",
+        description="Can include only alpha-numeric characters, "
+        "dot '.' or hyphen '-' or underscore '_'; maximum 32 characters",
     )
     description: Optional[str] = "Desc Not Required"
     entries: List[Any]
