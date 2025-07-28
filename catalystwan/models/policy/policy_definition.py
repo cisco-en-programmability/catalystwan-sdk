@@ -1592,7 +1592,7 @@ class DefinitionWithSequencesCommonBase(BaseModel):
 
 class PolicyDefinitionBase(BaseModel):
     name: str = Field(
-        pattern="^[a-zA-Z0-9_-]{1,128}$",
+        pattern="^[a-zA-Z0-9._-]{1,128}$",
         description="Can include only alpha-numeric characters, hyphen '-' or underscore '_'; maximum 128 characters",
     )
     description: str = "default description"

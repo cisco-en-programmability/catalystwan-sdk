@@ -4,6 +4,9 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any, Dict, List, Mapping, Optional, Tuple, Type, overload
 from uuid import UUID
+from venv import logger
+
+from pydantic import ValidationError
 
 from catalystwan.api.task_status_api import Task
 from catalystwan.endpoints.configuration.policy.abstractions import PolicyDefinitionEndpoints, PolicyListEndpoints
@@ -1125,7 +1128,10 @@ class PolicyDefinitionsAPI:
     def get_all(self) -> List[Tuple[type, PolicyDefinitionInfo]]:
         all_items: List[Tuple[type, PolicyDefinitionInfo]] = []
         for definition_type, _ in POLICY_DEFINITION_ENDPOINTS_MAP.items():
-            all_items.extend([(definition_type, info) for info in self.get(definition_type)])
+            try:
+                all_items.extend([(definition_type, info) for info in self.get(definition_type)])
+            except ValidationError as e:
+                logger.error(f"Multiple {definition_type} items discarded because of validation error {e}")
         return all_items
 
 
