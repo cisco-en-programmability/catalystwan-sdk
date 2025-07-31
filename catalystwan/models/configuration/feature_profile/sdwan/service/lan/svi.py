@@ -52,7 +52,7 @@ class VrrpIPv4(BaseModel):
     )
 
     prefix_list: Optional[Union[Global[str], Variable, Default[None]]] = Field(
-        serialization_alias="prefixList", validation_alias="prefixList", default=Default[None](value=None)
+        serialization_alias="prefixList", validation_alias="prefixList", default=None
     )
     follow_dual_router_h_a_availability: Optional[Union[Global[bool], Default[bool]]] = Field(
         default=None,
