@@ -29,7 +29,7 @@ class VrrpIPv6SecondaryAddress(BaseModel):
 class VrrpIPv4(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
 
-    group_id: Union[Variable, Global[int]] = Field(serialization_alias="groupId", validation_alias="groupId")
+    group_id: Union[Variable, Global[int]] = Field()
     priority: Union[Variable, Global[int], Default[int]] = Default[int](value=100)
     timer: Union[Variable, Global[int], Default[int]] = Default[int](value=1000)
     track_omp: Union[Global[bool], Default[bool]] = Field(
@@ -51,7 +51,9 @@ class VrrpIPv4(BaseModel):
         serialization_alias="trackingObject", validation_alias="trackingObject", default=None
     )
 
-    prefix_list: Optional[Union[Global[str], Variable, Default[None]]] = Default[None](value=None)
+    prefix_list: Optional[Union[Global[str], Variable, Default[None]]] = Field(
+        serialization_alias="prefixList", validation_alias="prefixList", default=None
+    )
     follow_dual_router_h_a_availability: Optional[Union[Global[bool], Default[bool]]] = Field(
         default=None,
         validation_alias="followDualRouterHAAvailability",
