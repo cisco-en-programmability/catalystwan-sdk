@@ -120,17 +120,27 @@ class UnifiedSecurityPolicySettings(BaseModel):
     high_speed_logging: Union[HighSpeedLoggingEntry, HighSpeedLoggingList, None] = Field(
         default=None, serialization_alias="highSpeedLogging", validation_alias="highSpeedLogging"
     )
+    audit_trail: Optional[str] = Field(default=None, serialization_alias="auditTrail", validation_alias="auditTrail")
+    unified_logging: Optional[str] = Field(
+        default=None, serialization_alias="unifiedLogging", validation_alias="unifiedLogging"
+    )
+    session_reclassify_allow: Optional[str] = Field(
+        default=None, serialization_alias="sessionReclassifyAllow", validation_alias="sessionReclassifyAllow"
+    )
+    icmp_unreachable_allow: Optional[str] = Field(
+        default=None, serialization_alias="icmpUnreachableAllow", validation_alias="icmpUnreachableAllow"
+    )
     model_config = ConfigDict(populate_by_name=True)
 
 
 class SecurityPolicyDefinition(PolicyDefinition):
     assembly: List[SecurityPolicyAssemblyItem] = []
-    settings: SecurityPolicySettings = SecurityPolicySettings()
+    settings: SecurityPolicySettings = Field(default=SecurityPolicySettings())
 
 
 class UnifiedSecurityPolicyDefinition(PolicyDefinition):
     assembly: List[UnifiedSecurityPolicyAssemblyItem] = []
-    settings: UnifiedSecurityPolicySettings = UnifiedSecurityPolicySettings()
+    settings: UnifiedSecurityPolicySettings = Field(default=UnifiedSecurityPolicySettings())
 
 
 class SecurityPolicy(PolicyCreationPayload):
