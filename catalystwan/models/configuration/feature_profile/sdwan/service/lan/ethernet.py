@@ -2,7 +2,6 @@
 
 from ipaddress import IPv4Address
 from typing import Any, Dict, List, Literal, Optional, Union
-from uuid import UUID
 
 from pydantic import (
     AliasPath,
@@ -179,16 +178,16 @@ class AclQos(BaseModel):
     shaping_rate: Optional[Union[Global[int], Variable, Default[None]]] = Field(
         serialization_alias="shapingRate", validation_alias="shapingRate", default=None
     )
-    ipv4_acl_egress: Optional[Global[UUID]] = Field(
+    ipv4_acl_egress: Optional[RefIdItem] = Field(
         serialization_alias="ipv4AclEgress", validation_alias="ipv4AclEgress", default=None
     )
-    ipv4_acl_ingress: Optional[Global[UUID]] = Field(
+    ipv4_acl_ingress: Optional[RefIdItem] = Field(
         serialization_alias="ipv4AclIngress", validation_alias="ipv4AclIngress", default=None
     )
-    ipv6_acl_egress: Optional[Global[UUID]] = Field(
+    ipv6_acl_egress: Optional[RefIdItem] = Field(
         serialization_alias="ipv6AclEgress", validation_alias="ipv6AclEgress", default=None
     )
-    ipv6_acl_ingress: Optional[Global[UUID]] = Field(
+    ipv6_acl_ingress: Optional[RefIdItem] = Field(
         serialization_alias="ipv6AclIngress", validation_alias="ipv6AclIngress", default=None
     )
 
