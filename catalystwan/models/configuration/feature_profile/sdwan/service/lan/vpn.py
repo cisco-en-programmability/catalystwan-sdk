@@ -135,7 +135,7 @@ class OmpAdvertiseIPv4(BaseModel):
     omp_protocol: Union[Variable, Global[ProtocolIPv4]] = Field(
         serialization_alias="ompProtocol", validation_alias="ompProtocol"
     )
-    route_policy: Optional[Union[Default[None], Global[UUID]]] = Field(
+    route_policy: Optional[Union[Default[None], RefIdItem]] = Field(
         serialization_alias="routePolicy", validation_alias="routePolicy", default=None
     )
     prefix_list: Optional[List[IPv4Prefix]] = Field(
@@ -149,7 +149,7 @@ class OmpAdvertiseIPv6(BaseModel):
     omp_protocol: Union[Variable, Global[ProtocolIPv6]] = Field(
         serialization_alias="ompProtocol", validation_alias="ompProtocol"
     )
-    route_policy: Optional[Union[Default[None], Global[UUID]]] = Field(
+    route_policy: Optional[Union[Default[None], RefIdItem]] = Field(
         serialization_alias="routePolicy", validation_alias="routePolicy", default=None
     )
     protocol_sub_type: Optional[Union[Variable, Default[None], Global[Literal["External"]]]] = Field(
