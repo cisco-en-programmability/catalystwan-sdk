@@ -1180,15 +1180,13 @@ class SlaClassAction(BaseModel):
     @staticmethod
     def from_params(
         sla_class: UUID, not_met_action: Optional[SlaNotMetAction] = None, *, preferred_color: List[TLOCColor]
-    ) -> "SlaClassAction":
-        ...
+    ) -> "SlaClassAction": ...
 
     @overload
     @staticmethod
     def from_params(
         sla_class: UUID, not_met_action: Optional[SlaNotMetAction] = None, *, preferred_color_group: UUID
-    ) -> "SlaClassAction":
-        ...
+    ) -> "SlaClassAction": ...
 
     @staticmethod
     def from_params(
@@ -1446,7 +1444,7 @@ class PolicyDefinitionSequenceBase(BaseModel):
 
     def _remove_match(self, match_type: Any) -> None:
         if isinstance(self.match.entries, MutableSequence):
-            self.match.entries[:] = [entry for entry in self.match.entries if type(entry) is match_type]
+            self.match.entries[:] = [entry for entry in self.match.entries if entry is not match_type]
 
     def _insert_match(self, match: MatchEntry, insert_field_check: bool = True) -> int:
         # inserts new item or replaces item with same field name if found
