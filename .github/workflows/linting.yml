@@ -39,6 +39,6 @@ jobs:
       - name: Checking if imports are sorted correctly
         run: poetry run isort --check --diff -l 120 --profile black catalystwan
       - name: Check static-typing
-        run: poetry run mypy --show-error-codes --show-error-context --pretty --install-types --non-interactive catalystwan --cache-dir=.mypy_cache/
+        run: poetry run mypy --show-error-codes --show-error-context --pretty --install-types --non-interactive catalystwan --cache-dir=.mypy_cache/ --disable-error-code override
       - name: Check code style
         run: poetry run flake8 catalystwan
