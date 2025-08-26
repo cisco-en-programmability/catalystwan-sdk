@@ -22,6 +22,7 @@ from catalystwan.models.common import (
     IkeGroup,
     IpsecCiphersuite,
     LineMode,
+    PfsGroup,
     SecondaryRegion,
     T1Framing,
     T1Linecode,
@@ -134,10 +135,7 @@ from catalystwan.models.configuration.feature_profile.sdwan.transport.wan.interf
     Tunnel as TunnelEthernet,
 )
 from catalystwan.models.configuration.feature_profile.sdwan.transport.wan.interface.gre import Basic, InterfaceGreParcel
-from catalystwan.models.configuration.feature_profile.sdwan.transport.wan.interface.ipsec import (
-    InterfaceIpsecParcel,
-    PerfectForwardSecrecy,
-)
+from catalystwan.models.configuration.feature_profile.sdwan.transport.wan.interface.ipsec import InterfaceIpsecParcel
 from catalystwan.models.configuration.feature_profile.sdwan.transport.wan.interface.multilink import (
     InterfaceMultilinkParcel,
 )
@@ -1130,7 +1128,7 @@ class TestTransportFeatureProfileWanInterfaceModels(TestCaseBase):
             ipsec_rekey_interval=Default[int](value=3600),
             ipsec_replay_window=Default[int](value=512),
             mtu=Default[int](value=1500),
-            perfect_forward_secrecy=Global[PerfectForwardSecrecy](value="group-16"),
+            perfect_forward_secrecy=Global[PfsGroup](value="group-16"),
             pre_shared_secret=Global[str](value="iEKeBeVb"),
             shutdown=Default[bool](value=True),
             tcp_mss_adjust=Default[None](value=None),
