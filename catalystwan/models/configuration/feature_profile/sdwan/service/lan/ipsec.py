@@ -6,14 +6,8 @@ from typing import Literal, Optional, Union
 from pydantic import AliasPath, ConfigDict, Field
 
 from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase
-from catalystwan.models.common import IkeCiphersuite, IkeGroup, IkeMode, IpsecCiphersuite, PfsGroup
+from catalystwan.models.common import IkeCiphersuite, IkeGroup, IkeMode, IpsecCiphersuite, IpsecTunnelMode, PfsGroup
 from catalystwan.models.configuration.feature_profile.common import AddressWithMask, TunnelApplication
-
-IpsecTunnelMode = Literal[
-    "ipv4",
-    "ipv6",
-    "ipv4-v6overlay",
-]
 
 
 class InterfaceIpsecParcel(_ParcelBase):
@@ -31,9 +25,18 @@ class InterfaceIpsecParcel(_ParcelBase):
     ipsec_description: Union[Global[str], Variable, Default[None]] = Field(
         default=Default[None](value=None), validation_alias=AliasPath("data", "description")
     )
-    address: Optional[AddressWithMask] = Field(default=None, validation_alias=AliasPath("data", "address"))
+    address: Optional[AddressWithMask] = Field(
+        default=None,
+        validation_alias=AliasPath("data", "address"),
+        description="""
+            This filed is required in version < 20.14 (default: 1500).
+            In version >=20.14 it is optional, as it can be replaced by ipv6_address
+        """,
+    )
     ipv6_address: Optional[Union[Global[str], Global[IPv6Interface], Variable]] = Field(
-        validation_alias=AliasPath("data", "ipv6Address"), default=None
+        default=None,
+        validation_alias=AliasPath("data", "ipv6Address"),
+        description="This field is supported from version 20.14",
     )
     tunnel_source: Optional[AddressWithMask] = Field(validation_alias=AliasPath("data", "tunnelSource"), default=None)
     tunnel_source_v6: Optional[Union[Global[str], Variable]] = Field(
@@ -49,21 +52,30 @@ class InterfaceIpsecParcel(_ParcelBase):
         validation_alias=AliasPath("data", "tunnelDestinationV6"), default=None
     )
     application: Union[Global[TunnelApplication], Variable] = Field(validation_alias=AliasPath("data", "application"))
-    tcp_mss_adjust: Union[Global[int], Variable, Default[None]] = Field(
-        validation_alias=AliasPath("data", "tcpMssAdjust"), default=Default[None](value=None)
+    tcp_mss_adjust: Optional[Union[Global[int], Variable, Default[None]]] = Field(
+        default=None,
+        validation_alias=AliasPath("data", "tcpMssAdjust"),
+        description="Required if address is provided (default: Default[None]). None otherwise.",
     )
     tcp_mss_adjust_v6: Optional[Union[Global[int], Variable, Default[None]]] = Field(
-        validation_alias=AliasPath("data", "tcpMssAdjustV6"), default=None
+        default=None,
+        validation_alias=AliasPath("data", "tcpMssAdjustV6"),
+        description="Required if ipv6_address is provided (default: Default[None]). None otherwise.",
     )
     clear_dont_fragment: Optional[Union[Global[bool], Variable, Default[bool]]] = Field(
+        default=None,
         validation_alias=AliasPath("data", "clearDontFragment"),
-        default=Default[bool](value=False),
+        description="Required if address is provided (default: False). None otherwise.",
     )
     mtu: Optional[Union[Global[int], Variable, Default[int]]] = Field(
-        default=Default[int](value=1500), validation_alias=AliasPath("data", "mtu")
+        default=None,
+        validation_alias=AliasPath("data", "mtu"),
+        description="Required if address is provided (default: 1500). None otherwise.",
     )
     mtu_v6: Optional[Union[Global[int], Variable, Default[None]]] = Field(
-        validation_alias=AliasPath("data", "mtuV6"), default=None
+        default=None,
+        validation_alias=AliasPath("data", "mtuV6"),
+        description="Required if ipv6_address is provided (default: Default[None]). None otherwise.",
     )
     dpd_interval: Union[Global[int], Variable, Default[int]] = Field(
         validation_alias=AliasPath("data", "dpdInterval"), default=Default[int](value=10)
