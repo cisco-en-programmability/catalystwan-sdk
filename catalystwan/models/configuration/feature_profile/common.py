@@ -130,6 +130,11 @@ class AddressWithMask(BaseModel):
     mask: Union[Variable, Global[SubnetMask]]
 
 
+class AddressAndMaskWithDefault(BaseModel):
+    address: Union[Variable, Global[IPv4Address], Global[IPv6Address], Default[None]]
+    mask: Union[Variable, Global[SubnetMask], Default[None]]
+
+
 class SchemaTypeQuery(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 

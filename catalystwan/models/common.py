@@ -879,6 +879,12 @@ IpsecCiphersuite = Literal[
     "null-sha512",
 ]
 
+IpsecTunnelMode = Literal[
+    "ipv4",
+    "ipv6",
+    "ipv4-v6overlay",
+]
+
 LossProtectionType = Literal[
     "fecAdaptive",
     "fecAlways",
