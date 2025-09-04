@@ -117,6 +117,9 @@ class Global(BaseModel, Generic[T]):
             return self.value <= other
         return False
 
+    def __hash__(self) -> int:
+        return hash(self.value)
+
 
 class Variable(BaseModel):
     model_config = ConfigDict(populate_by_name=True, alias_generator=to_camel)

@@ -315,7 +315,10 @@ class RefIdItem(BaseModel):
 
     @classmethod
     def from_uuid(cls, ref_id: UUID):
-        return cls(ref_id=as_global(str(ref_id)))
+        return cls(ref_id=Global[str](value=str(ref_id)))
+
+    def __hash__(self) -> int:
+        return hash(self.ref_id.value)
 
 
 class RefIdList(BaseModel):
