@@ -34,7 +34,7 @@ class ApiGwAuth(AuthBase, AuthProtocol):
     2. Use the token in the Authorization header for subsequent requests.
     """
 
-    def __init__(self, login: ApiGwLogin, logger: Optional[logging.Logger] = None, verify: bool = False):
+    def __init__(self, login: ApiGwLogin, logger: Optional[logging.Logger] = None, verify: bool | str = False):
         self.login = login
         self.token = ""
         self.org_registered: bool = False
@@ -86,7 +86,7 @@ class ApiGwAuth(AuthBase, AuthProtocol):
         base_url: str,
         apigw_login: ApiGwLogin,
         logger: Optional[logging.Logger] = None,
-        verify: bool = False,
+        verify: bool | str = False,
         timeout: int = 10,
     ) -> str:
         try:
@@ -118,7 +118,7 @@ class ApiGwAuth(AuthBase, AuthProtocol):
         base_url: str,
         apigw_login: ApiGwLogin,
         logger: Optional[logging.Logger] = None,
-        verify: bool = False,
+        verify: bool | str = False,
         timeout: int = 10,
     ) -> None:
         try:

@@ -71,7 +71,7 @@ class vManageAuth(AuthBase, AuthProtocol):
     2. Get a cross-site request forgery prevention token, which is required for most POST operations.
     """
 
-    def __init__(self, username: str, password: str, logger: Optional[logging.Logger] = None, verify: bool = False):
+    def __init__(self, username: str, password: str, logger: Optional[logging.Logger] = None, verify: bool | str = False):
         self.username = username
         self.password = password
         self.xsrftoken: Optional[str] = None
@@ -203,7 +203,7 @@ class vSessionAuth(vManageAuth):
         password: str,
         subdomain: str,
         logger: Optional[logging.Logger] = None,
-        verify: bool = False,
+        verify: bool | str = False,
     ):
         super().__init__(username, password, logger, verify)
         self.subdomain = subdomain
@@ -264,7 +264,7 @@ def create_vmanage_auth(
     password: str,
     subdomain: Optional[str] = None,
     logger: Optional[logging.Logger] = None,
-    verify: bool = False,
+    verify: bool | str = False,
 ) -> vManageAuth:
     if subdomain is not None:
         return vSessionAuth(username, password, subdomain, logger=logger, verify=verify)
