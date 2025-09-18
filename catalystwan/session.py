@@ -234,16 +234,16 @@ class ManagerSession(ManagerResponseAdapter, APIEndpointClient):
         subdomain: Optional[str] = None,
         logger: Optional[logging.Logger] = None,
         request_limiter: Optional[RequestLimiter] = None,
-        verify: bool | str = False
+        verify: bool | str = False,
     ) -> None:
         self.base_url = base_url
         self.subdomain = subdomain
         self._session_type = SessionType.NOT_DEFINED
         self.server_name: Optional[str] = None
         self.logger = logger or logging.getLogger(__name__)
-        self.response_trace: Callable[
-            [Optional[Response], Union[Request, PreparedRequest, None]], str
-        ] = response_history_debug
+        self.response_trace: Callable[[Optional[Response], Union[Request, PreparedRequest, None]], str] = (
+            response_history_debug
+        )
         super(ManagerSession, self).__init__()
         self.verify = verify
         self.headers.update({"User-Agent": USER_AGENT})

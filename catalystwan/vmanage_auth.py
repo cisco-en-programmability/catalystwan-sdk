@@ -71,7 +71,9 @@ class vManageAuth(AuthBase, AuthProtocol):
     2. Get a cross-site request forgery prevention token, which is required for most POST operations.
     """
 
-    def __init__(self, username: str, password: str, logger: Optional[logging.Logger] = None, verify: bool | str = False):
+    def __init__(
+        self, username: str, password: str, logger: Optional[logging.Logger] = None, verify: bool | str = False
+    ):
         self.username = username
         self.password = password
         self.xsrftoken: Optional[str] = None
