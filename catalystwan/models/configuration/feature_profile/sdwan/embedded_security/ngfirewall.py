@@ -584,6 +584,10 @@ class SourceIdentityList(BaseModel):
         validation_alias="sourceIdentityList", serialization_alias="sourceIdentityList"
     )
 
+    @classmethod
+    def create(cls, uuids: List[UUID]) -> Self:
+        return cls(source_identity_list=RefIdList.from_uuids(uuids))
+
 
 class ProtocolNameList(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
@@ -755,35 +759,35 @@ class ProtocolNameMatch(BaseModel):
 
 
 MatchEntry = Union[
-    SourceDataPrefixList,
-    DestinationDataPrefixList,
-    DestinationFqdnList,
-    SourceGeoLocationList,
-    DestinationGeoLocationList,
-    SourcePortList,
-    DestinationPortList,
-    SourceScalableGroupTagList,
-    DestinationScalableGroupTagList,
-    SourceIdentityList,
-    ProtocolNameList,
-    AppList,
-    AppListFlat,
-    RuleSetList,
-    SourceSecurityGroup,
-    DestinationSecurityGroup,
-    SourceIp,
-    DestinationIp,
-    DestinationFqdn,
-    SourcePort,
-    DestinationPort,
-    SourceGeoLocation,
-    DestinationGeoLocation,
-    SourceIdentityUser,
-    SourceIdentityUserGroup,
     App,
     AppFamily,
+    AppList,
+    AppListFlat,
+    DestinationDataPrefixList,
+    DestinationFqdn,
+    DestinationFqdnList,
+    DestinationGeoLocation,
+    DestinationGeoLocationList,
+    DestinationIp,
+    DestinationPort,
+    DestinationPortList,
+    DestinationScalableGroupTagList,
+    DestinationSecurityGroup,
     Protocol,
+    ProtocolNameList,
     ProtocolNameMatch,
+    RuleSetList,
+    SourceDataPrefixList,
+    SourceGeoLocation,
+    SourceGeoLocationList,
+    SourceIdentityList,
+    SourceIdentityUser,
+    SourceIdentityUserGroup,
+    SourceIp,
+    SourcePort,
+    SourcePortList,
+    SourceScalableGroupTagList,
+    SourceSecurityGroup,
 ]
 
 

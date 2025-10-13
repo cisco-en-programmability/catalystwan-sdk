@@ -2,7 +2,7 @@
 
 import re
 from dataclasses import InitVar, dataclass, field
-from ipaddress import IPv4Interface, IPv6Interface
+from ipaddress import IPv4Interface, IPv4Network, IPv6Interface
 from typing import Any, Dict, Iterator, List, Literal, Mapping, Optional, Sequence, Set, Tuple, Union, cast, get_args
 from uuid import UUID
 
@@ -163,6 +163,12 @@ def str_as_ipv4_list(val: Union[str, Sequence[IPv4Interface]]) -> Sequence[IPv4I
     return val
 
 
+def str_as_ipv4_network_list(val: Union[str, Sequence[IPv4Network]]) -> Sequence[IPv4Network]:
+    if isinstance(val, str):
+        return [IPv4Network(element) for element in val.split()]
+    return val
+
+
 def str_as_ipv6_list(val: Union[str, Sequence[IPv6Interface]]) -> Sequence[IPv6Interface]:
     if isinstance(val, str):
         return [IPv6Interface(element) for element in val.split()]
@@ -226,6 +232,13 @@ SpaceSeparatedIPv4 = Annotated[
     List[IPv4Interface],
     PlainSerializer(lambda x: " ".join(map(str, x)), return_type=str, when_used="json-unless-none"),
     BeforeValidator(str_as_ipv4_list),
+    Field(min_length=1),
+]
+
+SpaceSeparatedIPv4Networks = Annotated[
+    List[IPv4Network],
+    PlainSerializer(lambda x: " ".join(map(str, x)), return_type=str, when_used="json-unless-none"),
+    BeforeValidator(str_as_ipv4_network_list),
     Field(min_length=1),
 ]
 
