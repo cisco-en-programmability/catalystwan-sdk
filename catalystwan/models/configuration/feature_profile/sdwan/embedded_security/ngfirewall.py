@@ -7,11 +7,10 @@ from pydantic import AliasPath, BaseModel, ConfigDict, Field, ValidationError, m
 from typing_extensions import Self
 
 from catalystwan.api.configuration_groups.parcel import Global, Variable, _ParcelBase, as_global, as_variable
-from catalystwan.models.common import GeoLocation, ProtocolName
+from catalystwan.models.common import GeoLocation, ProtocolName, SecurityBaseAction
 from catalystwan.models.configuration.feature_profile.common import RefIdItem, RefIdList
 
 DefaultAction = Literal["pass", "drop"]
-BaseAction = Literal["pass", "inspect", "drop"]
 SequenceType = Literal["ngfirewall"]
 AipActionType = Literal["advancedInspectionProfile"]
 SequenceActionType = Literal["log", "connectionEvents"]
@@ -401,8 +400,10 @@ class NgFirewallSequence(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
     sequence_id: Global[str] = Field(validation_alias="sequenceId", serialization_alias="sequenceId")
     sequence_name: Global[str] = Field(validation_alias="sequenceName", serialization_alias="sequenceName")
-    base_action: Global[BaseAction] = Field(
-        default=Global[BaseAction](value="drop"), validation_alias="baseAction", serialization_alias="baseAction"
+    base_action: Global[SecurityBaseAction] = Field(
+        default=Global[SecurityBaseAction](value="drop"),
+        validation_alias="baseAction",
+        serialization_alias="baseAction",
     )
     sequence_type: Global[SequenceType] = Field(
         default=Global[SequenceType](value="ngfirewall"),
@@ -439,7 +440,7 @@ class NgFirewallSequence(BaseModel):
         cls,
         sequence_id: int,
         sequence_name: str,
-        base_action: BaseAction,
+        base_action: SecurityBaseAction,
         disable_sequence: bool = False,
         match: Optional[Match] = None,
         actions: Optional[List[Union[LogAction, AipAction]]] = None,
@@ -447,7 +448,7 @@ class NgFirewallSequence(BaseModel):
         return cls(
             sequence_id=Global[str](value=str(sequence_id)),
             sequence_name=Global[str](value=sequence_name),
-            base_action=Global[BaseAction](value=base_action),
+            base_action=Global[SecurityBaseAction](value=base_action),
             match=match if match else Match.create(),
             actions=actions if actions else [],
             disable_sequence=Global[bool](value=disable_sequence),

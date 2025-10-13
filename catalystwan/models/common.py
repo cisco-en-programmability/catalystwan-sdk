@@ -1989,6 +1989,17 @@ ProtocolName = Literal[
     "clp",
 ]
 
+SecurityBaseAction = Literal[
+    "drop",
+    "inspect",
+    "pass",
+]
+
+SecuritySequenceIpType = Literal[
+    "ipv4",
+    "ipv6",
+]
+
 
 def str_as_service_area_list(val: Union[str, Sequence[ServiceAreaValue]]) -> Sequence[ServiceAreaValue]:
     if isinstance(val, str):
