@@ -3,7 +3,7 @@
 import logging
 from http.cookies import SimpleCookie
 from threading import RLock
-from typing import Optional
+from typing import Optional, Union
 from urllib.parse import urlparse
 
 from packaging.version import Version  # type: ignore
@@ -72,7 +72,7 @@ class vManageAuth(AuthBase, AuthProtocol):
     """
 
     def __init__(
-        self, username: str, password: str, logger: Optional[logging.Logger] = None, verify: bool | str = False
+        self, username: str, password: str, logger: Optional[logging.Logger] = None, verify: Union[bool, str] = False
     ):
         self.username = username
         self.password = password
@@ -205,7 +205,7 @@ class vSessionAuth(vManageAuth):
         password: str,
         subdomain: str,
         logger: Optional[logging.Logger] = None,
-        verify: bool | str = False,
+        verify: Union[bool, str] = False,
     ):
         super().__init__(username, password, logger, verify)
         self.subdomain = subdomain
@@ -266,7 +266,7 @@ def create_vmanage_auth(
     password: str,
     subdomain: Optional[str] = None,
     logger: Optional[logging.Logger] = None,
-    verify: bool | str = False,
+    verify: Union[bool, str]= False,
 ) -> vManageAuth:
     if subdomain is not None:
         return vSessionAuth(username, password, subdomain, logger=logger, verify=verify)

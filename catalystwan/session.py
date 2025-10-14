@@ -234,7 +234,7 @@ class ManagerSession(ManagerResponseAdapter, APIEndpointClient):
         subdomain: Optional[str] = None,
         logger: Optional[logging.Logger] = None,
         request_limiter: Optional[RequestLimiter] = None,
-        verify: bool | str = False,
+        verify: Union[bool, str] = False,
     ) -> None:
         self.base_url = base_url
         self.subdomain = subdomain
