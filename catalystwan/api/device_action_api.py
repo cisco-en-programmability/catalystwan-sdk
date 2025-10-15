@@ -133,11 +133,13 @@ class ValidateAction(DeviceActionAPI):  # TODO check
         """
         validate device
         """
-        body = {
-            "chasisNumber": self.dev.uuid,
-            "serialNumber": self.dev.board_serial,
-            "validity": "valid" if valid else "invalid",
-        }
+        body = [
+            {
+                "chasisNumber": self.dev.uuid,
+                "serialNumber": self.dev.board_serial,
+                "validity": "valid" if valid else "invalid",
+            }
+        ]
 
         response = self.session.post(url="/dataservice/certificate/save/vedge/list", json=body).json()
         if response.get("id"):
