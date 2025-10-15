@@ -266,7 +266,7 @@ def create_vmanage_auth(
     password: str,
     subdomain: Optional[str] = None,
     logger: Optional[logging.Logger] = None,
-    verify: Union[bool, str]= False,
+    verify: Union[bool, str] = False,
 ) -> vManageAuth:
     if subdomain is not None:
         return vSessionAuth(username, password, subdomain, logger=logger, verify=verify)
