@@ -211,6 +211,7 @@ class ManagerSession(ManagerResponseAdapter, APIEndpointClient):
         subdomain: subdomain specifying to which view switch when creating provider as a tenant session,
             works only on provider user mode
         logger: override default module logger
+        verify: bool or str: bool to verify SSL certificate, or a path to a CA bundle
 
     Attributes:
         api: APIContainer: container for API methods
@@ -222,7 +223,7 @@ class ManagerSession(ManagerResponseAdapter, APIEndpointClient):
         api_version: Version: API version
         restart_timeout: int: restart timeout in seconds
         session_type: SessionType: type of session
-        verify: bool: verify SSL certificate
+        verify: bool or str: bool to verify SSL certificate, or a path to a CA bundle
 
     """
 
@@ -233,17 +234,18 @@ class ManagerSession(ManagerResponseAdapter, APIEndpointClient):
         subdomain: Optional[str] = None,
         logger: Optional[logging.Logger] = None,
         request_limiter: Optional[RequestLimiter] = None,
+        verify: Union[bool, str] = False,
     ) -> None:
         self.base_url = base_url
         self.subdomain = subdomain
         self._session_type = SessionType.NOT_DEFINED
         self.server_name: Optional[str] = None
         self.logger = logger or logging.getLogger(__name__)
-        self.response_trace: Callable[
-            [Optional[Response], Union[Request, PreparedRequest, None]], str
-        ] = response_history_debug
+        self.response_trace: Callable[[Optional[Response], Union[Request, PreparedRequest, None]], str] = (
+            response_history_debug
+        )
         super(ManagerSession, self).__init__()
-        self.verify = False
+        self.verify = verify
         self.headers.update({"User-Agent": USER_AGENT})
         self._added_to_auth = False
         self._auth = auth
@@ -429,6 +431,8 @@ class ManagerSession(ManagerResponseAdapter, APIEndpointClient):
         _kwargs = dict(kwargs)
         if self.request_timeout is not None:  # do not modify user provided kwargs unless property is set
             _kwargs.update(timeout=self.request_timeout)
+        if "verify" not in kwargs:
+            _kwargs.update(verify=self.verify)
         try:
             with self._limiter:
                 response = super(ManagerSession, self).request(method, full_url, *args, **_kwargs)
