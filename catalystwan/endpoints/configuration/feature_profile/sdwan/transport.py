@@ -69,11 +69,11 @@ class TransportFeatureProfile(APIEndpoints):
     # def get_management_vpn_parcel(self, profile_id: str, parcel_id: str) -> Parcel[ManagementVPN]:
     #     ...
 
+    # TRANSPORT VPN parcel
+    #
     @versions(supported_versions=(">=20.13"), raises=False)
-    @put("/v1/feature-profile/sdwan/transport/{profile_id}/management/vpn/{parcel_id}")
-    def edit_management_vpn_parcel(
-        self, profile_id: str, parcel_id: str, payload: ManagementVPN
-    ) -> ParcelCreationResponse:
+    @post("/v1/feature-profile/sdwan/transport/{profile_id}/wan/vpn")
+    def create_transport_vpn_parcel(self, profile_id: str, payload: _ParcelBase) -> ParcelCreationResponse:
         ...
 
     @versions(supported_versions=(">=20.13"), raises=False)
