@@ -111,7 +111,9 @@ from .security import (
     AnySecurityPolicyInfo,
     AnySecurityPolicyInfoList,
     SecurityPolicy,
+    SecurityPolicyInfo,
     UnifiedSecurityPolicy,
+    UnifiedSecurityPolicyInfo,
 )
 
 AnyPolicyDefinition = Annotated[
@@ -364,6 +366,7 @@ __all__ = (
     "ScalableGroupTagList",
     "SecurityGroup",
     "SecurityPolicy",
+    "SecurityPolicyInfo",
     "ServiceType",
     "SiteList",
     "SLAClassList",
@@ -377,6 +380,7 @@ __all__ = (
     "TrunkGroupList",
     "UmbrellaDataList",
     "UnifiedSecurityPolicy",
+    "UnifiedSecurityPolicyInfo",
     "URLAllowList",
     "URLBlockList",
     "UrlFilteringPolicy",
