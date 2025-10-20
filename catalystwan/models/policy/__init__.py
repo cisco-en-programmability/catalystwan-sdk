@@ -103,15 +103,19 @@ from .policy_definition import (
     MultiRegionRole,
     OriginProtocol,
     PLPEntryType,
+    PolicyDefinitionInfo,
     ServiceType,
     TLOCActionType,
 )
+from .policy_list import PolicyListInfo
 from .security import (
     AnySecurityPolicy,
     AnySecurityPolicyInfo,
     AnySecurityPolicyInfoList,
     SecurityPolicy,
+    SecurityPolicyInfo,
     UnifiedSecurityPolicy,
+    UnifiedSecurityPolicyInfo,
 )
 
 AnyPolicyDefinition = Annotated[
@@ -351,6 +355,8 @@ __all__ = (
     "OriginProtocol",
     "PLPEntryType",
     "PolicerList",
+    "PolicyDefinitionInfo",
+    "PolicyListInfo",
     "PortList",
     "PreferredColorGroupList",
     "PrefixList",
@@ -364,6 +370,7 @@ __all__ = (
     "ScalableGroupTagList",
     "SecurityGroup",
     "SecurityPolicy",
+    "SecurityPolicyInfo",
     "ServiceType",
     "SiteList",
     "SLAClassList",
@@ -377,6 +384,7 @@ __all__ = (
     "TrunkGroupList",
     "UmbrellaDataList",
     "UnifiedSecurityPolicy",
+    "UnifiedSecurityPolicyInfo",
     "URLAllowList",
     "URLBlockList",
     "UrlFilteringPolicy",

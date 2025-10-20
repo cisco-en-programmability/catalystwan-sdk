@@ -9,7 +9,7 @@ from pprint import pformat
 from typing import Any, Callable, Dict, Optional, Sequence, Type, TypeVar, Union, cast
 from urllib.parse import urlparse
 
-from pydantic import BaseModel
+from pydantic import BaseModel, RootModel
 from requests import PreparedRequest, Request, Response
 from requests.cookies import RequestsCookieJar
 from requests.exceptions import JSONDecodeError
@@ -236,7 +236,11 @@ class ManagerResponse(Response, APIEndpointClientResponse):
         if issubclass(cls, BaseModel):
             if validate:
                 return cls.model_validate(data)  # type: ignore[return-value]
-            return cls.model_construct(**data)  # type: ignore[return-value]
+            else:
+                if issubclass(cls, RootModel):
+                    return cls.model_construct(data)  # type: ignore[return-value]
+                else:
+                    return cls.model_construct(**data)  # type: ignore[return-value]
         return create_dataclass(cls, data)
 
     def get_error_info(self) -> ManagerErrorInfo:

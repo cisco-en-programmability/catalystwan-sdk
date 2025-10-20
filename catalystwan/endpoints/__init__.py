@@ -76,8 +76,7 @@ logger = logging.getLogger(__name__)
 
 @runtime_checkable
 class CustomPayloadType(Protocol):
-    def prepared(self) -> PreparedPayload:
-        ...
+    def prepared(self) -> PreparedPayload: ...
 
 
 JSON = Union[str, int, float, bool, None, Dict[str, "JSON"], List["JSON"]]
@@ -263,9 +262,9 @@ class versions(APIEndpointsDecorator):
     Logs warning or raises exception when incompatibility found during runtime.
     """
 
-    versions_lookup: ClassVar[
-        Dict[str, SpecifierSet]
-    ] = {}  # maps decorated method instance to it's supported verisions
+    versions_lookup: ClassVar[Dict[str, SpecifierSet]] = (
+        {}
+    )  # maps decorated method instance to it's supported verisions
 
     def __init__(self, supported_versions: str, raises: bool = False):
         self.supported_versions = SpecifierSet(supported_versions)
@@ -355,9 +354,9 @@ class request(APIEndpointsDecorator):
     """
 
     forbidden_url_field_names = {"self", "payload", "params"}
-    request_lookup: ClassVar[
-        Dict[str, APIEndpointRequestMeta]
-    ] = {}  # maps decorated method instance to it's meta information
+    request_lookup: ClassVar[Dict[str, APIEndpointRequestMeta]] = (
+        {}
+    )  # maps decorated method instance to it's meta information
 
     def __init__(self, http_method: str, url: str, resp_json_key: Optional[str] = None, **kwargs):
         self.http_method = http_method
