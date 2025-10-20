@@ -103,9 +103,11 @@ from .policy_definition import (
     MultiRegionRole,
     OriginProtocol,
     PLPEntryType,
+    PolicyDefinitionInfo,
     ServiceType,
     TLOCActionType,
 )
+from .policy_list import PolicyListInfo
 from .security import (
     AnySecurityPolicy,
     AnySecurityPolicyInfo,
@@ -353,6 +355,8 @@ __all__ = (
     "OriginProtocol",
     "PLPEntryType",
     "PolicerList",
+    "PolicyDefinitionInfo",
+    "PolicyListInfo",
     "PortList",
     "PreferredColorGroupList",
     "PrefixList",
