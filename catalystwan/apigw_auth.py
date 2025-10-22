@@ -1,7 +1,7 @@
 # Copyright 2024 Cisco Systems, Inc. and its affiliates
 import logging
 from threading import RLock
-from typing import Literal, Optional
+from typing import Literal, Optional, Union
 from urllib.parse import urlparse
 
 from pydantic import BaseModel, Field, PositiveInt
@@ -34,7 +34,7 @@ class ApiGwAuth(AuthBase, AuthProtocol):
     2. Use the token in the Authorization header for subsequent requests.
     """
 
-    def __init__(self, login: ApiGwLogin, logger: Optional[logging.Logger] = None, verify: bool = False):
+    def __init__(self, login: ApiGwLogin, logger: Optional[logging.Logger] = None, verify: Union[bool, str] = False):
         self.login = login
         self.token = ""
         self.org_registered: bool = False
@@ -86,7 +86,7 @@ class ApiGwAuth(AuthBase, AuthProtocol):
         base_url: str,
         apigw_login: ApiGwLogin,
         logger: Optional[logging.Logger] = None,
-        verify: bool = False,
+        verify: Union[bool, str] = False,
         timeout: int = 10,
     ) -> str:
         try:
@@ -120,7 +120,7 @@ class ApiGwAuth(AuthBase, AuthProtocol):
         base_url: str,
         apigw_login: ApiGwLogin,
         logger: Optional[logging.Logger] = None,
-        verify: bool = False,
+        verify: Union[bool, str] = False,
         timeout: int = 10,
     ) -> None:
         try:
