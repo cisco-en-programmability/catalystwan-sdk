@@ -41,7 +41,7 @@ def find_template_values(
         template_value = template_definition.get(target_key_for_template_value)
 
         field_key = path[-1]
-        if value == "variableName":
+        if value in ["variableName", "variable"]:
             # For example this is the current dictionary:
             # field_key is "dns-addr"
             # {
@@ -52,7 +52,8 @@ def find_template_values(
             # }
             # vipType is "variableName" so we need to return
             # {"dns-addr": DeviceVariable(name="vpn_dns_primary")}
-            templated_values[field_key] = DeviceVariable(name=template_definition["vipVariableName"])
+            if var_name := template_definition.get("vipVariableName"):
+                templated_values[field_key] = DeviceVariable(name=var_name)
             return templated_values
 
         if template_value is None:
