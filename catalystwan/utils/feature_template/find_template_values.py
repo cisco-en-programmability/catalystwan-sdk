@@ -1,8 +1,10 @@
 # Copyright 2024 Cisco Systems, Inc. and its affiliates
-
+import logging
 from typing import Any, Dict, List, Optional, Union
 
 from catalystwan.api.templates.device_variable import DeviceVariable
+
+logger = logging.getLogger(__name__)
 
 
 def find_template_values(
@@ -53,7 +55,13 @@ def find_template_values(
             # vipType is "variableName" so we need to return
             # {"dns-addr": DeviceVariable(name="vpn_dns_primary")}
             if var_name := template_definition.get("vipVariableName"):
-                templated_values[field_key] = DeviceVariable(name=var_name)
+                new_value = DeviceVariable(name=var_name)
+                if previous_value := templated_values.get(field_key):
+                    logger.error(
+                        f"Overwriting existing value for field: '{field_key}' in templated_values. "
+                        f"Previous value: {previous_value}, new value: {new_value}."
+                    )
+                templated_values[field_key] = new_value
             return templated_values
 
         if template_value is None:
@@ -94,7 +102,11 @@ def get_nested_dict(d: dict, path: List[str], populate: bool = True):
     return current_dict
 
 
-def process_list_value(item: Any, target_key: str = "vipType", target_key_for_template_value: str = "vipValue"):
+def process_list_value(
+    item: Any,
+    target_key: str = "vipType",
+    target_key_for_template_value: str = "vipValue",
+):
     if isinstance(item, dict):
         if target_key in item:
             if item["vipObjectType"] == "list":

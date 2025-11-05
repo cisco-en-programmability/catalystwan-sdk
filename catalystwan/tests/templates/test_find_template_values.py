@@ -1,4 +1,6 @@
 # Copyright 2024 Cisco Systems, Inc. and its affiliates
+import logging
+
 from catalystwan.api.templates.device_variable import DeviceVariable
 from catalystwan.utils.feature_template.find_template_values import find_template_values
 
@@ -191,3 +193,230 @@ def test_find_template_values():
     result = find_template_values(input_values)
     # Assert
     assert expected_values == result
+
+
+def test_log_error_when_overwriting_existing_variable_value(caplog):
+    input_values = {
+        "if-name": {
+            "vipObjectType": "object",
+            "vipType": "variableName",
+            "vipValue": "",
+            "vipVariableName": "inet-if_name",
+        },
+        "description": {
+            "vipObjectType": "object",
+            "vipType": "variableName",
+            "vipValue": "",
+            "vipVariableName": "inet-if_desc",
+        },
+        "ip": {
+            "value": {
+                "vipObjectType": "object",
+                "vipType": "variableName",
+                "vipValue": "",
+                "vipVariableName": "first_test_value_variable",
+            },
+            "address": {
+                "vipObjectType": "object",
+                "vipType": "variableName",
+                "vipValue": "",
+                "vipVariableName": "inet-if_ipv4_address",
+            },
+        },
+        "tunnel-interface": {
+            "color": {
+                "value": {
+                    "vipObjectType": "object",
+                    "vipType": "variableName",
+                    "vipValue": "",
+                    "vipVariableName": "second_test_value_variable",
+                },
+                "restrict": {
+                    "vipObjectType": "node-only",
+                    "vipType": "ignore",
+                    "vipValue": "false",
+                    "vipVariableName": "vpn_if_tunnel_color_restrict",
+                },
+            },
+        },
+    }
+
+    expected_error_log = (
+        "Overwriting existing value for field: 'value' in templated_values. "
+        "Previous value: name='first_test_value_variable', new value: name='second_test_value_variable'."
+    )
+    # Act
+    result = find_template_values(input_values)
+
+    # Assert
+    error_logs = [log.getMessage() for log in caplog.records if log.levelno == logging.ERROR]
+    assert expected_error_log in error_logs
+    assert isinstance(result.get("value"), DeviceVariable)
+    assert result.get("value").name == "second_test_value_variable"
+
+
+def test_log_error_when_overwriting_existing_top_level_global_value(caplog):
+    input_values = {
+        "if-name": {
+            "vipObjectType": "object",
+            "vipType": "variableName",
+            "vipValue": "",
+            "vipVariableName": "inet-if_name",
+        },
+        "description": {
+            "vipObjectType": "object",
+            "vipType": "variableName",
+            "vipValue": "",
+            "vipVariableName": "inet-if_desc",
+        },
+        "value": {
+            "vipObjectType": "object",
+            "vipType": "constant",
+            "vipValue": "test_value",
+            "vipVariableName": "first_test_value_variable",
+        },
+        "ip": {
+            "address": {
+                "vipObjectType": "object",
+                "vipType": "variableName",
+                "vipValue": "",
+                "vipVariableName": "inet-if_ipv4_address",
+            },
+        },
+        "tunnel-interface": {
+            "color": {
+                "value": {
+                    "vipObjectType": "object",
+                    "vipType": "variableName",
+                    "vipValue": "",
+                    "vipVariableName": "second_test_value_variable",
+                },
+                "restrict": {
+                    "vipObjectType": "node-only",
+                    "vipType": "ignore",
+                    "vipValue": "false",
+                    "vipVariableName": "vpn_if_tunnel_color_restrict",
+                },
+            },
+        },
+    }
+
+    expected_error_log = (
+        "Overwriting existing value for field: 'value' in templated_values. "
+        "Previous value: test_value, new value: name='second_test_value_variable'."
+    )
+    # Act
+    result = find_template_values(input_values)
+
+    # Assert
+    error_logs = [log.getMessage() for log in caplog.records if log.levelno == logging.ERROR]
+
+    assert expected_error_log in error_logs
+    assert isinstance(result.get("value"), DeviceVariable)
+    assert result.get("value").name == "second_test_value_variable"
+
+
+def test_no_log_error_when_setting_value_first_time(caplog):
+    input_values = {
+        "if-name": {
+            "vipObjectType": "object",
+            "vipType": "variableName",
+            "vipValue": "",
+            "vipVariableName": "inet-if_name",
+        },
+        "description": {
+            "vipObjectType": "object",
+            "vipType": "variableName",
+            "vipValue": "",
+            "vipVariableName": "inet-if_desc",
+        },
+        "ip": {
+            "address": {
+                "vipObjectType": "object",
+                "vipType": "variableName",
+                "vipValue": "",
+                "vipVariableName": "inet-if_ipv4_address",
+            },
+        },
+        "tunnel-interface": {
+            "color": {
+                "value": {
+                    "vipObjectType": "object",
+                    "vipType": "variableName",
+                    "vipValue": "",
+                    "vipVariableName": "test_value_variable",
+                },
+                "restrict": {
+                    "vipObjectType": "node-only",
+                    "vipType": "ignore",
+                    "vipValue": "false",
+                    "vipVariableName": "vpn_if_tunnel_color_restrict",
+                },
+            },
+        },
+    }
+
+    # Act
+    result = find_template_values(input_values)
+
+    # Assert
+    error_logs = [log.getMessage() for log in caplog.records if log.levelno == logging.ERROR]
+    assert len(error_logs) == 0
+    assert isinstance(result.get("value"), DeviceVariable)
+    assert result.get("value").name == "test_value_variable"
+
+
+def test_no_log_error_when_global_value_is_nested(caplog):
+    input_values = {
+        "if-name": {
+            "vipObjectType": "object",
+            "vipType": "variableName",
+            "vipValue": "",
+            "vipVariableName": "inet-if_name",
+        },
+        "description": {
+            "vipObjectType": "object",
+            "vipType": "variableName",
+            "vipValue": "",
+            "vipVariableName": "inet-if_desc",
+        },
+        "ip": {
+            "address": {
+                "vipObjectType": "object",
+                "vipType": "variableName",
+                "vipValue": "",
+                "vipVariableName": "inet-if_ipv4_address",
+            },
+            "value": {
+                "vipObjectType": "object",
+                "vipType": "constant",
+                "vipValue": "test_value",
+                "vipVariableName": "first_test_value_variable",
+            },
+        },
+        "tunnel-interface": {
+            "color": {
+                "value": {
+                    "vipObjectType": "object",
+                    "vipType": "variableName",
+                    "vipValue": "",
+                    "vipVariableName": "second_test_value_variable",
+                },
+                "restrict": {
+                    "vipObjectType": "node-only",
+                    "vipType": "ignore",
+                    "vipValue": "false",
+                    "vipVariableName": "vpn_if_tunnel_color_restrict",
+                },
+            },
+        },
+    }
+
+    # Act
+    result = find_template_values(input_values)
+
+    # Assert
+    error_logs = [log.getMessage() for log in caplog.records if log.levelno == logging.ERROR]
+    assert len(error_logs) == 0
+    assert isinstance(result.get("value"), DeviceVariable)
+    assert result.get("value").name == "second_test_value_variable"
