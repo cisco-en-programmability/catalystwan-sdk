@@ -336,112 +336,97 @@ class TransportFeatureProfileAPI:
     @overload
     def get_parcel(
         self, profile_id: UUID, parcel_type: Type[CellularControllerParcel], parcel_id: UUID
-    ) -> Parcel[CellularControllerParcel]:
-        ...
+    ) -> Parcel[CellularControllerParcel]: ...
 
     @overload
     def get_parcel(
         self, profile_id: UUID, parcel_type: Type[T1E1ControllerParcel], parcel_id: UUID
-    ) -> Parcel[T1E1ControllerParcel]:
-        ...
+    ) -> Parcel[T1E1ControllerParcel]: ...
 
     @overload
     def get_parcel(
         self, profile_id: UUID, parcel_type: Type[TransportVpnParcel], parcel_id: UUID
-    ) -> Parcel[TransportVpnParcel]:
-        ...
+    ) -> Parcel[TransportVpnParcel]: ...
 
     @overload
     def get_parcel(
         self, profile_id: UUID, parcel_type: Type[ManagementVpnParcel], parcel_id: UUID
-    ) -> Parcel[ManagementVpnParcel]:
-        ...
+    ) -> Parcel[ManagementVpnParcel]: ...
 
     @overload
-    def get_parcel(self, profile_id: UUID, parcel_type: Type[Ipv4AclParcel], parcel_id: UUID) -> Parcel[Ipv4AclParcel]:
-        ...
+    def get_parcel(
+        self, profile_id: UUID, parcel_type: Type[Ipv4AclParcel], parcel_id: UUID
+    ) -> Parcel[Ipv4AclParcel]: ...
 
     @overload
-    def get_parcel(self, profile_id: UUID, parcel_type: Type[Ipv6AclParcel], parcel_id: UUID) -> Parcel[Ipv6AclParcel]:
-        ...
+    def get_parcel(
+        self, profile_id: UUID, parcel_type: Type[Ipv6AclParcel], parcel_id: UUID
+    ) -> Parcel[Ipv6AclParcel]: ...
 
     @overload
     def get_parcel(
         self, profile_id: UUID, parcel_type: Type[RoutePolicyParcel], parcel_id: UUID
-    ) -> Parcel[RoutePolicyParcel]:
-        ...
+    ) -> Parcel[RoutePolicyParcel]: ...
 
     @overload
     def get_parcel(
         self, profile_id: UUID, parcel_type: Type[WanInterfaceMultilinkParcel], parcel_id: UUID, vpn_uuid: UUID
-    ) -> Parcel[WanInterfaceMultilinkParcel]:
-        ...
+    ) -> Parcel[WanInterfaceMultilinkParcel]: ...
 
     @overload
     def get_parcel(
         self, profile_id: UUID, parcel_type: Type[InterfaceEthPPPoEParcel], parcel_id: UUID, vpn_uuid: UUID
-    ) -> Parcel[InterfaceEthPPPoEParcel]:
-        ...
+    ) -> Parcel[InterfaceEthPPPoEParcel]: ...
 
     @overload
     def get_parcel(
         self, profile_id: UUID, parcel_type: Type[InterfaceDslPPPoEParcel], parcel_id: UUID, vpn_uuid: UUID
-    ) -> Parcel[InterfaceDslPPPoEParcel]:
-        ...
+    ) -> Parcel[InterfaceDslPPPoEParcel]: ...
 
     @overload
     def get_parcel(
         self, profile_id: UUID, parcel_type: Type[InterfaceDslPPPoAParcel], parcel_id: UUID, vpn_uuid: UUID
-    ) -> Parcel[InterfaceDslPPPoAParcel]:
-        ...
+    ) -> Parcel[InterfaceDslPPPoAParcel]: ...
 
     @overload
     def get_parcel(
         self, profile_id: UUID, parcel_type: Type[InterfaceDslIPoEParcel], parcel_id: UUID, vpn_uuid: UUID
-    ) -> Parcel[InterfaceDslIPoEParcel]:
-        ...
+    ) -> Parcel[InterfaceDslIPoEParcel]: ...
 
     @overload
     def get_parcel(
         self, profile_id: UUID, parcel_type: Type[WanInterfaceGreParcel], parcel_id: UUID, vpn_uuid: UUID
-    ) -> Parcel[WanInterfaceGreParcel]:
-        ...
+    ) -> Parcel[WanInterfaceGreParcel]: ...
 
     @overload
     def get_parcel(
         self, profile_id: UUID, parcel_type: Type[WanInterfaceEthernetParcel], parcel_id: UUID, vpn_uuid: UUID
-    ) -> Parcel[WanInterfaceEthernetParcel]:
-        ...
+    ) -> Parcel[WanInterfaceEthernetParcel]: ...
 
     @overload
     def get_parcel(
         self, profile_id: UUID, parcel_type: Type[ManagementInterfaceEthernetParcel], parcel_id: UUID, vpn_uuid: UUID
-    ) -> Parcel[ManagementInterfaceEthernetParcel]:
-        ...
+    ) -> Parcel[ManagementInterfaceEthernetParcel]: ...
 
     @overload
     def get_parcel(
         self, profile_id: UUID, parcel_type: Type[RoutingBgpParcel], parcel_id: UUID
-    ) -> Parcel[RoutingBgpParcel]:
-        ...
+    ) -> Parcel[RoutingBgpParcel]: ...
 
     @overload
     def get_parcel(
         self, profile_id: UUID, parcel_type: Type[RoutingOspfParcel], parcel_id: UUID
-    ) -> Parcel[RoutingOspfParcel]:
-        ...
+    ) -> Parcel[RoutingOspfParcel]: ...
 
     @overload
     def get_parcel(
         self, profile_id: UUID, parcel_type: Type[RoutingOspfv3IPv6Parcel], parcel_id: UUID
-    ) -> Parcel[RoutingOspfv3IPv6Parcel]:
-        ...
+    ) -> Parcel[RoutingOspfv3IPv6Parcel]: ...
 
     @overload
     def get_parcel(
         self, profile_id: UUID, parcel_type: Type[RoutingOspfv3IPv4Parcel], parcel_id: UUID
-    ) -> Parcel[RoutingOspfv3IPv4Parcel]:
-        ...
+    ) -> Parcel[RoutingOspfv3IPv4Parcel]: ...
 
     @overload
     def get_parcel(
@@ -450,8 +435,7 @@ class TransportFeatureProfileAPI:
         parcel_type: Type[InterfaceCellularParcel],
         parcel_id: UUID,
         vpn_uuid: UUID,
-    ) -> Parcel[InterfaceCellularParcel]:
-        ...
+    ) -> Parcel[InterfaceCellularParcel]: ...
 
     @overload
     def get_parcel(
@@ -460,8 +444,7 @@ class TransportFeatureProfileAPI:
         parcel_type: Type[T1E1SerialParcel],
         parcel_id: UUID,
         vpn_uuid: UUID,
-    ) -> Parcel[T1E1SerialParcel]:
-        ...
+    ) -> Parcel[T1E1SerialParcel]: ...
 
     @overload
     def get_parcel(
@@ -470,8 +453,7 @@ class TransportFeatureProfileAPI:
         parcel_type: Type[WanInterfaceIpsecParcel],
         parcel_id: UUID,
         vpn_uuid: UUID,
-    ) -> Parcel[WanInterfaceIpsecParcel]:
-        ...
+    ) -> Parcel[WanInterfaceIpsecParcel]: ...
 
     def get_parcel(
         self,
@@ -669,64 +651,56 @@ class ServiceFeatureProfileAPI:
         self,
         profile_id: UUID,
         parcel_type: Type[RoutePolicyParcel],
-    ) -> DataSequence[Parcel[RoutePolicyParcel]]:
-        ...
+    ) -> DataSequence[Parcel[RoutePolicyParcel]]: ...
 
     @overload
     def get_parcels(
         self,
         profile_id: UUID,
         parcel_type: Type[Ipv4AclParcel],
-    ) -> DataSequence[Parcel[Ipv4AclParcel]]:
-        ...
+    ) -> DataSequence[Parcel[Ipv4AclParcel]]: ...
 
     @overload
     def get_parcels(
         self,
         profile_id: UUID,
         parcel_type: Type[Ipv6AclParcel],
-    ) -> DataSequence[Parcel[Ipv6AclParcel]]:
-        ...
+    ) -> DataSequence[Parcel[Ipv6AclParcel]]: ...
 
     @overload
     def get_parcels(
         self,
         profile_id: UUID,
         parcel_type: Type[LanVpnParcel],
-    ) -> DataSequence[Parcel[LanVpnParcel]]:
-        ...
+    ) -> DataSequence[Parcel[LanVpnParcel]]: ...
 
     @overload
     def get_parcels(
         self,
         profile_id: UUID,
         parcel_type: Type[MulticastParcel],
-    ) -> DataSequence[Parcel[MulticastParcel]]:
-        ...
+    ) -> DataSequence[Parcel[MulticastParcel]]: ...
 
     @overload
     def get_parcels(
         self,
         profile_id: UUID,
         parcel_type: Type[EigrpParcel],
-    ) -> DataSequence[Parcel[EigrpParcel]]:
-        ...
+    ) -> DataSequence[Parcel[EigrpParcel]]: ...
 
     @overload
     def get_parcels(
         self,
         profile_id: UUID,
         parcel_type: Type[SwitchportParcel],
-    ) -> DataSequence[Parcel[SwitchportParcel]]:
-        ...
+    ) -> DataSequence[Parcel[SwitchportParcel]]: ...
 
     @overload
     def get_parcels(
         self,
         profile_id: UUID,
         parcel_type: Type[WirelessLanParcel],
-    ) -> DataSequence[Parcel[WirelessLanParcel]]:
-        ...
+    ) -> DataSequence[Parcel[WirelessLanParcel]]: ...
 
     def get_parcels(
         self,
@@ -744,8 +718,7 @@ class ServiceFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[RoutePolicyParcel],
         parcel_id: UUID,
-    ) -> Parcel[RoutePolicyParcel]:
-        ...
+    ) -> Parcel[RoutePolicyParcel]: ...
 
     @overload
     def get_parcel(
@@ -753,8 +726,7 @@ class ServiceFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[Ipv4AclParcel],
         parcel_id: UUID,
-    ) -> Parcel[Ipv4AclParcel]:
-        ...
+    ) -> Parcel[Ipv4AclParcel]: ...
 
     @overload
     def get_parcel(
@@ -762,8 +734,7 @@ class ServiceFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[Ipv6AclParcel],
         parcel_id: UUID,
-    ) -> Parcel[Ipv6AclParcel]:
-        ...
+    ) -> Parcel[Ipv6AclParcel]: ...
 
     @overload
     def get_parcel(
@@ -771,8 +742,7 @@ class ServiceFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[LanVpnParcel],
         parcel_id: UUID,
-    ) -> Parcel[LanVpnParcel]:
-        ...
+    ) -> Parcel[LanVpnParcel]: ...
 
     @overload
     def get_parcel(
@@ -780,8 +750,7 @@ class ServiceFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[MulticastParcel],
         parcel_id: UUID,
-    ) -> Parcel[MulticastParcel]:
-        ...
+    ) -> Parcel[MulticastParcel]: ...
 
     @overload
     def get_parcel(
@@ -789,8 +758,7 @@ class ServiceFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[EigrpParcel],
         parcel_id: UUID,
-    ) -> Parcel[EigrpParcel]:
-        ...
+    ) -> Parcel[EigrpParcel]: ...
 
     @overload
     def get_parcel(
@@ -798,8 +766,7 @@ class ServiceFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[SwitchportParcel],
         parcel_id: UUID,
-    ) -> Parcel[SwitchportParcel]:
-        ...
+    ) -> Parcel[SwitchportParcel]: ...
 
     @overload
     def get_parcel(
@@ -807,8 +774,7 @@ class ServiceFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[WirelessLanParcel],
         parcel_id: UUID,
-    ) -> Parcel[WirelessLanParcel]:
-        ...
+    ) -> Parcel[WirelessLanParcel]: ...
 
     @overload
     def get_parcel(
@@ -817,8 +783,7 @@ class ServiceFeatureProfileAPI:
         parcel_type: Type[LanInterfaceEthernetParcel],
         parcel_id: UUID,
         vpn_uuid: UUID,
-    ) -> Parcel[LanInterfaceEthernetParcel]:
-        ...
+    ) -> Parcel[LanInterfaceEthernetParcel]: ...
 
     @overload
     def get_parcel(
@@ -827,8 +792,7 @@ class ServiceFeatureProfileAPI:
         parcel_type: Type[LanInterfaceGreParcel],
         parcel_id: UUID,
         vpn_uuid: UUID,
-    ) -> Parcel[LanInterfaceGreParcel]:
-        ...
+    ) -> Parcel[LanInterfaceGreParcel]: ...
 
     @overload
     def get_parcel(
@@ -837,8 +801,7 @@ class ServiceFeatureProfileAPI:
         parcel_type: Type[LanInterfaceIpsecParcel],
         parcel_id: UUID,
         vpn_uuid: UUID,
-    ) -> Parcel[LanInterfaceIpsecParcel]:
-        ...
+    ) -> Parcel[LanInterfaceIpsecParcel]: ...
 
     @overload
     def get_parcel(
@@ -847,8 +810,7 @@ class ServiceFeatureProfileAPI:
         parcel_type: Type[InterfaceSviParcel],
         parcel_id: UUID,
         vpn_uuid: UUID,
-    ) -> Parcel[InterfaceSviParcel]:
-        ...
+    ) -> Parcel[InterfaceSviParcel]: ...
 
     @overload
     def get_parcel(
@@ -857,8 +819,7 @@ class ServiceFeatureProfileAPI:
         parcel_type: Type[LanInterfaceMultilinkParcel],
         parcel_id: UUID,
         vpn_uuid: UUID,
-    ) -> Parcel[LanInterfaceMultilinkParcel]:
-        ...
+    ) -> Parcel[LanInterfaceMultilinkParcel]: ...
 
     @overload
     def get_parcel(
@@ -866,8 +827,7 @@ class ServiceFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[RoutingBgpParcel],
         parcel_id: UUID,
-    ) -> Parcel[RoutingBgpParcel]:
-        ...
+    ) -> Parcel[RoutingBgpParcel]: ...
 
     @overload
     def get_parcel(
@@ -875,8 +835,7 @@ class ServiceFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[RoutingOspfv3IPv6Parcel],
         parcel_id: UUID,
-    ) -> Parcel[RoutingOspfv3IPv6Parcel]:
-        ...
+    ) -> Parcel[RoutingOspfv3IPv6Parcel]: ...
 
     @overload
     def get_parcel(
@@ -884,8 +843,7 @@ class ServiceFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[RoutingOspfParcel],
         parcel_id: UUID,
-    ) -> Parcel[RoutingOspfParcel]:
-        ...
+    ) -> Parcel[RoutingOspfParcel]: ...
 
     @overload
     def get_parcel(
@@ -893,8 +851,7 @@ class ServiceFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[RoutingOspfv3IPv4Parcel],
         parcel_id: UUID,
-    ) -> Parcel[RoutingOspfv3IPv4Parcel]:
-        ...
+    ) -> Parcel[RoutingOspfv3IPv4Parcel]: ...
 
     def get_parcel(
         self,
@@ -985,88 +942,77 @@ class SystemFeatureProfileAPI:
         self,
         profile_id: UUID,
         parcel_type: Type[AAAParcel],
-    ) -> DataSequence[Parcel[AAAParcel]]:
-        ...
+    ) -> DataSequence[Parcel[AAAParcel]]: ...
 
     @overload
     def get_parcels(
         self,
         profile_id: UUID,
         parcel_type: Type[BannerParcel],
-    ) -> DataSequence[Parcel[BannerParcel]]:
-        ...
+    ) -> DataSequence[Parcel[BannerParcel]]: ...
 
     @overload
     def get_parcels(
         self,
         profile_id: UUID,
         parcel_type: Type[BasicParcel],
-    ) -> DataSequence[Parcel[BasicParcel]]:
-        ...
+    ) -> DataSequence[Parcel[BasicParcel]]: ...
 
     @overload
     def get_parcels(
         self,
         profile_id: UUID,
         parcel_type: Type[BFDParcel],
-    ) -> DataSequence[Parcel[BFDParcel]]:
-        ...
+    ) -> DataSequence[Parcel[BFDParcel]]: ...
 
     @overload
     def get_parcels(
         self,
         profile_id: UUID,
         parcel_type: Type[GlobalParcel],
-    ) -> DataSequence[Parcel[GlobalParcel]]:
-        ...
+    ) -> DataSequence[Parcel[GlobalParcel]]: ...
 
     @overload
     def get_parcels(
         self,
         profile_id: UUID,
         parcel_type: Type[LoggingParcel],
-    ) -> DataSequence[Parcel[LoggingParcel]]:
-        ...
+    ) -> DataSequence[Parcel[LoggingParcel]]: ...
 
     @overload
     def get_parcels(
         self,
         profile_id: UUID,
         parcel_type: Type[MRFParcel],
-    ) -> DataSequence[Parcel[MRFParcel]]:
-        ...
+    ) -> DataSequence[Parcel[MRFParcel]]: ...
 
     @overload
     def get_parcels(
         self,
         profile_id: UUID,
         parcel_type: Type[NtpParcel],
-    ) -> DataSequence[Parcel[NtpParcel]]:
-        ...
+    ) -> DataSequence[Parcel[NtpParcel]]: ...
 
     @overload
     def get_parcels(
         self,
         profile_id: UUID,
         parcel_type: Type[OMPParcel],
-    ) -> DataSequence[Parcel[OMPParcel]]:
-        ...
+    ) -> DataSequence[Parcel[OMPParcel]]: ...
 
     @overload
     def get_parcels(
         self,
         profile_id: UUID,
         parcel_type: Type[SecurityParcel],
-    ) -> DataSequence[Parcel[SecurityParcel]]:
-        ...
+    ) -> DataSequence[Parcel[SecurityParcel]]: ...
 
     @overload
     def get_parcels(
         self,
         profile_id: UUID,
         parcel_type: Type[SNMPParcel],
-    ) -> DataSequence[Parcel[SNMPParcel]]:
-        ...
+    ) -> DataSequence[Parcel[SNMPParcel]]: ...
 
     def get_parcels(
         self,
@@ -1084,8 +1030,7 @@ class SystemFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[AAAParcel],
         parcel_id: UUID,
-    ) -> Parcel[AAAParcel]:
-        ...
+    ) -> Parcel[AAAParcel]: ...
 
     @overload
     def get_parcel(
@@ -1093,8 +1038,7 @@ class SystemFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[BannerParcel],
         parcel_id: UUID,
-    ) -> Parcel[BannerParcel]:
-        ...
+    ) -> Parcel[BannerParcel]: ...
 
     @overload
     def get_parcel(
@@ -1102,8 +1046,7 @@ class SystemFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[BasicParcel],
         parcel_id: UUID,
-    ) -> Parcel[BasicParcel]:
-        ...
+    ) -> Parcel[BasicParcel]: ...
 
     @overload
     def get_parcel(
@@ -1111,8 +1054,7 @@ class SystemFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[BFDParcel],
         parcel_id: UUID,
-    ) -> Parcel[BFDParcel]:
-        ...
+    ) -> Parcel[BFDParcel]: ...
 
     @overload
     def get_parcel(
@@ -1120,8 +1062,7 @@ class SystemFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[GlobalParcel],
         parcel_id: UUID,
-    ) -> Parcel[GlobalParcel]:
-        ...
+    ) -> Parcel[GlobalParcel]: ...
 
     @overload
     def get_parcel(
@@ -1129,8 +1070,7 @@ class SystemFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[LoggingParcel],
         parcel_id: UUID,
-    ) -> Parcel[LoggingParcel]:
-        ...
+    ) -> Parcel[LoggingParcel]: ...
 
     @overload
     def get_parcel(
@@ -1138,8 +1078,7 @@ class SystemFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[MRFParcel],
         parcel_id: UUID,
-    ) -> Parcel[MRFParcel]:
-        ...
+    ) -> Parcel[MRFParcel]: ...
 
     @overload
     def get_parcel(
@@ -1147,8 +1086,7 @@ class SystemFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[NtpParcel],
         parcel_id: UUID,
-    ) -> Parcel[NtpParcel]:
-        ...
+    ) -> Parcel[NtpParcel]: ...
 
     @overload
     def get_parcel(
@@ -1156,8 +1094,7 @@ class SystemFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[OMPParcel],
         parcel_id: UUID,
-    ) -> Parcel[OMPParcel]:
-        ...
+    ) -> Parcel[OMPParcel]: ...
 
     @overload
     def get_parcel(
@@ -1165,8 +1102,7 @@ class SystemFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[SecurityParcel],
         parcel_id: UUID,
-    ) -> Parcel[SecurityParcel]:
-        ...
+    ) -> Parcel[SecurityParcel]: ...
 
     @overload
     def get_parcel(
@@ -1174,8 +1110,7 @@ class SystemFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[SNMPParcel],
         parcel_id: UUID,
-    ) -> Parcel[SNMPParcel]:
-        ...
+    ) -> Parcel[SNMPParcel]: ...
 
     def get_parcel(
         self,
@@ -1208,8 +1143,7 @@ class SystemFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[AAAParcel],
         parcel_id: UUID,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @overload
     def delete_parcel(
@@ -1217,8 +1151,7 @@ class SystemFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[BFDParcel],
         parcel_id: UUID,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @overload
     def delete_parcel(
@@ -1226,8 +1159,7 @@ class SystemFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[LoggingParcel],
         parcel_id: UUID,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @overload
     def delete_parcel(
@@ -1235,8 +1167,7 @@ class SystemFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[BannerParcel],
         parcel_id: UUID,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @overload
     def delete_parcel(
@@ -1244,8 +1175,7 @@ class SystemFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[BasicParcel],
         parcel_id: UUID,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @overload
     def delete_parcel(
@@ -1253,8 +1183,7 @@ class SystemFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[GlobalParcel],
         parcel_id: UUID,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @overload
     def delete_parcel(
@@ -1262,8 +1191,7 @@ class SystemFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[NtpParcel],
         parcel_id: UUID,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @overload
     def delete_parcel(
@@ -1271,8 +1199,7 @@ class SystemFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[MRFParcel],
         parcel_id: UUID,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @overload
     def delete_parcel(
@@ -1280,8 +1207,7 @@ class SystemFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[OMPParcel],
         parcel_id: UUID,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @overload
     def delete_parcel(
@@ -1289,8 +1215,7 @@ class SystemFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[SecurityParcel],
         parcel_id: UUID,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @overload
     def delete_parcel(
@@ -1298,8 +1223,7 @@ class SystemFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[SNMPParcel],
         parcel_id: UUID,
-    ) -> None:
-        ...
+    ) -> None: ...
 
     def delete_parcel(self, profile_id: UUID, parcel_type: Type[AnySystemParcel], parcel_id: UUID) -> None:
         """
@@ -1329,328 +1253,281 @@ class PolicyObjectFeatureProfileAPI:
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[AdvancedInspectionProfileParcel]
-    ) -> DataSequence[Parcel[AdvancedInspectionProfileParcel]]:
-        ...
+    ) -> DataSequence[Parcel[AdvancedInspectionProfileParcel]]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[AdvancedMalwareProtectionParcel]
-    ) -> DataSequence[Parcel[AdvancedMalwareProtectionParcel]]:
-        ...
+    ) -> DataSequence[Parcel[AdvancedMalwareProtectionParcel]]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[ApplicationListParcel]
-    ) -> DataSequence[Parcel[ApplicationListParcel]]:
-        ...
+    ) -> DataSequence[Parcel[ApplicationListParcel]]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[AppProbeParcel]) -> DataSequence[Parcel[AppProbeParcel]]:
-        ...
+    def get(self, profile_id: UUID, parcel_type: Type[AppProbeParcel]) -> DataSequence[Parcel[AppProbeParcel]]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[AsPathParcel]) -> DataSequence[Parcel[AsPathParcel]]:
-        ...
+    def get(self, profile_id: UUID, parcel_type: Type[AsPathParcel]) -> DataSequence[Parcel[AsPathParcel]]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[ColorParcel]) -> DataSequence[Parcel[ColorParcel]]:
-        ...
+    def get(self, profile_id: UUID, parcel_type: Type[ColorParcel]) -> DataSequence[Parcel[ColorParcel]]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[DataPrefixParcel]) -> DataSequence[Parcel[DataPrefixParcel]]:
-        ...
+    def get(self, profile_id: UUID, parcel_type: Type[DataPrefixParcel]) -> DataSequence[Parcel[DataPrefixParcel]]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[ExpandedCommunityParcel]
-    ) -> DataSequence[Parcel[ExpandedCommunityParcel]]:
-        ...
+    ) -> DataSequence[Parcel[ExpandedCommunityParcel]]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[FowardingClassParcel]
-    ) -> DataSequence[Parcel[FowardingClassParcel]]:
-        ...
+    ) -> DataSequence[Parcel[FowardingClassParcel]]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[FQDNDomainParcel]) -> DataSequence[Parcel[FQDNDomainParcel]]:
-        ...
+    def get(self, profile_id: UUID, parcel_type: Type[FQDNDomainParcel]) -> DataSequence[Parcel[FQDNDomainParcel]]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[GeoLocationListParcel]
-    ) -> DataSequence[Parcel[GeoLocationListParcel]]:
-        ...
+    ) -> DataSequence[Parcel[GeoLocationListParcel]]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[IntrusionPreventionParcel]
-    ) -> DataSequence[Parcel[IntrusionPreventionParcel]]:
-        ...
+    ) -> DataSequence[Parcel[IntrusionPreventionParcel]]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[IPSSignatureParcel]) -> DataSequence[Parcel[IPSSignatureParcel]]:
-        ...
+    def get(
+        self, profile_id: UUID, parcel_type: Type[IPSSignatureParcel]
+    ) -> DataSequence[Parcel[IPSSignatureParcel]]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[IPv6DataPrefixParcel]
-    ) -> DataSequence[Parcel[IPv6DataPrefixParcel]]:
-        ...
+    ) -> DataSequence[Parcel[IPv6DataPrefixParcel]]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[IPv6PrefixListParcel]
-    ) -> DataSequence[Parcel[IPv6PrefixListParcel]]:
-        ...
+    ) -> DataSequence[Parcel[IPv6PrefixListParcel]]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[LocalDomainParcel]) -> DataSequence[Parcel[LocalDomainParcel]]:
-        ...
+    def get(
+        self, profile_id: UUID, parcel_type: Type[LocalDomainParcel]
+    ) -> DataSequence[Parcel[LocalDomainParcel]]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[MirrorParcel]) -> DataSequence[Parcel[MirrorParcel]]:
-        ...
+    def get(self, profile_id: UUID, parcel_type: Type[MirrorParcel]) -> DataSequence[Parcel[MirrorParcel]]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[PolicerParcel]) -> DataSequence[Parcel[PolicerParcel]]:
-        ...
+    def get(self, profile_id: UUID, parcel_type: Type[PolicerParcel]) -> DataSequence[Parcel[PolicerParcel]]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[PreferredColorGroupParcel]
-    ) -> DataSequence[Parcel[PreferredColorGroupParcel]]:
-        ...
+    ) -> DataSequence[Parcel[PreferredColorGroupParcel]]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[PrefixListParcel]) -> DataSequence[Parcel[PrefixListParcel]]:
-        ...
+    def get(self, profile_id: UUID, parcel_type: Type[PrefixListParcel]) -> DataSequence[Parcel[PrefixListParcel]]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[ProtocolListParcel]) -> DataSequence[Parcel[ProtocolListParcel]]:
-        ...
+    def get(
+        self, profile_id: UUID, parcel_type: Type[ProtocolListParcel]
+    ) -> DataSequence[Parcel[ProtocolListParcel]]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[SecurityApplicationListParcel]
-    ) -> DataSequence[Parcel[SecurityApplicationListParcel]]:
-        ...
+    ) -> DataSequence[Parcel[SecurityApplicationListParcel]]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[SecurityDataPrefixParcel]
-    ) -> DataSequence[Parcel[SecurityDataPrefixParcel]]:
-        ...
+    ) -> DataSequence[Parcel[SecurityDataPrefixParcel]]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[SecurityPortParcel]) -> DataSequence[Parcel[SecurityPortParcel]]:
-        ...
+    def get(
+        self, profile_id: UUID, parcel_type: Type[SecurityPortParcel]
+    ) -> DataSequence[Parcel[SecurityPortParcel]]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[SecurityZoneListParcel]
-    ) -> DataSequence[Parcel[SecurityZoneListParcel]]:
-        ...
+    ) -> DataSequence[Parcel[SecurityZoneListParcel]]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[SLAClassParcel]) -> DataSequence[Parcel[SLAClassParcel]]:
-        ...
+    def get(self, profile_id: UUID, parcel_type: Type[SLAClassParcel]) -> DataSequence[Parcel[SLAClassParcel]]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[SslDecryptionParcel]
-    ) -> DataSequence[Parcel[SslDecryptionParcel]]:
-        ...
+    ) -> DataSequence[Parcel[SslDecryptionParcel]]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[SslDecryptionProfileParcel]
-    ) -> DataSequence[Parcel[SslDecryptionProfileParcel]]:
-        ...
+    ) -> DataSequence[Parcel[SslDecryptionProfileParcel]]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[StandardCommunityParcel]
-    ) -> DataSequence[Parcel[StandardCommunityParcel]]:
-        ...
+    ) -> DataSequence[Parcel[StandardCommunityParcel]]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[TlocParcel]) -> DataSequence[Parcel[TlocParcel]]:
-        ...
+    def get(self, profile_id: UUID, parcel_type: Type[TlocParcel]) -> DataSequence[Parcel[TlocParcel]]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[URLParcel]) -> DataSequence[Parcel[TlocParcel]]:
-        ...
+    def get(self, profile_id: UUID, parcel_type: Type[URLParcel]) -> DataSequence[Parcel[TlocParcel]]: ...
 
     # get by id
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[AdvancedInspectionProfileParcel], parcel_id: UUID
-    ) -> Parcel[AdvancedInspectionProfileParcel]:
-        ...
+    ) -> Parcel[AdvancedInspectionProfileParcel]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[AdvancedMalwareProtectionParcel], parcel_id: UUID
-    ) -> Parcel[AdvancedMalwareProtectionParcel]:
-        ...
+    ) -> Parcel[AdvancedMalwareProtectionParcel]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[ApplicationListParcel], parcel_id: UUID
-    ) -> Parcel[ApplicationListParcel]:
-        ...
+    ) -> Parcel[ApplicationListParcel]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[AppProbeParcel], parcel_id: UUID) -> Parcel[AppProbeParcel]:
-        ...
+    def get(self, profile_id: UUID, parcel_type: Type[AppProbeParcel], parcel_id: UUID) -> Parcel[AppProbeParcel]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[AsPathParcel], parcel_id: UUID) -> Parcel[AsPathParcel]:
-        ...
+    def get(self, profile_id: UUID, parcel_type: Type[AsPathParcel], parcel_id: UUID) -> Parcel[AsPathParcel]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[ColorParcel], parcel_id: UUID) -> Parcel[ColorParcel]:
-        ...
+    def get(self, profile_id: UUID, parcel_type: Type[ColorParcel], parcel_id: UUID) -> Parcel[ColorParcel]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[DataPrefixParcel], parcel_id: UUID) -> Parcel[DataPrefixParcel]:
-        ...
+    def get(
+        self, profile_id: UUID, parcel_type: Type[DataPrefixParcel], parcel_id: UUID
+    ) -> Parcel[DataPrefixParcel]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[ExpandedCommunityParcel], parcel_id: UUID
-    ) -> Parcel[ExpandedCommunityParcel]:
-        ...
+    ) -> Parcel[ExpandedCommunityParcel]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[ExtendedCommunityParcel], parcel_id: UUID
-    ) -> DataSequence[Parcel[Any]]:
-        ...
+    ) -> DataSequence[Parcel[Any]]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[FowardingClassParcel], parcel_id: UUID
-    ) -> Parcel[FowardingClassParcel]:
-        ...
+    ) -> Parcel[FowardingClassParcel]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[FQDNDomainParcel], parcel_id: UUID) -> Parcel[FQDNDomainParcel]:
-        ...
+    def get(
+        self, profile_id: UUID, parcel_type: Type[FQDNDomainParcel], parcel_id: UUID
+    ) -> Parcel[FQDNDomainParcel]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[GeoLocationListParcel], parcel_id: UUID
-    ) -> Parcel[GeoLocationListParcel]:
-        ...
+    ) -> Parcel[GeoLocationListParcel]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[IntrusionPreventionParcel], parcel_id: UUID
-    ) -> Parcel[IntrusionPreventionParcel]:
-        ...
+    ) -> Parcel[IntrusionPreventionParcel]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[IPSSignatureParcel], parcel_id: UUID
-    ) -> Parcel[IPSSignatureParcel]:
-        ...
+    ) -> Parcel[IPSSignatureParcel]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[IPv6DataPrefixParcel], parcel_id: UUID
-    ) -> Parcel[IPv6DataPrefixParcel]:
-        ...
+    ) -> Parcel[IPv6DataPrefixParcel]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[IPv6PrefixListParcel], parcel_id: UUID
-    ) -> Parcel[IPv6PrefixListParcel]:
-        ...
+    ) -> Parcel[IPv6PrefixListParcel]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[LocalDomainParcel], parcel_id: UUID) -> Parcel[LocalDomainParcel]:
-        ...
+    def get(
+        self, profile_id: UUID, parcel_type: Type[LocalDomainParcel], parcel_id: UUID
+    ) -> Parcel[LocalDomainParcel]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[MirrorParcel], parcel_id: UUID) -> Parcel[MirrorParcel]:
-        ...
+    def get(self, profile_id: UUID, parcel_type: Type[MirrorParcel], parcel_id: UUID) -> Parcel[MirrorParcel]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[PolicerParcel], parcel_id: UUID) -> Parcel[PolicerParcel]:
-        ...
+    def get(self, profile_id: UUID, parcel_type: Type[PolicerParcel], parcel_id: UUID) -> Parcel[PolicerParcel]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[PreferredColorGroupParcel], parcel_id: UUID
-    ) -> Parcel[PreferredColorGroupParcel]:
-        ...
+    ) -> Parcel[PreferredColorGroupParcel]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[PrefixListParcel], parcel_id: UUID) -> Parcel[PrefixListParcel]:
-        ...
+    def get(
+        self, profile_id: UUID, parcel_type: Type[PrefixListParcel], parcel_id: UUID
+    ) -> Parcel[PrefixListParcel]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[ProtocolListParcel], parcel_id: UUID
-    ) -> Parcel[ProtocolListParcel]:
-        ...
+    ) -> Parcel[ProtocolListParcel]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[SecurityApplicationListParcel], parcel_id: UUID
-    ) -> Parcel[SecurityApplicationListParcel]:
-        ...
+    ) -> Parcel[SecurityApplicationListParcel]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[SecurityDataPrefixParcel], parcel_id: UUID
-    ) -> Parcel[SecurityDataPrefixParcel]:
-        ...
+    ) -> Parcel[SecurityDataPrefixParcel]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[SecurityPortParcel], parcel_id: UUID
-    ) -> Parcel[SecurityPortParcel]:
-        ...
+    ) -> Parcel[SecurityPortParcel]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[SecurityZoneListParcel], parcel_id: UUID
-    ) -> Parcel[SecurityZoneListParcel]:
-        ...
+    ) -> Parcel[SecurityZoneListParcel]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[SLAClassParcel], parcel_id: UUID) -> Parcel[SLAClassParcel]:
-        ...
+    def get(self, profile_id: UUID, parcel_type: Type[SLAClassParcel], parcel_id: UUID) -> Parcel[SLAClassParcel]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[SslDecryptionParcel], parcel_id: UUID
-    ) -> Parcel[SslDecryptionParcel]:
-        ...
+    ) -> Parcel[SslDecryptionParcel]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[SslDecryptionProfileParcel], parcel_id: UUID
-    ) -> Parcel[SslDecryptionProfileParcel]:
-        ...
+    ) -> Parcel[SslDecryptionProfileParcel]: ...
 
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[StandardCommunityParcel], parcel_id: UUID
-    ) -> Parcel[StandardCommunityParcel]:
-        ...
+    ) -> Parcel[StandardCommunityParcel]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[TlocParcel], parcel_id: UUID) -> Parcel[TlocParcel]:
-        ...
+    def get(self, profile_id: UUID, parcel_type: Type[TlocParcel], parcel_id: UUID) -> Parcel[TlocParcel]: ...
 
     @overload
-    def get(self, profile_id: UUID, parcel_type: Type[URLParcel], parcel_id: UUID) -> Parcel[TlocParcel]:
-        ...
+    def get(self, profile_id: UUID, parcel_type: Type[URLParcel], parcel_id: UUID) -> Parcel[TlocParcel]: ...
 
     def get(
         self,
@@ -1745,16 +1622,14 @@ class EmbeddedSecurityFeatureProfileAPI:
         self,
         profile_id: UUID,
         parcel_type: Type[NgfirewallParcel],
-    ) -> DataSequence[Parcel[NgfirewallParcel]]:
-        ...
+    ) -> DataSequence[Parcel[NgfirewallParcel]]: ...
 
     @overload
     def get_parcels(
         self,
         profile_id: UUID,
         parcel_type: Type[PolicyParcel],
-    ) -> DataSequence[Parcel[PolicyParcel]]:
-        ...
+    ) -> DataSequence[Parcel[PolicyParcel]]: ...
 
     def get_parcels(
         self,
@@ -1772,8 +1647,7 @@ class EmbeddedSecurityFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[NgfirewallParcel],
         parcel_id: UUID,
-    ) -> Parcel[NgfirewallParcel]:
-        ...
+    ) -> Parcel[NgfirewallParcel]: ...
 
     @overload
     def get_parcel(
@@ -1781,8 +1655,7 @@ class EmbeddedSecurityFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[PolicyParcel],
         parcel_id: UUID,
-    ) -> Parcel[PolicyParcel]:
-        ...
+    ) -> Parcel[PolicyParcel]: ...
 
     def get_parcel(
         self,
@@ -2072,24 +1945,21 @@ class ApplicationPriorityFeatureProfileAPI:
         self,
         profile_id: UUID,
         parcel_type: Type[QosPolicyParcel],
-    ) -> DataSequence[Parcel[QosPolicyParcel]]:
-        ...
+    ) -> DataSequence[Parcel[QosPolicyParcel]]: ...
 
     @overload
     def get_parcels(
         self,
         profile_id: UUID,
         parcel_type: Type[PolicySettingsParcel],
-    ) -> DataSequence[Parcel[PolicySettingsParcel]]:
-        ...
+    ) -> DataSequence[Parcel[PolicySettingsParcel]]: ...
 
     @overload
     def get_parcels(
         self,
         profile_id: UUID,
         parcel_type: Type[TrafficPolicyParcel],
-    ) -> DataSequence[Parcel[TrafficPolicyParcel]]:
-        ...
+    ) -> DataSequence[Parcel[TrafficPolicyParcel]]: ...
 
     def get_parcels(
         self,
@@ -2107,8 +1977,7 @@ class ApplicationPriorityFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[PolicySettingsParcel],
         parcel_id: UUID,
-    ) -> Parcel[PolicySettingsParcel]:
-        ...
+    ) -> Parcel[PolicySettingsParcel]: ...
 
     @overload
     def get_parcel(
@@ -2116,8 +1985,7 @@ class ApplicationPriorityFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[TrafficPolicyParcel],
         parcel_id: UUID,
-    ) -> Parcel[TrafficPolicyParcel]:
-        ...
+    ) -> Parcel[TrafficPolicyParcel]: ...
 
     @overload
     def get_parcel(
@@ -2125,8 +1993,7 @@ class ApplicationPriorityFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[QosPolicyParcel],
         parcel_id: UUID,
-    ) -> Parcel[QosPolicyParcel]:
-        ...
+    ) -> Parcel[QosPolicyParcel]: ...
 
     def get_parcel(
         self,
@@ -2221,8 +2088,7 @@ class TopologyFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[HubSpokeParcel],
         parcel_id: UUID,
-    ) -> Parcel[HubSpokeParcel]:
-        ...
+    ) -> Parcel[HubSpokeParcel]: ...
 
     @overload
     def get_parcel(
@@ -2230,8 +2096,7 @@ class TopologyFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[MeshParcel],
         parcel_id: UUID,
-    ) -> Parcel[MeshParcel]:
-        ...
+    ) -> Parcel[MeshParcel]: ...
 
     @overload
     def get_parcel(
@@ -2239,8 +2104,7 @@ class TopologyFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[CustomControlParcel],
         parcel_id: UUID,
-    ) -> Parcel[CustomControlParcel]:
-        ...
+    ) -> Parcel[CustomControlParcel]: ...
 
     def get_parcel(
         self,
@@ -2316,24 +2180,21 @@ class UcVoiceFeatureProfileAPI:
         self,
         profile_id: UUID,
         parcel_type: Type[DspFarmParcel],
-    ) -> DataSequence[Parcel[DspFarmParcel]]:
-        ...
+    ) -> DataSequence[Parcel[DspFarmParcel]]: ...
 
     @overload
     def get_parcels(
         self,
         profile_id: UUID,
         parcel_type: Type[MediaProfileParcel],
-    ) -> DataSequence[Parcel[MediaProfileParcel]]:
-        ...
+    ) -> DataSequence[Parcel[MediaProfileParcel]]: ...
 
     @overload
     def get_parcels(
         self,
         profile_id: UUID,
         parcel_type: Type[TrunkGroupParcel],
-    ) -> DataSequence[Parcel[TrunkGroupParcel]]:
-        ...
+    ) -> DataSequence[Parcel[TrunkGroupParcel]]: ...
 
     def get_parcels(self, profile_id: UUID, parcel_type: Type[AnyUcVoiceParcel]) -> DataSequence[Parcel]:
         """
@@ -2347,8 +2208,7 @@ class UcVoiceFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[DspFarmParcel],
         parcel_id: UUID,
-    ) -> Parcel[DspFarmParcel]:
-        ...
+    ) -> Parcel[DspFarmParcel]: ...
 
     @overload
     def get_parcel(
@@ -2356,8 +2216,7 @@ class UcVoiceFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[MediaProfileParcel],
         parcel_id: UUID,
-    ) -> Parcel[MediaProfileParcel]:
-        ...
+    ) -> Parcel[MediaProfileParcel]: ...
 
     @overload
     def get_parcel(
@@ -2365,8 +2224,7 @@ class UcVoiceFeatureProfileAPI:
         profile_id: UUID,
         parcel_type: Type[TrunkGroupParcel],
         parcel_id: UUID,
-    ) -> Parcel[TrunkGroupParcel]:
-        ...
+    ) -> Parcel[TrunkGroupParcel]: ...
 
     def get_parcel(
         self,
@@ -2398,4 +2256,5 @@ class UcVoiceFeatureProfileAPI:
         """
         Delete UC Voice Parcel for selected profile_id based on payload type
         """
-        return self.endpoint.delete(profile_id, parcel_type._get_parcel_type(), parcel_id)
+        subroute = self._get_endpoint_parcel_type(parcel_type._get_parcel_type())
+        return self.endpoint.delete(profile_id, subroute, parcel_id)
