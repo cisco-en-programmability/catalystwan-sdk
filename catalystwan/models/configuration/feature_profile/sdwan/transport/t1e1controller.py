@@ -117,8 +117,8 @@ class ControllerTxExList(BaseModel):
 class T1E1ControllerParcel(_ParcelBase):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
     type_: Literal["t1-e1-controller"] = Field(default="t1-e1-controller", exclude=True)
+    type: Optional[Global[ControllerType]] = Field(default=None, validation_alias=AliasPath("data", "type"))
+    slot: Union[Global[str], Variable] = Field(validation_alias=AliasPath("data", "slot"))
     controller_tx_ex_list: List[ControllerTxExList] = Field(
         validation_alias=AliasPath("data", "controllerTxExList"), description="Controller tx-ex List"
     )
-    slot: Union[Global[str], Variable] = Field(validation_alias=AliasPath("data", "slot"))
-    type: Optional[Global[ControllerType]] = Field(default=None, validation_alias=AliasPath("data", "type"))
