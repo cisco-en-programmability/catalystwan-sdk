@@ -13,7 +13,9 @@ IpFormat = Literal[
 
 class TrustedPrefixList(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
-    ip: Optional[Union[Variable, Default[None], Global[str]]] = Field(default=None)
+    ip: Optional[Union[Variable, Default[None], Global[str], Global[List[str]]]] = Field(
+        default=None, description="list[str] should be used for versions >= 20.18"
+    )
     ip_format: Optional[Union[Variable, Default[None], Global[IpFormat]]] = Field(
         default=None, validation_alias="ipFormat", serialization_alias="ipFormat"
     )
