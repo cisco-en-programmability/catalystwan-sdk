@@ -114,7 +114,7 @@ class OMPParcel(_ParcelBase):
             Global[List[SiteTypesForTransportGateway]],
             Default[None],
         ]
-    ] = Field(None, validation_alias=AliasPath("data", "siteTypesForVariable"), description="Site Types")
+    ] = Field(None, validation_alias=AliasPath("data", "siteTypesForTransportGateway"), description="Site Types")
     site_types: Optional[Union[Global[List[SiteTypesForTransportGateway]], Variable, Default[None]]] = Field(
         default=None, validation_alias=AliasPath("data", "siteTypes")
     )
