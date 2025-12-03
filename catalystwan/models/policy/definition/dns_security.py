@@ -118,7 +118,7 @@ class DnsSecurityDefinition(BaseModel):
 
 
 class DnsSecurityPolicy(PolicyDefinitionBase):
-    type: Literal["dnsSecurity"] = "dnsSecurity"
+    type: Literal["DNSSecurity", "dnsSecurity"] = "DNSSecurity"
     definition: DnsSecurityDefinition
 
 
