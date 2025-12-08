@@ -5,7 +5,7 @@ from typing import List, Literal, Optional, Union
 
 from pydantic import AliasPath, BaseModel, ConfigDict, Field
 
-from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase, as_default, as_global
+from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase, as_global
 
 VirtualApplicationType = Literal["dreopt"]
 
@@ -254,7 +254,7 @@ class AppqoeParcel(_ParcelBase):
     model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
 
     dreopt: Optional[Union[Global[bool], Default[bool]]] = Field(
-        default=as_default(False), validation_alias=AliasPath("data", "dreopt")
+        default=None, validation_alias=AliasPath("data", "dreopt")
     )
     virtual_application: Optional[List[VirtualApplication]] = Field(
         default=None, validation_alias=AliasPath("data", "virtualApplication")
