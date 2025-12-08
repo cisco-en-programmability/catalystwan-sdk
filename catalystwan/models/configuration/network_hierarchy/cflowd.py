@@ -3,7 +3,7 @@ from typing import List, Literal, Optional
 
 from pydantic import AliasPath, BaseModel, ConfigDict, Field
 
-from catalystwan.api.configuration_groups.parcel import Global, _ParcelBase, as_global, as_optional_global
+from catalystwan.api.configuration_groups.parcel import Global, _ParcelBase, as_optional_global
 
 Protocol = Literal[
     "both",
@@ -73,7 +73,9 @@ class CflowdParcel(_ParcelBase):
     flow_sampling_interval: Optional[Global[int]] = Field(
         default=Global[int](value=1), validation_alias=AliasPath("data", "flowSamplingInterval")
     )
-    protocol: Optional[Global[Protocol]] = Field(default=None, validation_alias=AliasPath("data", "protocol"))
+    protocol: Optional[Global[Protocol]] = Field(
+        default=Global[Protocol](value="ipv4"), validation_alias=AliasPath("data", "protocol")
+    )
 
     def add_collector(
         self,
@@ -97,24 +99,23 @@ class CflowdParcel(_ParcelBase):
             )
         )
 
-    def set_customized_ipv4_record_fields(
-        self, collect_dscp_output: Optional[bool] = False, collect_tos: Optional[bool] = False
-    ):
+    def set_customized_ipv4_record_fields(self, collect_dscp_output: bool = False, collect_tos: bool = False):
         self.customized_ipv4_record_fields = CustomizedIpv4RecordFields(
-            collect_dscp_output=as_optional_global(collect_dscp_output), collect_tos=as_optional_global(collect_tos)
+            collect_dscp_output=Global[bool](value=collect_dscp_output),
+            collect_tos=Global[bool](value=collect_tos),
         )
 
     def set_flow(
         self,
-        active_timeout: Optional[int] = 600,
-        inactive_timeout: Optional[int] = 60,
-        refresh_time: Optional[int] = 600,
-        sampling_interval: Optional[int] = 1,
+        active_timeout: Optional[int],
+        inactive_timeout: Optional[int],
+        refresh_time: Optional[int],
+        sampling_interval: Optional[int],
     ):
-        self.flow_active_timeout = as_optional_global(active_timeout)
-        self.flow_inactive_timeout = as_optional_global(inactive_timeout)
-        self.flow_refresh_time = as_optional_global(refresh_time)
-        self.flow_sampling_interval = as_optional_global(sampling_interval)
+        self.flow_active_timeout = Global[int](value=active_timeout or 600)
+        self.flow_inactive_timeout = Global[int](value=inactive_timeout or 60)
+        self.flow_refresh_time = Global[int](value=refresh_time or 600)
+        self.flow_sampling_interval = Global[int](value=sampling_interval or 1)
 
     def set_protocol(self, protocol: Protocol):
-        self.protocol = as_global(protocol, Protocol)
+        self.protocol = Global[Protocol](value=protocol)
