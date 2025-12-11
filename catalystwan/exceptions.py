@@ -216,3 +216,10 @@ class CatalystwanDeprecationWarning(DeprecationWarning):
             f" The public API SHOULD NOT be considered stable."
         )
         return message
+
+
+class ParcelModelNotFound(CatalystwanException):
+    """Raised when there is no model matching parcelType field"""
+
+    def __init__(self, type_):
+        self.message = f"Cannot determine model class for parcel type: {type_}"
