@@ -1,6 +1,6 @@
 # Copyright 2024 Cisco Systems, Inc. and its affiliates
 from functools import lru_cache
-from typing import Generic, Hashable, List, Literal, Optional, Sequence, Type, TypeVar, Union, cast
+from typing import Generic, List, Literal, Optional, Sequence, Type, TypeVar, Union, cast
 from uuid import UUID
 
 from pydantic import AliasChoices, BaseModel, ConfigDict, Field, model_validator
@@ -162,7 +162,7 @@ AnyParcel = Annotated[
 ]
 
 T = TypeVar("T", bound=AnyParcel)
-UT = TypeVar("UT", Hashable, AnyParcel)
+UT = TypeVar("UT", bound=_ParcelBase)
 
 
 class Parcel(BaseModel, Generic[T]):
@@ -238,7 +238,7 @@ def list_types(any_union: Type[UT]) -> Sequence[UT]:
 def find_type(name: str, any_union: Type[UT]) -> UT:
     parcel_types = list_types(any_union)
     try:
-        parcel_type = next(t for t in parcel_types if isinstance(t, _ParcelBase) and t._get_parcel_type() == name)
+        parcel_type = next(t for t in parcel_types if t._get_parcel_type() == name)
     except StopIteration:
         raise ParcelModelNotFound(name)
     return cast(UT, parcel_type)
