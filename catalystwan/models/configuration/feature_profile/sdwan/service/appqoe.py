@@ -259,7 +259,7 @@ class AppqoeParcel(_ParcelBase):
     virtual_application: Optional[List[VirtualApplication]] = Field(
         default=None, validation_alias=AliasPath("data", "virtualApplication")
     )
-    appqoe_device_role: Global[str] = Field(
+    appqoe_device_role: Global[AppqoeDeviceRole] = Field(
         default=as_global("forwarder"), validation_alias=AliasPath("data", "appqoeDeviceRole")
     )
 
