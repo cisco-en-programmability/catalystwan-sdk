@@ -168,7 +168,7 @@ class IPv4RouteGatewayNextHop(BaseModel):
 class IPv4RouteGatewayNextHopWithTracker(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True)
 
-    address: Union[Variable, Global[str]]
+    address: Union[Variable, Global[str], Global[IPv4Address]]
     distance: Union[Variable, Global[int], Default[int]] = Default[int](value=1)
     tracker: Union[Global[UUID], Default[None]] = as_default(None)
 
