@@ -218,8 +218,8 @@ class CatalystwanDeprecationWarning(DeprecationWarning):
         return message
 
 
-class ParcelModelNotFound(CatalystwanException):
-    """Raised when there is no model matching parcelType field"""
+class ModelNotFound(CatalystwanException):
+    """Raised when there is no model matching type specifier given as string"""
 
-    def __init__(self, type_):
-        self.message = f"Cannot determine model class for parcel type: {type_}"
+    def __init__(self, type_, scope):
+        self.message = f"Cannot find model class for {type_} when searching: {scope}"

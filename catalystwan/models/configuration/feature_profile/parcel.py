@@ -7,7 +7,7 @@ from pydantic import AliasChoices, BaseModel, ConfigDict, Field, model_validator
 from typing_extensions import Annotated
 
 from catalystwan.api.configuration_groups.parcel import _ParcelBase
-from catalystwan.exceptions import ParcelModelNotFound
+from catalystwan.exceptions import ModelNotFound
 from catalystwan.models.configuration.feature_profile.sdwan.application_priority import AnyApplicationPriorityParcel
 from catalystwan.models.configuration.feature_profile.sdwan.cli import AnyCliParcel
 from catalystwan.models.configuration.feature_profile.sdwan.dns_security import AnyDnsSecurityParcel
@@ -240,5 +240,5 @@ def find_type(name: str, any_union: Type[UT]) -> UT:
     try:
         parcel_type = next(t for t in parcel_types if t._get_parcel_type() == name)
     except StopIteration:
-        raise ParcelModelNotFound(name)
+        raise ModelNotFound(name, any_union)
     return cast(UT, parcel_type)

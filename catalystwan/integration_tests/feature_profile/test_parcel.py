@@ -6,7 +6,7 @@ from pydantic import Field
 from typing_extensions import Annotated
 
 from catalystwan.api.configuration_groups.parcel import _ParcelBase
-from catalystwan.exceptions import ParcelModelNotFound
+from catalystwan.exceptions import ModelNotFound
 from catalystwan.models.configuration.feature_profile.parcel import find_type, list_types
 from catalystwan.models.configuration.feature_profile.sdwan.topology import (
     AnyTopologyParcel,
@@ -27,12 +27,12 @@ def test_find_type():
 
 
 def test_find_type_raises_when_no_match():
-    with pytest.raises(ParcelModelNotFound):
+    with pytest.raises(ModelNotFound):
         find_type("unknown", AnyTopologyParcel)
 
 
 def test_find_type_raises_for_bogus_param():
-    with pytest.raises(ParcelModelNotFound):
+    with pytest.raises(ModelNotFound):
         find_type("unknown", None)
 
 
