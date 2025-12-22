@@ -7,6 +7,7 @@ from typing import List, Sequence, Type, Union, cast
 from pydantic import Field
 from typing_extensions import Annotated
 
+from catalystwan.exceptions import ModelNotFound
 from catalystwan.models.policy.definition.app_route import AppRoutePolicy, AppRoutePolicyGetResponse
 from catalystwan.models.policy.definition.dial_peer import DialPeerPolicy, DialPeerPolicyGetResponse
 from catalystwan.models.policy.definition.fxo_port import FxoPortPolicy, FxoPortPolicyGetResponse
@@ -66,7 +67,7 @@ from catalystwan.models.policy.list.umbrella_data import UmbrellaDataList, Umbre
 from catalystwan.models.policy.list.url import URLAllowList, URLAllowListInfo, URLBlockList, URLBlockListInfo
 from catalystwan.models.policy.list.vpn import VPNList, VPNListInfo
 from catalystwan.models.policy.list.zone import ZoneList, ZoneListInfo
-from catalystwan.utils.model import get_model_type_field, resolve_nested_base_model_unions
+from catalystwan.utils.model import get_model_type_literals, resolve_nested_base_model_unions
 
 from .centralized import CentralizedPolicy, CentralizedPolicyInfo, TrafficDataDirection
 from .definition.access_control_list import AclPolicy, AclPolicyGetResponse
@@ -293,7 +294,10 @@ def find_policy_list_model(model_type: str) -> Type[AnyPolicyListInfo]:
         Sequence[Type[AnyPolicyListInfo]],
         resolve_nested_base_model_unions(AnyPolicyListInfo),
     )
-    model = next(t for t in types if get_model_type_field(t) == model_type)
+    try:
+        model = next(t for t in types if model_type in get_model_type_literals(t))
+    except StopIteration:
+        raise ModelNotFound(model_type, AnyPolicyListInfo)
     return model
 
 
@@ -303,7 +307,10 @@ def find_policy_definition_model(model_type: str) -> Type[AnyPolicyDefinitionInf
         Sequence[Type[AnyPolicyDefinitionInfo]],
         resolve_nested_base_model_unions(AnyPolicyDefinitionInfo),
     )
-    model = next(t for t in types if get_model_type_field(t) == model_type)
+    try:
+        model = next(t for t in types if model_type in get_model_type_literals(t))
+    except StopIteration:
+        raise ModelNotFound(model_type, AnyPolicyDefinitionInfo)
     return model
 
 

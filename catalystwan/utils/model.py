@@ -1,7 +1,7 @@
 # Copyright 2024 Cisco Systems, Inc. and its affiliates
 from functools import lru_cache
 from inspect import isclass
-from typing import Any, List, Optional, Type, Union
+from typing import Any, Iterable, List, Literal, Type, Union
 
 from pydantic import BaseModel
 from typing_extensions import Annotated, get_args, get_origin
@@ -38,8 +38,11 @@ def resolve_nested_base_model_unions(
 
 
 @lru_cache
-def get_model_type_field(model: Type[BaseModel]) -> Optional[str]:
-    if type_field := model.model_fields.get("type"):
-        if default_value := type_field.default:
-            return str(default_value)
-    return None
+def get_model_type_literals(model: Type[BaseModel], field: str = "type") -> Iterable[str]:
+    if type_field := model.model_fields.get(field):
+        origin = get_origin(type_field.annotation)
+        if origin is Literal:
+            literal_args = get_args(type_field.annotation)
+            if all(isinstance(arg, str) for arg in literal_args):
+                return literal_args
+    return ()
