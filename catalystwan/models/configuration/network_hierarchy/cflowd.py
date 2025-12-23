@@ -89,7 +89,7 @@ class CflowdParcel(_ParcelBase):
         if self.collectors is None:
             self.collectors = []
         if export_interval is not None:
-            # bfd_metrics_export must be True if there is export_interval
+            # bfd_metrics_export must be True if export_interval is set
             bfd_metrics_export = True
         if bfd_metrics_export and export_interval is None:
             # export_interval should be default 600 only if bfd_metrics_export is True
