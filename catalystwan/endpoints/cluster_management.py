@@ -14,7 +14,7 @@ TenancyModes = Literal["SingleTenant", "MultiTenant"]
 
 class TenancyMode(BaseModel):
     mode: TenancyModes
-    deploymentmode: str
+    deploymentmode: Optional[str] = None
     domain: Optional[str] = None
     clusterid: Optional[str] = None
 
@@ -125,6 +125,7 @@ class ClusterManagement(APIEndpoints):
         # POST /clusterManagement/remove
         ...
 
-    def set_tenancy_mode(self):
+    @post("/clusterManagement/tenancy/mode")
+    def set_tenancy_mode(self, payload: TenancyMode) -> None:
         # POST /clusterManagement/tenancy/mode
         ...
