@@ -29,7 +29,7 @@ class Collectors(BaseModel):
         default=Global[bool](value=False), validation_alias="bfdMetricsExport", serialization_alias="bfdMetricsExport"
     )
     export_interval: Optional[Global[int]] = Field(
-        default=Global[int](value=600), validation_alias="exportInterval", serialization_alias="exportInterval"
+        default=None, validation_alias="exportInterval", serialization_alias="exportInterval"
     )
     export_spread: Optional[Global[bool]] = Field(
         default=Global[bool](value=False), validation_alias="exportSpread", serialization_alias="exportSpread"
@@ -81,13 +81,20 @@ class CflowdParcel(_ParcelBase):
         self,
         address: Optional[str] = None,
         bfd_metrics_export: Optional[bool] = False,
-        export_interval: Optional[int] = 600,
+        export_interval: Optional[int] = None,
         export_spread: Optional[bool] = False,
         udp_port: Optional[int] = 4739,
         vpn_id: Optional[int] = None,
     ):
         if self.collectors is None:
             self.collectors = []
+        if export_interval is not None:
+            # bfd_metrics_export must be True if export_interval is set
+            bfd_metrics_export = True
+        if bfd_metrics_export and export_interval is None:
+            # export_interval should be default 600 only if bfd_metrics_export is True
+            export_interval = 600
+
         self.collectors.append(
             Collectors(
                 address=as_optional_global(address),
