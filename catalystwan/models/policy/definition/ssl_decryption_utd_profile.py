@@ -2,11 +2,12 @@
 
 from itertools import chain
 from typing import List, Literal, Optional
+from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
 from catalystwan.models.common import PolicyModeType, WebCategory, WebReputation
-from catalystwan.models.policy import URLAllowListInfo, URLBlockListInfo
+from catalystwan.models.policy import URLAllowList, URLBlockList
 from catalystwan.models.policy.policy_definition import (
     PolicyDefinitionBase,
     PolicyDefinitionGetResponse,
@@ -35,10 +36,10 @@ class SslDecryptionUtdProfileDefinition(BaseModel):
         default=None, validation_alias="decryptThreshold", serialization_alias="decryptThreshold"
     )
 
-    filtered_url_white_list: List[URLAllowListInfo] = Field(
+    filtered_url_white_list: List[URLAllowList] = Field(
         default_factory=list, validation_alias="filteredUrlWhiteList", serialization_alias="filteredUrlWhiteList"
     )
-    filtered_url_black_list: List[URLBlockListInfo] = Field(
+    filtered_url_black_list: List[URLBlockList] = Field(
         default_factory=list, validation_alias="filteredUrlBlackList", serialization_alias="filteredUrlBlackList"
     )
 
@@ -62,11 +63,11 @@ class SslDecryptionUtdProfileDefinition(BaseModel):
         self._check_category_already_added(category)
         self.decrypt_categories.append(category)
 
-    def add_decrypt_domain_list(self, black_list: URLBlockListInfo):
-        self.url_black_list = Reference(ref=black_list.list_id)
+    def add_decrypt_domain_list(self, black_list_id: UUID):
+        self.url_black_list = Reference(ref=black_list_id)
 
-    def add_no_decrypt_domain_list(self, white_list: URLAllowListInfo):
-        self.url_white_list = Reference(ref=white_list.list_id)
+    def add_no_decrypt_domain_list(self, white_list_id: UUID):
+        self.url_white_list = Reference(ref=white_list_id)
 
     def _check_category_already_added(self, category: WebCategory):
         if category in chain(self.decrypt_categories, self.never_decrypt_categories, self.skip_decrypt_categories):

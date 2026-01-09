@@ -14,7 +14,7 @@ class URLListEntry(BaseModel):
 
 
 class URLAllowList(PolicyListBase):
-    type: Literal["urlWhiteList"] = "urlWhiteList"
+    type: Literal["urlWhiteList", "urlwhitelist"] = "urlWhiteList"
     entries: List[URLListEntry] = []
 
 
@@ -27,7 +27,7 @@ class URLAllowListInfo(URLAllowList, PolicyListInfo):
 
 
 class URLBlockList(PolicyListBase):
-    type: Literal["urlBlackList"] = "urlBlackList"
+    type: Literal["urlBlackList", "urlblacklist"] = "urlBlackList"
     entries: List[URLListEntry] = []
 
 

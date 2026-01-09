@@ -6,7 +6,7 @@ from typing import List, Literal, Optional, Union
 
 from pydantic import AliasPath, BaseModel, ConfigDict, Field
 
-from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase, as_default, as_variable
+from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase
 
 FailOverType = Literal["ge2", "te2"]
 LomType = Literal["ge1", "ge2", "ge3", "te2", "te3", "console", "failover"]
@@ -27,8 +27,8 @@ class AccessPort(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
     )
-    dedicated: Union[Global[bool], Default[bool]] = Field(default=as_default(True), description="Dedicated")
-    shared_lom: SharedLom = Field(..., serialization_alias="sharedLom", validation_alias="sharedLom")
+    dedicated: Union[Global[bool], Default[bool]] = Field(default=Default[bool](value=True), description="Dedicated")
+    shared_lom: Optional[SharedLom] = Field(default=None, serialization_alias="sharedLom", validation_alias="sharedLom")
 
 
 class Ip(BaseModel):
@@ -37,7 +37,7 @@ class Ip(BaseModel):
         populate_by_name=True,
     )
     address: Union[Global[str], Global[IPv4Interface], Variable] = Field(
-        default=as_variable("{{ipv4Addr}}"), description="Assign IPv4 address"
+        default=Variable(value="{{ipv4Addr}}"), description="Assign IPv4 address"
     )
     default_gateway: Union[Global[IPv4Address], Variable, Default[None]] = Field(
         default=Default[None](value=None),
@@ -82,7 +82,7 @@ class InterfaceItem(BaseModel):
         validation_alias="ifName",
         description="Set Inteface name",
     )
-    l3: Default[bool] = Field(default=as_default(True), description="L3")
+    l3: Default[bool] = Field(default=Default[bool](value=True), description="L3")
     ucse_interface_vpn: Optional[Union[Global[int], Variable, Default[None]]] = Field(
         default=Default[None](value=None),
         serialization_alias="ucseInterfaceVpn",
