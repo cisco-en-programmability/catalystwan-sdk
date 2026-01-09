@@ -1,6 +1,6 @@
 **THIS FILE WAS AUTO-GENERATED DO NOT EDIT**
 
-Generated for: catalystwan-0.41.2.dev7
+Generated for: catalystwan-0.41.2.dev8
 
 All URIs are relative to */dataservice*
 HTTP request | Supported Versions | Method | Payload Type | Return Type | Tenancy Mode
@@ -49,6 +49,7 @@ PUT /clusterManagement/setup||[**ClusterManagement.edit_vmanage**](https://githu
 GET /clusterManagement/connectedDevices/{vmanageIP}||[**ClusterManagement.get_connected_devices**](https://github.com/cisco-en-programmability/catalystwan-sdk/blob/main/catalystwan/endpoints/cluster_management.py#L76)||DataSequence[[**ConnectedDevice**](https://github.com/cisco-en-programmability/catalystwan-sdk/blob/main/catalystwan/endpoints/cluster_management.py#L28)]|
 GET /clusterManagement/tenancy/mode||[**ClusterManagement.get_tenancy_mode**](https://github.com/cisco-en-programmability/catalystwan-sdk/blob/main/catalystwan/endpoints/cluster_management.py#L84)||[**TenancyMode**](https://github.com/cisco-en-programmability/catalystwan-sdk/blob/main/catalystwan/endpoints/cluster_management.py#L15)|
 GET /clusterManagement/vManage/details/{vmanageIP}||[**ClusterManagement.get_vmanage_details**](https://github.com/cisco-en-programmability/catalystwan-sdk/blob/main/catalystwan/endpoints/cluster_management.py#L92)||DataSequence[[**VManageDetails**](https://github.com/cisco-en-programmability/catalystwan-sdk/blob/main/catalystwan/endpoints/cluster_management.py#L22)]|
+POST /clusterManagement/tenancy/mode||[**ClusterManagement.set_tenancy_mode**](https://github.com/cisco-en-programmability/catalystwan-sdk/blob/main/catalystwan/endpoints/cluster_management.py#L128)|[**TenancyMode**](https://github.com/cisco-en-programmability/catalystwan-sdk/blob/main/catalystwan/endpoints/cluster_management.py#L15)|None|
 GET /device/action/status/tasks||[**ConfigurationDashboardStatus.find_running_tasks**](https://github.com/cisco-en-programmability/catalystwan-sdk/blob/main/catalystwan/endpoints/configuration_dashboard_status.py#L125)||[**TasksData**](https://github.com/cisco-en-programmability/catalystwan-sdk/blob/main/catalystwan/endpoints/configuration_dashboard_status.py#L113)|
 GET /device/action/status/{task_id}||[**ConfigurationDashboardStatus.find_status**](https://github.com/cisco-en-programmability/catalystwan-sdk/blob/main/catalystwan/endpoints/configuration_dashboard_status.py#L121)||[**TaskData**](https://github.com/cisco-en-programmability/catalystwan-sdk/blob/main/catalystwan/endpoints/configuration_dashboard_status.py#L100)|
 GET /device/action/install/devices/{device_type}||[**ConfigurationDeviceActions.get_list_of_installed_devices**](https://github.com/cisco-en-programmability/catalystwan-sdk/blob/main/catalystwan/endpoints/configuration_device_actions.py#L246)||DataSequence[[**InstalledDeviceData**](https://github.com/cisco-en-programmability/catalystwan-sdk/blob/main/catalystwan/endpoints/configuration_device_actions.py#L182)]|
