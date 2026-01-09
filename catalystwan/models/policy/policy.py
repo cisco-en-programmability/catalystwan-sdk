@@ -39,7 +39,7 @@ class NGFirewallAssemblyItem(AssemblyItemBase):
 
 
 class DNSSecurityAssemblyItem(AssemblyItemBase):
-    type: Literal["DNSSecurity"] = "DNSSecurity"
+    type: Literal["DNSSecurity", "dnsSecurity"] = "DNSSecurity"
 
 
 class IntrusionPreventionAssemblyItem(AssemblyItemBase):
