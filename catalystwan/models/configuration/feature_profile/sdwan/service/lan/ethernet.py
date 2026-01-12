@@ -334,8 +334,8 @@ class InterfaceEthernetParcel(_ParcelBase):
     ethernet_description: Optional[Union[Global[str], Variable, Default[None]]] = Field(
         default=Default[None](value=None), validation_alias=AliasPath("data", "description")
     )
-    interface_ip_address: Union[InterfaceDynamicIPv4Address, InterfaceStaticIPv4Address] = Field(
-        validation_alias=AliasPath("data", "intfIpAddress"), default_factory=InterfaceStaticIPv4Address
+    interface_ip_address: Optional[Union[InterfaceDynamicIPv4Address, InterfaceStaticIPv4Address]] = Field(
+        validation_alias=AliasPath("data", "intfIpAddress"), default=None
     )
     dhcp_helper: Optional[Union[Variable, Global[List[str]], Default[None]]] = Field(
         validation_alias=AliasPath("data", "dhcpHelper"), default=None

@@ -308,8 +308,8 @@ class InterfaceEthernetParcel(_ParcelBase):
         default_factory=list, validation_alias=AliasPath("data", "encapsulation"), description="Encapsulation for TLOC"
     )
     interface_name: Union[Variable, Global[str]] = Field(validation_alias=AliasPath("data", "interfaceName"))
-    interface_ip_address: Union[InterfaceDynamicIPv4Address, InterfaceStaticIPv4Address] = Field(
-        validation_alias=AliasPath("data", "intfIpAddress"), default_factory=InterfaceStaticIPv4Address
+    interface_ip_address: Optional[Union[InterfaceDynamicIPv4Address, InterfaceStaticIPv4Address]] = Field(
+        validation_alias=AliasPath("data", "intfIpAddress"), default=None
     )
     interface_description: Optional[Union[Variable, Global[str], Default[None]]] = Field(
         default=None, validation_alias=AliasPath("data", "description")
