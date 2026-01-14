@@ -75,7 +75,7 @@ class UserItem(BaseModel):
         populate_by_name=True,
     )
     name: Global[str] = Field(..., description="Name of the SNMP user")
-    auth: Optional[Union[Global[Literal["sha"]], Variable, Default[None]]] = Field(
+    auth: Optional[Union[Global[Literal["sha", "sha256"]], Variable, Default[None]]] = Field(
         default=None, description="Configure authentication protocol"
     )
     auth_password: Optional[Union[Global[str], Variable, Default[None]]] = Field(
