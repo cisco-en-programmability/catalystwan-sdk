@@ -94,6 +94,7 @@ ParcelType = Literal[
     "security-ipssignature",
     "security-localapp",
     "security-localdomain",
+    "security-logging",
     "security-port",
     "security-protocolname",
     "security-scalablegrouptag",

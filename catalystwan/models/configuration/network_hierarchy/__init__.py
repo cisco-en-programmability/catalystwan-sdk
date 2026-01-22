@@ -6,14 +6,16 @@ from typing_extensions import Annotated
 
 from .cflowd import CflowdParcel
 from .node import NodeInfo
+from .security_logging import SecurityLoggingParcel
 
 AnyNetworkHierarchyParcel = Annotated[
-    Union[CflowdParcel],
+    Union[CflowdParcel, SecurityLoggingParcel],
     Field(discriminator="type_"),
 ]
 
 __all__ = [
     "CflowdParcel",
+    "SecurityLoggingParcel",
     "NodeInfo",
 ]
 
