@@ -1,6 +1,6 @@
 # Copyright 2026 Cisco Systems, Inc. and its affiliates
 from ipaddress import IPv4Address, IPv6Address
-from typing import List, Literal, Optional, Union, get_args
+from typing import List, Literal, Optional, Tuple, Union, get_args
 
 from pydantic import AliasPath, BaseModel, ConfigDict, Field
 
@@ -12,7 +12,7 @@ HSLName = Literal[
     "server3",
     "server4",
 ]
-SERVER_NAMES: tuple[HSLName, ...] = get_args(HSLName)
+SERVER_NAMES: Tuple[HSLName, ...] = get_args(HSLName)
 
 
 class HSLEntry(BaseModel):
