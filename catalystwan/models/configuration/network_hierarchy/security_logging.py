@@ -85,7 +85,7 @@ class SecurityLoggingParcel(_ParcelBase):
             )
         )
 
-    def get_next_server_name(self) -> HSLName | None:
+    def get_next_server_name(self) -> Optional[HSLName]:
         taken_server_names = {entry.name for entry in self.high_speed_logging}
-        name: HSLName | None = next((name for name in SERVER_NAMES if name not in taken_server_names), None)
+        name: Optional[HSLName] = next((name for name in SERVER_NAMES if name not in taken_server_names), None)
         return name
