@@ -19,6 +19,7 @@ from catalystwan.endpoints.configuration.feature_profile.sdwan.system import Sys
 from catalystwan.endpoints.configuration.feature_profile.sdwan.topology import TopologyFeatureProfile
 from catalystwan.endpoints.configuration.feature_profile.sdwan.transport import TransportFeatureProfile
 from catalystwan.endpoints.configuration.network_hierarchy import NetworkHierarchy
+from catalystwan.endpoints.configuration.packages import DeviceConfigPackageEndpoints
 from catalystwan.endpoints.configuration.policy.definition.access_control_list import ConfigurationPolicyAclDefinition
 from catalystwan.endpoints.configuration.policy.definition.access_control_list_ipv6 import (
     ConfigurationPolicyAclIPv6Definition,
@@ -230,8 +231,11 @@ class ConfigurationContainer:
     def __init__(self, session: ManagerSession):
         self.policy = ConfigurationPolicyContainer(session)
         self.feature_profile = ConfigurationFeatureProfileContainer(session)
+        self.config_group = ConfigurationGroup(session)
         self.topology_group = TopologyGroupEndpoints(session)
         self.policy_group = PolicyGroupEndpoints(session)
+        self.feature_profile = ConfigurationFeatureProfileContainer(session=session)
+        self.packages = DeviceConfigPackageEndpoints(session)
 
 
 class TroubleshootingToolsContainer:
