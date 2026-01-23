@@ -34,8 +34,7 @@ from catalystwan.models.configuration.feature_profile.sdwan.policy_object import
     SLAClassParcel,
     StandardCommunityParcel,
     TlocParcel,
-    URLAllowParcel,
-    URLBlockParcel,
+    URLParcel,
 )
 
 logger = logging.getLogger(__name__)
@@ -105,12 +104,12 @@ def configure_groups_of_interest(profile_id: UUID, api: PolicyObjectFeatureProfi
     ips_signature.add_signature("60:3000")
 
     # Create Allowed URL parcel and add URLs
-    url_allowed = URLAllowParcel(parcel_name="URLAllowParcelExample")
+    url_allowed = URLParcel(subtype="urlallowed", parcel_name="URLAllowParcelExample")
     url_allowed.add_url("https://www.cisco.com/")
     url_allowed.add_url("https://www.test.com/")
 
     # Create Blocked URL parcel and add URLs
-    url_blocked = URLBlockParcel(parcel_name="URLBlockParcelExample")
+    url_blocked = URLParcel(subtype="urlblocked", parcel_name="URLBlockParcelExample")
     url_blocked.add_url("https://www.example.com/")
 
     # Create security port parcel and add ports
