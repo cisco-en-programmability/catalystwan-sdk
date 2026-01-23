@@ -5,7 +5,7 @@ from typing import List, Union
 from pydantic import Field
 from typing_extensions import Annotated
 
-from .policy.app_probe import AppProbeMapItem, AppProbeParcel
+from .policy.app_probe import AppProbeEntry, AppProbeMapItem, AppProbeParcel
 from .policy.application_list import ApplicationFamilyListEntry, ApplicationListEntry, ApplicationListParcel
 from .policy.as_path import AsPathParcel
 from .policy.color_list import ColorEntry, ColorParcel
@@ -20,7 +20,7 @@ from .policy.policer import PolicerEntry, PolicerParcel
 from .policy.prefered_group_color import Preference, PreferredColorGroupEntry, PreferredColorGroupParcel
 from .policy.prefix_list import PrefixListEntry, PrefixListParcel
 from .policy.service_object_group import ServiceObjectGroupParcel
-from .policy.sla_class import SLAClassListEntry, SLAClassParcel
+from .policy.sla_class import FallbackBestTunnel, SLAClassCriteria, SLAClassListEntry, SLAClassParcel
 from .policy.standard_community import StandardCommunityEntry, StandardCommunityParcel
 from .policy.tloc_list import TlocEntry, TlocParcel
 from .security.aip import AdvancedInspectionProfileParcel
@@ -43,7 +43,7 @@ from .security.scalable_group_tag import ScalableGroupTagEntry, ScalableGroupTag
 from .security.security_port import SecurityPortListEntry, SecurityPortParcel
 from .security.ssl_decryption import SslDecryptionParcel
 from .security.ssl_decryption_profile import SslDecryptionProfileParcel
-from .security.url import BaseURLListEntry, URLAllowParcel, URLBlockParcel, URLParcel
+from .security.url import BaseURLListEntry, URLParcel
 from .security.url_filtering import UrlFilteringParcel
 from .security.zone import SecurityZoneListEntry, SecurityZoneListParcel
 
@@ -93,12 +93,12 @@ __all__ = (
     "AdvancedInspectionProfileParcel",
     "AdvancedMalwareProtectionParcel",
     "AnyPolicyObjectParcel",
-    "ApplicationFamilyListEntry",
-    "ApplicationListEntry",
-    "ApplicationListParcel",
     "AppProbeEntry",
     "AppProbeMapItem",
     "AppProbeParcel",
+    "ApplicationFamilyListEntry",
+    "ApplicationListEntry",
+    "ApplicationListParcel",
     "AsPathParcel",
     "BaseURLListEntry",
     "ColorEntry",
@@ -107,24 +107,22 @@ __all__ = (
     "DataPrefixParcel",
     "ExpandedCommunityParcel",
     "ExtendedCommunityParcel",
+    "FQDNDomainParcel",
+    "FQDNListEntry",
     "FallbackBestTunnel",
     "FowardingClassParcel",
     "FowardingClassQueueEntry",
-    "FQDNDomainParcel",
-    "FQDNListEntry",
     "GeoLocationListEntry",
     "GeoLocationListParcel",
-    "IdentityEntry",
-    "IdentityEntry",
-    "IdentityParcel",
-    "IdentityParcel",
-    "IntrusionPreventionParcel",
     "IPSSignatureListEntry",
     "IPSSignatureParcel",
     "IPv6DataPrefixEntry",
     "IPv6DataPrefixParcel",
     "IPv6PrefixListEntry",
     "IPv6PrefixListParcel",
+    "IdentityEntry",
+    "IdentityParcel",
+    "IntrusionPreventionParcel",
     "LocalDomainListEntry",
     "LocalDomainParcel",
     "MirrorParcel",
@@ -137,9 +135,11 @@ __all__ = (
     "PrefixListParcel",
     "ProtocolListEntry",
     "ProtocolListParcel",
+    "SLAClassCriteria",
+    "SLAClassListEntry",
+    "SLAClassParcel",
     "ScalableGroupTagEntry",
     "ScalableGroupTagParcel",
-    "ServiceObjectGroupParcel",
     "SecurityApplicationFamilyListEntry",
     "SecurityApplicationListEntry",
     "SecurityApplicationListParcel",
@@ -151,18 +151,13 @@ __all__ = (
     "SecurityPortParcel",
     "SecurityZoneListEntry",
     "SecurityZoneListParcel",
-    "SLAAppProbeClass",
-    "SLAClassCriteria",
-    "SLAClassListEntry",
-    "SLAClassParcel",
+    "ServiceObjectGroupParcel",
     "SslDecryptionParcel",
     "SslDecryptionProfileParcel",
     "StandardCommunityEntry",
     "StandardCommunityParcel",
     "TlocEntry",
     "TlocParcel",
-    "URLAllowParcel",
-    "URLBlockParcel",
     "URLParcel",
 )
 
