@@ -46,14 +46,14 @@ class SecurityLoggingParcel(_ParcelBase):
         serialization_alias="name",
         validation_alias="name",
     )
-    high_speed_logging: List[HSLEntry] = Field(
-        default_factory=list,
+    high_speed_logging: Optional[List[HSLEntry]] = Field(
+        default=None,
         max_length=4,
         validation_alias=AliasPath("data", "highSpeedLogging"),
         description="High Speed Logging",
     )
-    utd_syslog: List[UTDSyslog] = Field(
-        default_factory=list,
+    utd_syslog: Optional[List[UTDSyslog]] = Field(
+        default=None,
         validation_alias=AliasPath("data", "utdSyslog"),
         description="UTD Syslog",
     )
@@ -86,6 +86,6 @@ class SecurityLoggingParcel(_ParcelBase):
         )
 
     def get_next_server_name(self) -> Optional[HSLName]:
-        taken_server_names = {entry.name for entry in self.high_speed_logging}
+        taken_server_names = {entry.name for entry in self.high_speed_logging} if self.high_speed_logging else {}
         name: Optional[HSLName] = next((name for name in SERVER_NAMES if name not in taken_server_names), None)
         return name
