@@ -12,6 +12,23 @@ from catalystwan.models.configuration.feature_profile.common import RefIdItem
 PredefinedZone = Literal["self", "default", "untrusted"]
 SettingOn = Literal["on"]
 FailureMode = Literal["close", "open"]
+HSLName = Literal[
+    "server1",
+    "server2",
+    "server3",
+    "server4",
+]
+
+
+class HSLEntry(BaseModel):
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
+    name: HSLName = Field(
+        validation_alias="name",
+        serialization_alias="name",
+    )
+    source_interface: Union[Global[str], Variable] = Field(
+        validation_alias="sourceInterface", serialization_alias="sourceInterface"
+    )
 
 
 class AppHosting(BaseModel):
@@ -58,6 +75,9 @@ class PolicySettings(BaseModel):
     )
     security_logging: Optional[NetworkSettings] = Field(
         default=None, validation_alias="securityLogging", serialization_alias="securityLogging"
+    )
+    high_speed_logging: Optional[List[HSLEntry]] = Field(
+        default=None, validation_alias="highSpeedLogging", serialization_alias="highSpeedLogging"
     )
 
     @classmethod
