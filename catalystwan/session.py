@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Union
 from urllib.parse import urljoin, urlparse, urlunparse
 
 from packaging.version import Version  # type: ignore
-from requests import PreparedRequest, Request, Response, Session, get, head
+from requests import PreparedRequest, Request, Response, Session, Timeout, get, head
 from requests.exceptions import ConnectionError, HTTPError, RequestException
 
 from catalystwan import USER_AGENT
@@ -394,10 +394,13 @@ class ManagerSession(ManagerResponseAdapter, APIEndpointClient):
                     headers={"User-Agent": USER_AGENT},
                 )
                 self.logger.debug(self.response_trace(resp, None))
-                if resp.status_code != 503:
+                if resp.ok:
                     available = True
-            except ConnectionError as error:
+            except (ConnectionError, Timeout) as error:
                 self.logger.debug(self.response_trace(error.response, error.request))
+            except RequestException as exception:
+                self.logger.debug(self.response_trace(exception.response, exception.request))
+                raise ManagerRequestException(*exception.args)
             if not available:
                 sleep(poll_period)
                 continue
