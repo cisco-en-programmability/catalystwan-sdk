@@ -14,6 +14,21 @@ AuthenticationType = Literal[
 ]
 
 
+class NetworkSlicing(BaseModel):
+    slice_differentiator: Optional[Union[Default[None], Global[int], Variable]] = Field(
+        default=None,
+        validation_alias="sliceDifferentiator",
+        serialization_alias="sliceDifferentiator",
+        description="S-NSSAI slice differentiator",
+    )
+    slice_type: Optional[Union[Default[None], Global[int], Variable]] = Field(
+        default=None,
+        validation_alias="sliceType",
+        serialization_alias="sliceType",
+        description="S-NSSAI slice type number: 1(eMBB), 2(URLLC), 3(MioT)",
+    )
+
+
 class NeedAuthentication(BaseModel):
     model_config = ConfigDict(extra="forbid", populate_by_name=True)
     password: Union[Variable, Global[str]] = Field()
@@ -48,6 +63,9 @@ class ProfileInfo(BaseModel):
     model_config = ConfigDict(extra="forbid", populate_by_name=True)
     apn: Union[Variable, Global[str]] = Field()
     authentication: Optional[Authentication] = Field(default=None)
+    network_slicing: Optional[NetworkSlicing] = Field(
+        default=None, validation_alias="networkSlicing", serialization_alias="networkSlicing"
+    )
     no_overwrite: Optional[Union[Variable, Global[bool], Default[None]]] = Field(
         default=None, validation_alias="noOverwrite", serialization_alias="noOverwrite"
     )
