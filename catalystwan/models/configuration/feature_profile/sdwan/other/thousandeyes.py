@@ -115,11 +115,17 @@ class VirtualApplicationItem(BaseModel):
         validation_alias="teVpgIp",
         description="Set the Agent default gateway",
     )
-    name_server: Union[Global[IPv4Address], Variable, Default[None]] = Field(
+    name_server: Union[Global[IPv4Address], Variable, Default[None], Literal["AUTO"]] = Field(
         default=Default[None](value=None),
         serialization_alias="nameServer",
         validation_alias="nameServer",
         description="Set the name server",
+    )
+    name_server1: Optional[Union[Global[IPv4Address], Variable, Default[None], Literal["AUTO"]]] = Field(
+        default=None,
+        serialization_alias="nameServer1",
+        validation_alias="nameServer1",
+        description="Set the secondary name server",
     )
     hostname: Union[Global[str], Variable, Default[None]] = Field(
         default=Default[None](value=None), description="Set the host name"
