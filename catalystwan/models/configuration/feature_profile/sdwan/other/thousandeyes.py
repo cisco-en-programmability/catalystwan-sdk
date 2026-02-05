@@ -97,31 +97,31 @@ class VirtualApplicationItem(BaseModel):
     vpn: Union[Global[int], Variable, Default[None]] = Field(
         default=Default[None](value=None), description="VPN number"
     )
-    te_mgmt_ip: Optional[Union[Variable, Global[IPv4Address]]] = Field(
+    te_mgmt_ip: Optional[Union[Variable, Global[Union[Literal["AUTO"], IPv4Address]]]] = Field(
         default=None,
         serialization_alias="teMgmtIp",
         validation_alias="teMgmtIp",
         description="Set the Agent IP Address",
     )
-    te_mgmt_subnet_mask: Optional[Union[Variable, Global[SubnetMask]]] = Field(
+    te_mgmt_subnet_mask: Optional[Union[Variable, Global[Union[Literal["AUTO"], SubnetMask]]]] = Field(
         default=None,
         serialization_alias="teMgmtSubnetMask",
         validation_alias="teMgmtSubnetMask",
         description="Set the Agent SubnetMask",
     )
-    te_vpg_ip: Optional[Union[Variable, Global[IPv4Address]]] = Field(
+    te_vpg_ip: Optional[Union[Variable, Global[Union[Literal["AUTO"], IPv4Address]]]] = Field(
         default=None,
         serialization_alias="teVpgIp",
         validation_alias="teVpgIp",
         description="Set the Agent default gateway",
     )
-    name_server: Union[Global[IPv4Address], Variable, Default[None], Literal["AUTO"]] = Field(
+    name_server: Union[Global[Union[Literal["AUTO"], IPv4Address]], Variable, Default[None]] = Field(
         default=Default[None](value=None),
         serialization_alias="nameServer",
         validation_alias="nameServer",
         description="Set the name server",
     )
-    name_server1: Optional[Union[Global[IPv4Address], Variable, Default[None], Literal["AUTO"]]] = Field(
+    name_server1: Optional[Union[Global[Union[Literal["AUTO"], IPv4Address]], Variable, Default[None]]] = Field(
         default=None,
         serialization_alias="nameServer1",
         validation_alias="nameServer1",
