@@ -520,6 +520,7 @@ MultiRegionRole = Literal[
 ]
 
 OriginProtocol = Literal[
+    "aggregrate",  # 20.16 typo
     "aggregate",
     "bgp",
     "bgp-external",
