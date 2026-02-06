@@ -60,7 +60,7 @@ class Interface(BaseModel):
         validation_alias="tunnelSourceInterface",
         description="<1..32 characters> Interface name: ge0/<0-..> or ge0/<0-..>.vlanid",
     )
-    tunnel_route_via: Optional[Union[Global[str], Variable]] = Field(
+    tunnel_route_via: Optional[Union[Global[str], Variable, Default[str]]] = Field(
         default=None,
         serialization_alias="tunnelRouteVia",
         validation_alias="tunnelRouteVia",
