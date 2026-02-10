@@ -80,11 +80,13 @@ RouteLeakFromGlobalProtocol = Literal[
     "connected",
     "bgp",
     "ospf",
+    "eigrp",  # 20.18+
 ]
 
 RedistributeToServiceProtocol = Literal[
     "bgp",
     "ospf",
+    "eigrp",  # 20.18+
 ]
 
 RouteLeakFromServiceProtocol = Literal[
@@ -92,11 +94,13 @@ RouteLeakFromServiceProtocol = Literal[
     "connected",
     "bgp",
     "ospf",
+    "eigrp",  # 20.18+
 ]
 
 RedistributeToGlobalProtocol = Literal[
     "bgp",
     "ospf",
+    "eigrp",  # 20.18+
 ]
 
 
@@ -523,7 +527,7 @@ class RouteLeakFromService(BaseModel):
 class RouteLeakBetweenServices(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True)
 
-    source_vpn: Union[Variable, Global[int]] = Field(serialization_alias="soureVpn", validation_alias="soureVpn")
+    source_vpn: Union[Variable, Global[int]] = Field(serialization_alias="sourceVpn", validation_alias="sourceVpn")
     route_protocol: Union[Variable, Global[RouteLeakFromServiceProtocol]] = Field(
         serialization_alias="routeProtocol", validation_alias="routeProtocol"
     )
