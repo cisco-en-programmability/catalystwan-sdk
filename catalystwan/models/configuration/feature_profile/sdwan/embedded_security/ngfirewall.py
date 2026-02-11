@@ -1,12 +1,12 @@
 # Copyright 2024 Cisco Systems, Inc. and its affiliates
-from ipaddress import IPv4Network
+from ipaddress import IPv4Network, IPv6Network
 from typing import List, Literal, Optional, Union
 from uuid import UUID
 
 from pydantic import AliasPath, BaseModel, ConfigDict, Field, ValidationError, model_validator
 from typing_extensions import Self
 
-from catalystwan.api.configuration_groups.parcel import Global, Variable, _ParcelBase, as_global, as_variable
+from catalystwan.api.configuration_groups.parcel import Global, Variable, _ParcelBase
 from catalystwan.models.common import GeoLocation, ProtocolName, SecurityBaseAction
 from catalystwan.models.configuration.feature_profile.common import RefIdItem, RefIdList
 
@@ -24,11 +24,28 @@ class Ipv4Match(BaseModel):
 
     @classmethod
     def create_with_ip_networks(cls, ip_networks: List[IPv4Network]) -> Self:
-        return cls(ipv4_value=as_global(ip_networks))
+        return cls(ipv4_value=Global[List[IPv4Network]](value=ip_networks))
 
     @classmethod
     def create_with_variable(cls, variable_name: str) -> Self:
-        return cls(ipv4_value=as_variable(variable_name))
+        return cls(ipv4_value=Variable(value=variable_name))
+
+
+class Ipv6Match(BaseModel):
+    model_config = ConfigDict(populate_by_name=True, extra="forbid")
+    ipv6_value: Union[Global[List[IPv6Network]], Variable] = Field(
+        validation_alias="ipv6Value",
+        serialization_alias="ipv6Value",
+        description="Available only in >= 20.18.2",
+    )
+
+    @classmethod
+    def create_with_ip_networks(cls, ipv6_networks: List[IPv6Network]) -> Self:
+        return cls(ipv6_value=Global[List[IPv6Network]](value=ipv6_networks))
+
+    @classmethod
+    def create_with_variable(cls, variable_name: str) -> Self:
+        return cls(ipv6_value=Variable(value=variable_name))
 
 
 class FqdnMatch(BaseModel):
@@ -39,7 +56,7 @@ class FqdnMatch(BaseModel):
 
     @classmethod
     def from_domain_names(cls, domain_names: List[str]) -> Self:
-        return cls(fqdn_value=as_global(domain_names))
+        return cls(fqdn_value=Global[List[str]](value=domain_names))
 
 
 class PortMatch(BaseModel):
@@ -50,7 +67,7 @@ class PortMatch(BaseModel):
 
     @classmethod
     def from_str_list(cls, ports: List[str]) -> Self:
-        return cls(port_value=as_global(ports))
+        return cls(port_value=Global[List[str]](value=ports))
 
 
 class SourceDataPrefixList(BaseModel):
@@ -64,6 +81,19 @@ class SourceDataPrefixList(BaseModel):
         return cls(source_data_prefix_list=RefIdList.from_uuids(uuids=source_data_prefix_list))
 
 
+class SourceDataIpv6PrefixList(BaseModel):
+    model_config = ConfigDict(populate_by_name=True, extra="forbid")
+    source_data_ipv6_prefix_list: RefIdList = Field(
+        validation_alias="sourceDataIpv6PrefixList",
+        serialization_alias="sourceDataIpv6PrefixList",
+        description="Available only in >= 20.18.2",
+    )
+
+    @classmethod
+    def create(cls, source_data_prefix_list: List[UUID]) -> Self:
+        return cls(source_data_ipv6_prefix_list=RefIdList.from_uuids(uuids=source_data_prefix_list))
+
+
 class DestinationDataPrefixList(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
     destination_data_prefix_list: RefIdList = Field(
@@ -73,6 +103,19 @@ class DestinationDataPrefixList(BaseModel):
     @classmethod
     def create(cls, uuids: List[UUID]) -> Self:
         return cls(destination_data_prefix_list=RefIdList.from_uuids(uuids=uuids))
+
+
+class DestinationDataIpv6PrefixList(BaseModel):
+    model_config = ConfigDict(populate_by_name=True, extra="forbid")
+    destination_data_ipv6_prefix_list: RefIdList = Field(
+        validation_alias="destinationDataIpv6PrefixList",
+        serialization_alias="destinationDataIpv6PrefixList",
+        description="Available only in >= 20.18.2",
+    )
+
+    @classmethod
+    def create(cls, uuids: List[UUID]) -> Self:
+        return cls(destination_data_ipv6_prefix_list=RefIdList.from_uuids(uuids=uuids))
 
 
 class DestinationFqdnList(BaseModel):
@@ -224,6 +267,23 @@ class SourceIp(BaseModel):
         return cls(source_ip=Ipv4Match.create_with_variable(variable_name))
 
 
+class SourceIpv6(BaseModel):
+    model_config = ConfigDict(populate_by_name=True, extra="forbid")
+    source_ipv6: Ipv6Match = Field(
+        validation_alias="sourceIpv6",
+        serialization_alias="sourceIpv6",
+        description="Available only in >= 20.18.2",
+    )
+
+    @classmethod
+    def from_ip_networks(cls, ipv6_networks: List[IPv6Network]) -> Self:
+        return cls(source_ipv6=Ipv6Match.create_with_ip_networks(ipv6_networks))
+
+    @classmethod
+    def from_variable(cls, variable_name: str) -> Self:
+        return cls(source_ipv6=Ipv6Match.create_with_variable(variable_name))
+
+
 class DestinationIp(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
     destination_ip: Ipv4Match = Field(validation_alias="destinationIp", serialization_alias="destinationIp")
@@ -235,6 +295,23 @@ class DestinationIp(BaseModel):
     @classmethod
     def from_variable(cls, variable_name: str) -> Self:
         return cls(destination_ip=Ipv4Match.create_with_variable(variable_name))
+
+
+class DestinationIpv6(BaseModel):
+    model_config = ConfigDict(populate_by_name=True, extra="forbid")
+    destination_ipv6: Ipv6Match = Field(
+        validation_alias="destinationIpv6",
+        serialization_alias="destinationIpv6",
+        description="Available only in >= 20.18.2",
+    )
+
+    @classmethod
+    def from_ip_networks(cls, ipv6_networks: List[IPv6Network]) -> Self:
+        return cls(destination_ipv6=Ipv6Match.create_with_ip_networks(ipv6_networks))
+
+    @classmethod
+    def from_variable(cls, variable_name: str) -> Self:
+        return cls(destination_ipv6=Ipv6Match.create_with_variable(variable_name))
 
 
 class DestinationFqdn(BaseModel):
@@ -316,7 +393,7 @@ class Protocol(BaseModel):
 
     @classmethod
     def from_protocol_id_list(cls, ids: List[str]) -> Self:
-        return cls(protocol=as_global(ids))
+        return cls(protocol=Global[List[str]](value=ids))
 
 
 class ProtocolNameMatch(BaseModel):
@@ -335,12 +412,14 @@ MatchEntry = Union[
     AppFamily,
     AppList,
     AppListFlat,
+    DestinationDataIpv6PrefixList,
     DestinationDataPrefixList,
     DestinationFqdn,
     DestinationFqdnList,
     DestinationGeoLocation,
     DestinationGeoLocationList,
     DestinationIp,
+    DestinationIpv6,
     DestinationPort,
     DestinationPortList,
     DestinationScalableGroupTagList,
@@ -349,6 +428,7 @@ MatchEntry = Union[
     ProtocolNameList,
     ProtocolNameMatch,
     RuleSetList,
+    SourceDataIpv6PrefixList,
     SourceDataPrefixList,
     SourceGeoLocation,
     SourceGeoLocationList,
@@ -356,6 +436,7 @@ MatchEntry = Union[
     SourceIdentityUser,
     SourceIdentityUserGroup,
     SourceIp,
+    SourceIpv6,
     SourcePort,
     SourcePortList,
     SourceScalableGroupTagList,
