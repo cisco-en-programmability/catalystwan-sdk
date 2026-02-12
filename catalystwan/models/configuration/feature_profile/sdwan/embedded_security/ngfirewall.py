@@ -343,13 +343,13 @@ class DestinationPort(BaseModel):
 
 class SourceGeoLocation(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    source_geo_loacation: Union[Global[List[GeoLocation]], Variable] = Field(
+    source_geo_location: Union[Global[List[GeoLocation]], Variable] = Field(
         validation_alias="sourceGeoLocation", serialization_alias="sourceGeoLocation"
     )
 
     @classmethod
     def from_geo_locations_list(cls, locations: List[GeoLocation]) -> Self:
-        return cls(source_geo_loacation=Global[List[GeoLocation]](value=locations))
+        return cls(source_geo_location=Global[List[GeoLocation]](value=locations))
 
 
 class DestinationGeoLocation(BaseModel):
