@@ -5,6 +5,7 @@ from typing import List, Literal, Optional, Union
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
+from typing_extensions import Self
 
 from catalystwan.models.common import (
     IntStr,
@@ -23,6 +24,7 @@ from catalystwan.models.policy.policy_definition import (
 
 
 class RuleBase(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
     rule: str = ""
     order: IntStr = 0
     action: str = "permit"
@@ -46,8 +48,12 @@ class RuleBase(BaseModel):
         check_fields_exclusive(self.__dict__, {"protocol", "protocol_name", "protocol_name_list"}, False)
         return self
 
+    def __lt__(self, other: Self):
+        return int(self.order) < int(other.order)
+
 
 class IPv4Rule(RuleBase):
+    model_config = ConfigDict(populate_by_name=True)
     sequence_ip_type: Literal[None, "ipv4"] = Field(
         default="ipv4", serialization_alias="sequenceIpType", validation_alias="sequenceIpType"
     )
@@ -125,6 +131,7 @@ class IPv4Rule(RuleBase):
 
 
 class IPv6Rule(RuleBase):
+    model_config = ConfigDict(populate_by_name=True)
     sequence_ip_type: Literal["ipv6"] = Field(
         default="ipv6", serialization_alias="sequenceIpType", validation_alias="sequenceIpType"
     )
@@ -165,6 +172,7 @@ class RuleSetDefinition(BaseModel):
 
 
 class RuleSet(PolicyDefinitionBase):
+    model_config = ConfigDict(populate_by_name=True)
     type: Literal["ruleSet"] = "ruleSet"
     definition: RuleSetDefinition = RuleSetDefinition()
 
