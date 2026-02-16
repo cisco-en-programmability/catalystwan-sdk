@@ -304,8 +304,13 @@ class SourceIPEntry(BaseModel):
 
 
 class SourceIPv6Entry(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
     field: Literal["sourceIpv6"] = "sourceIpv6"
-    value: SpaceSeparatedIPv6
+    value: Optional[SpaceSeparatedIPv6] = Field(default=None)
+    vip_variable_name: Optional[str] = Field(
+        default=None, serialization_alias="vipVariableName", validation_alias="vipVariableName"
+    )
 
     @staticmethod
     def from_ipv6_networks(networks: List[IPv6Network]) -> "SourceIPv6Entry":
@@ -347,8 +352,13 @@ class DestinationIPEntry(BaseModel):
 
 
 class DestinationIPv6Entry(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
     field: Literal["destinationIpv6"] = "destinationIpv6"
-    value: SpaceSeparatedIPv6
+    value: Optional[SpaceSeparatedIPv6] = Field(default=None)
+    vip_variable_name: Optional[str] = Field(
+        default=None, serialization_alias="vipVariableName", validation_alias="vipVariableName"
+    )
 
     @staticmethod
     def from_ipv6_networks(networks: List[IPv6Network]) -> "DestinationIPv6Entry":

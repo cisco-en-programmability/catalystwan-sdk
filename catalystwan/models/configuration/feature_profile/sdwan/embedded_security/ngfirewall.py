@@ -233,7 +233,11 @@ class AppListFlat(BaseModel):
 
 class RuleSetList(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    rule_set_list: RefIdList = Field(validation_alias="ruleSetList", serialization_alias="ruleSetList")
+    rule_set_list: RefIdList = Field(
+        validation_alias="ruleSetList",
+        serialization_alias="ruleSetList",
+        description="Available only in >= 20.18.2",
+    )
 
     @classmethod
     def create(cls, uuids: List[UUID]) -> Self:
@@ -243,14 +247,18 @@ class RuleSetList(BaseModel):
 class SourceSecurityGroup(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
     source_security_group: RefIdList = Field(
-        validation_alias="sourceSecurityGroup", serialization_alias="sourceSecurityGroup"
+        validation_alias="sourceSecurityGroup",
+        serialization_alias="sourceSecurityGroup",
+        description="Available only in >= 20.18.2",
     )
 
 
 class DestinationSecurityGroup(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
     destination_security_group: RefIdList = Field(
-        validation_alias="destinationSecurityGroup", serialization_alias="destinationSecurityGroup"
+        validation_alias="destinationSecurityGroup",
+        serialization_alias="destinationSecurityGroup",
+        description="Available only in >= 20.18.2",
     )
 
 
