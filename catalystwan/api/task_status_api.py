@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING, List, cast
 
-from tenacity import retry, retry_if_result, stop_after_attempt, wait_fixed  # type: ignore
+from tenacity import retry, retry_if_exception_type, retry_if_result, stop_after_attempt, wait_fixed  # type: ignore
 
 from catalystwan.exceptions import TaskValidationError
 
@@ -139,7 +139,7 @@ class Task:
         @retry(
             wait=wait_fixed(interval_seconds),
             stop=stop_after_attempt(int(timeout_seconds / interval_seconds)),
-            retry=retry_if_result(check_status),
+            retry=retry_if_result(check_status) | retry_if_exception_type(ConnectionError),
             retry_error_callback=log_exception,
         )
         def wait_for_action_finish() -> List[SubTaskData]:
