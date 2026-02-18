@@ -3,9 +3,10 @@
 from typing import Literal
 
 Solution = Literal[
+    "cellulargateway",
     "mobility",
-    "sdwan",
     "nfvirtual",
     "sd-routing",
-    "cellulargateway",
+    "sdwan",
+    "service-insertion",
 ]
