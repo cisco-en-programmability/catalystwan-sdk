@@ -46,7 +46,9 @@ ProfileType = Literal[
     "networks",
     "other",
     "policy-object",  # automatically created default policy object feature profile
+    "service-chain-definition",
     "service",
+    "services",
     "sig-security",
     "system",
     "topology",
