@@ -203,6 +203,17 @@ def str_as_cadence_pairs(val: Union[str, Sequence[DualToneCadenceStartStop]]) ->
     return val
 
 
+AsNum = Annotated[IntStr, Field(ge=1, le=4294967295)]
+AsRegExp = Annotated[str, Field(pattern=r"^([0-9]+|[0-9]*\.[0-9]+)$")]
+AsPrepend = Union[AsNum, AsRegExp]
+
+
+def str_as_as_prepend_list(val: Any) -> Any:
+    if isinstance(val, str):
+        return [item.strip() for item in val.split() if item.strip()]
+    return val
+
+
 def tuple_to_str(val: Tuple[Any, ...]) -> str:
     return " ".join(map(str, val))
 
@@ -246,6 +257,20 @@ SpaceSeparatedIPv6 = Annotated[
     List[IPv6Interface],
     PlainSerializer(lambda x: " ".join(map(str, x)), return_type=str, when_used="json-unless-none"),
     BeforeValidator(str_as_ipv6_list),
+    Field(min_length=1),
+]
+
+SpaceSeparatedAsNumList = Annotated[
+    List[AsNum],
+    PlainSerializer(lambda x: " ".join(map(str, x)), return_type=str, when_used="json-unless-none"),
+    BeforeValidator(str_as_positive_int_list),
+    Field(min_length=1),
+]
+
+SpaceSeparatedAsPrependList = Annotated[
+    List[AsPrepend],
+    PlainSerializer(lambda x: " ".join(map(str, x)), return_type=str, when_used="json-unless-none"),
+    BeforeValidator(str_as_as_prepend_list),
     Field(min_length=1),
 ]
 

@@ -16,7 +16,7 @@ from catalystwan.api.configuration_groups.parcel import (
     as_global,
     as_variable,
 )
-from catalystwan.models.common import AcceptRejectActionType
+from catalystwan.models.common import AcceptRejectActionType, AsPrepend
 from catalystwan.models.configuration.feature_profile.common import RefIdItem
 
 Community = Literal["internet", "local-AS", "no-advertise", "no-export"]
@@ -130,11 +130,11 @@ class SetAsPath(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
     )
-    prepend: Optional[List[Global[int]]] = None
+    prepend: Optional[Global[List[AsPrepend]]] = None
 
     @classmethod
-    def from_list(cls, prepend: List[int]) -> SetAsPath:
-        return cls(prepend=[as_global(i) for i in prepend])
+    def from_list(cls, prepend: List[Union[str, int]]) -> SetAsPath:
+        return cls(prepend=Global[List[AsPrepend]](value=prepend))
 
 
 class SetCommunity(BaseModel):
@@ -330,7 +330,7 @@ class RoutePolicySequence(BaseModel):
     def associate_reject_action(self) -> None:
         self.actions = [(RejectActions(reject=as_default(True)))]
 
-    def associate_as_path_action(self, prepend: List[int]) -> None:
+    def associate_as_path_action(self, prepend: List[Union[str, int]]) -> None:
         self._accept_action.as_path = SetAsPath.from_list(prepend)
 
     def associate_communities_action(self, additive: bool, communities: List[str]) -> None:
