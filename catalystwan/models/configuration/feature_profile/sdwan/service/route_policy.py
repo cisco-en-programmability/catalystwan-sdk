@@ -146,7 +146,7 @@ class SetCommunity(BaseModel):
         populate_by_name=True,
     )
     additive: Union[Global[bool], Default[bool]] = as_default(False)
-    community: Optional[Union[Global[List[str]], Variable]] = None
+    community: Union[Global[List[str]], Variable] = Global[List[str]](value=[])
 
 
 class Accept(BaseModel):
@@ -167,8 +167,11 @@ class Accept(BaseModel):
     as_path: Optional[SetAsPath] = Field(
         default=None, serialization_alias="setAsPath", validation_alias="setAsPath", description="Set AS Path"
     )
-    community: Optional[SetCommunity] = Field(
-        default=None, serialization_alias="setCommunity", validation_alias="setCommunity", description="Set Community"
+    community: SetCommunity = Field(
+        default_factory=SetCommunity,
+        serialization_alias="setCommunity",
+        validation_alias="setCommunity",
+        description="Set Community",
     )
     local_preference: Optional[Global[int]] = Field(
         default=None,
