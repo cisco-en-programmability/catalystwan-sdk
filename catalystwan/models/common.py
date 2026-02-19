@@ -187,6 +187,11 @@ IntStr = Annotated[
     BeforeValidator(lambda x: int(x)),
 ]
 
+IntStrAsNum = Annotated[
+    int,
+    BeforeValidator(lambda x: int(x)),
+]
+
 IntRange = Tuple[int, Optional[int]]
 
 DualToneCadenceInterval = Annotated[int, Field(ge=50, le=10_000)]
@@ -203,7 +208,7 @@ def str_as_cadence_pairs(val: Union[str, Sequence[DualToneCadenceStartStop]]) ->
     return val
 
 
-AsNum = Annotated[IntStr, Field(ge=1, le=4294967295)]
+AsNum = Annotated[IntStrAsNum, Field(ge=1, le=4294967295)]
 AsRegExp = Annotated[str, Field(pattern=r"^([0-9]+|[0-9]*\.[0-9]+)$")]
 AsPrepend = Union[AsNum, AsRegExp]
 
