@@ -27,6 +27,8 @@ from catalystwan.models.common import (
     SequenceIpType,
     ServiceChainNumber,
     ServiceType,
+    SpaceSeparatedAsNumList,
+    SpaceSeparatedAsPrependList,
     SpaceSeparatedInterfaceStr,
     SpaceSeparatedIPv4,
     SpaceSeparatedIPv6,
@@ -406,8 +408,8 @@ class AsPathListMatchEntry(BaseModel):
 
 
 class AsPathActionEntryValue(BaseModel):
-    prepend: Optional[SpaceSeparatedNonNegativeIntList] = None
-    exclude: Optional[SpaceSeparatedNonNegativeIntList] = None
+    prepend: Optional[SpaceSeparatedAsPrependList] = None
+    exclude: Optional[SpaceSeparatedAsNumList] = None
 
 
 class AsPathActionEntry(BaseModel):

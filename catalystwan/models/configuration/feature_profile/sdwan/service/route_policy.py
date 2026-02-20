@@ -16,7 +16,7 @@ from catalystwan.api.configuration_groups.parcel import (
     as_global,
     as_variable,
 )
-from catalystwan.models.common import AcceptRejectActionType
+from catalystwan.models.common import AcceptRejectActionType, AsPrepend
 from catalystwan.models.configuration.feature_profile.common import RefIdItem
 
 Community = Literal["internet", "local-AS", "no-advertise", "no-export"]
@@ -130,11 +130,11 @@ class SetAsPath(BaseModel):
     model_config = ConfigDict(
         populate_by_name=True,
     )
-    prepend: Optional[List[Global[int]]] = None
+    prepend: Optional[Global[List[AsPrepend]]] = None
 
     @classmethod
-    def from_list(cls, prepend: List[int]) -> SetAsPath:
-        return cls(prepend=[as_global(i) for i in prepend])
+    def from_list(cls, prepend: List[Union[str, int]]) -> SetAsPath:
+        return cls(prepend=Global[List[AsPrepend]](value=prepend))
 
 
 class SetCommunity(BaseModel):
@@ -146,7 +146,7 @@ class SetCommunity(BaseModel):
         populate_by_name=True,
     )
     additive: Union[Global[bool], Default[bool]] = as_default(False)
-    community: Optional[Union[Global[List[str]], Variable]] = None
+    community: Union[Global[List[str]], Variable] = Global[List[str]](value=[])
 
 
 class Accept(BaseModel):
@@ -167,8 +167,11 @@ class Accept(BaseModel):
     as_path: Optional[SetAsPath] = Field(
         default=None, serialization_alias="setAsPath", validation_alias="setAsPath", description="Set AS Path"
     )
-    community: Optional[SetCommunity] = Field(
-        default=None, serialization_alias="setCommunity", validation_alias="setCommunity", description="Set Community"
+    community: SetCommunity = Field(
+        default_factory=SetCommunity,
+        serialization_alias="setCommunity",
+        validation_alias="setCommunity",
+        description="Set Community",
     )
     local_preference: Optional[Global[int]] = Field(
         default=None,
@@ -330,7 +333,7 @@ class RoutePolicySequence(BaseModel):
     def associate_reject_action(self) -> None:
         self.actions = [(RejectActions(reject=as_default(True)))]
 
-    def associate_as_path_action(self, prepend: List[int]) -> None:
+    def associate_as_path_action(self, prepend: List[Union[str, int]]) -> None:
         self._accept_action.as_path = SetAsPath.from_list(prepend)
 
     def associate_communities_action(self, additive: bool, communities: List[str]) -> None:
