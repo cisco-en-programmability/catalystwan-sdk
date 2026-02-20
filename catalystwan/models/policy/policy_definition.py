@@ -124,6 +124,7 @@ class ReferenceList(BaseModel):
 
 
 class VariableName(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
     vip_variable_name: str = Field(serialization_alias="vipVariableName", validation_alias="vipVariableName")
 
 

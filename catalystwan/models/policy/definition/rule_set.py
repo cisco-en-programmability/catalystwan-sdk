@@ -135,13 +135,13 @@ class IPv6Rule(RuleBase):
     sequence_ip_type: Literal["ipv6"] = Field(
         default="ipv6", serialization_alias="sequenceIpType", validation_alias="sequenceIpType"
     )
-    source_ipv6: Union[SpaceSeparatedIPv6Networks, VariableName, None] = Field(
+    source_ipv6: Union[VariableName, SpaceSeparatedIPv6Networks, None] = Field(
         default=None, serialization_alias="sourceIPV6", validation_alias="sourceIPV6"
     )
     source_ipv6_data_prefix_list: Optional[ReferenceList] = Field(
         default=None, serialization_alias="sourceIPV6DataPrefixList", validation_alias="sourceIPV6DataPrefixList"
     )
-    destination_ipv6: Union[SpaceSeparatedIPv6Networks, VariableName, None] = Field(
+    destination_ipv6: Union[VariableName, SpaceSeparatedIPv6Networks, None] = Field(
         default=None, serialization_alias="destinationIPV6", validation_alias="destinationIPV6"
     )
     destination_ipv6_data_prefix_list: Optional[ReferenceList] = Field(

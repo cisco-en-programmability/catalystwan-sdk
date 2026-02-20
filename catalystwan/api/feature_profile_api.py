@@ -37,6 +37,10 @@ from catalystwan.models.configuration.feature_profile.sdwan.policy_object.securi
 from catalystwan.models.configuration.feature_profile.sdwan.policy_object.security.intrusion_prevention import (
     IntrusionPreventionParcel,
 )
+from catalystwan.models.configuration.feature_profile.sdwan.policy_object.security.object_group import (
+    SecurityObjectGroupParcel,
+)
+from catalystwan.models.configuration.feature_profile.sdwan.policy_object.security.rule_set import SecurityRuleSetParcel
 from catalystwan.models.configuration.feature_profile.sdwan.policy_object.security.ssl_decryption import (
     SslDecryptionParcel,
 )
@@ -1351,8 +1355,18 @@ class PolicyObjectFeatureProfileAPI:
 
     @overload
     def get(
+        self, profile_id: UUID, parcel_type: Type[SecurityObjectGroupParcel]
+    ) -> DataSequence[Parcel[SecurityObjectGroupParcel]]: ...
+
+    @overload
+    def get(
         self, profile_id: UUID, parcel_type: Type[SecurityPortParcel]
     ) -> DataSequence[Parcel[SecurityPortParcel]]: ...
+
+    @overload
+    def get(
+        self, profile_id: UUID, parcel_type: Type[SecurityRuleSetParcel]
+    ) -> DataSequence[Parcel[SecurityRuleSetParcel]]: ...
 
     @overload
     def get(
@@ -1422,7 +1436,7 @@ class PolicyObjectFeatureProfileAPI:
     @overload
     def get(
         self, profile_id: UUID, parcel_type: Type[ExtendedCommunityParcel], parcel_id: UUID
-    ) -> DataSequence[Parcel[Any]]: ...
+    ) -> DataSequence[Parcel[ExtendedCommunityParcel]]: ...
 
     @overload
     def get(
@@ -1497,8 +1511,18 @@ class PolicyObjectFeatureProfileAPI:
 
     @overload
     def get(
+        self, profile_id: UUID, parcel_type: Type[SecurityObjectGroupParcel], parcel_id: UUID
+    ) -> Parcel[SecurityObjectGroupParcel]: ...
+
+    @overload
+    def get(
         self, profile_id: UUID, parcel_type: Type[SecurityPortParcel], parcel_id: UUID
     ) -> Parcel[SecurityPortParcel]: ...
+
+    @overload
+    def get(
+        self, profile_id: UUID, parcel_type: Type[SecurityRuleSetParcel], parcel_id: UUID
+    ) -> Parcel[SecurityRuleSetParcel]: ...
 
     @overload
     def get(
