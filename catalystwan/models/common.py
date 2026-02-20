@@ -976,13 +976,7 @@ MediaType = Literal[
     "sfp",
 ]
 
-Speed = Literal[
-    "10",
-    "100",
-    "1000",
-    "10000",
-    "2500",
-]
+Speed = Literal["10", "100", "1000", "2500", "5000", "10000", "25000"]
 
 EthernetNatType = Literal["pool", "loopback", "interface"]
 
