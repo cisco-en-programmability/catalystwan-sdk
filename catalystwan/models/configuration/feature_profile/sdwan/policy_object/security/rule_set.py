@@ -1,6 +1,6 @@
 # Copyright 2025 Cisco Systems, Inc. and its affiliates
 from ipaddress import IPv4Network, IPv6Network
-from typing import List, Optional, Union
+from typing import List, Literal, Optional, Union
 
 from pydantic import AliasPath, BaseModel, ConfigDict, Field
 
@@ -141,6 +141,7 @@ class Sequences(BaseModel):
 
 class SecurityRuleSetParcel(_ParcelBase):
     model_config = ConfigDict(populate_by_name=True)
+    type_: Literal["security-rule-set"] = Field(default="security-rule-set", exclude=True)
     sequences: List[Sequences] = Field(
         validation_alias=AliasPath("data", "sequences"), description="select definition of rule"
     )

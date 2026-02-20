@@ -104,6 +104,7 @@ class SecurityObjectGroupEntries(_ParcelEntry):
 
 class SecurityObjectGroupParcel(_ParcelBase):
     model_config = ConfigDict(populate_by_name=True)
+    type_: Literal["security-object-group"] = Field(default="security-object-group", exclude=True)
     entries: List[SecurityObjectGroupEntries] = Field(
         validation_alias=AliasPath("data", "entries"), default_factory=list
     )
