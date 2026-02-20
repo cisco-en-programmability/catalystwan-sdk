@@ -108,7 +108,7 @@ class RoutePolicyRuleSequence(PolicyDefinitionSequenceBase):
             AggregatorActionEntry(value=AggregatorActionEntryValue(aggregator=aggregator_value, ip_address=ip_address))
         )
 
-    def associate_as_path_action(self, prepend_action: List[int], exclude_action: List[int]):
+    def associate_as_path_action(self, prepend_action: List[Union[str, int]], exclude_action: List[int]):
         self._insert_action_in_set(
             AsPathActionEntry(value=AsPathActionEntryValue(prepend=prepend_action, exclude=exclude_action))
         )
