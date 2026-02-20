@@ -2,7 +2,7 @@
 
 import re
 from dataclasses import InitVar, dataclass, field
-from ipaddress import IPv4Interface, IPv4Network, IPv6Interface
+from ipaddress import IPv4Interface, IPv4Network, IPv6Interface, IPv6Network
 from typing import Any, Dict, Iterator, List, Literal, Mapping, Optional, Sequence, Set, Tuple, Union, cast, get_args
 from uuid import UUID
 
@@ -175,6 +175,12 @@ def str_as_ipv6_list(val: Union[str, Sequence[IPv6Interface]]) -> Sequence[IPv6I
     return val
 
 
+def str_as_ipv6_network_list(val: Union[str, Sequence[IPv6Network]]) -> Sequence[IPv6Network]:
+    if isinstance(val, str):
+        return [IPv6Network(element) for element in val.split()]
+    return val
+
+
 def str_as_str_list(val: Union[str, Sequence[str]]) -> Sequence[str]:
     if isinstance(val, str):
         return val.split()
@@ -265,6 +271,13 @@ SpaceSeparatedIPv6 = Annotated[
     Field(min_length=1),
 ]
 
+SpaceSeparatedIPv6Networks = Annotated[
+    List[IPv6Network],
+    PlainSerializer(lambda x: " ".join(map(str, x)), return_type=str, when_used="json-unless-none"),
+    BeforeValidator(str_as_ipv6_network_list),
+    Field(min_length=1),
+]
+
 SpaceSeparatedAsNumList = Annotated[
     List[AsNum],
     PlainSerializer(lambda x: " ".join(map(str, x)), return_type=str, when_used="json-unless-none"),
@@ -276,7 +289,6 @@ SpaceSeparatedAsPrependList = Annotated[
     List[AsPrepend],
     PlainSerializer(lambda x: " ".join(map(str, x)), return_type=str, when_used="json-unless-none"),
     BeforeValidator(str_as_as_prepend_list),
-    Field(min_length=1),
 ]
 
 Ipv4PrefixLen = Annotated[

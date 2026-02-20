@@ -10,6 +10,7 @@ from catalystwan.models.configuration.feature_profile.common import ObjectGroupE
 class ObjectGroupParcel(_ParcelBase):
     type_: Literal["object-group"] = Field(default="object-group", exclude=True)
     entries: List[ObjectGroupEntries] = Field(
+        default_factory=list,
         validation_alias=AliasPath("data", "entries"),
         description="object-group Entries",
     )

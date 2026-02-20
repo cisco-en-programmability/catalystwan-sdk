@@ -1,11 +1,15 @@
 # Copyright 2023 Cisco Systems, Inc. and its affiliates
 
-from ipaddress import IPv4Network, IPv6Network
 from typing import Literal, Optional, Union
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from catalystwan.models.common import check_any_of_exclusive_field_sets, check_fields_exclusive
+from catalystwan.models.common import (
+    SpaceSeparatedIPv4Networks,
+    SpaceSeparatedIPv6Networks,
+    check_any_of_exclusive_field_sets,
+    check_fields_exclusive,
+)
 from catalystwan.models.policy.policy_definition import (
     PolicyDefinitionBase,
     PolicyDefinitionGetResponse,
@@ -21,7 +25,7 @@ SequenceIPType = Literal[
 
 
 class SecurityGroupIPv4Definition(BaseModel):
-    data_prefix: Union[IPv4Network, VariableName, None] = Field(
+    data_prefix: Union[VariableName, SpaceSeparatedIPv4Networks, None] = Field(
         None, serialization_alias="dataPrefix", validation_alias="dataPrefix"
     )
     data_prefix_list: Optional[ReferenceList] = Field(
@@ -52,7 +56,7 @@ class SecurityGroupIPv4Definition(BaseModel):
 
 
 class SecurityGroupIPv6Definition(BaseModel):
-    data_ipv6_prefix: Union[IPv6Network, VariableName, None] = Field(
+    data_ipv6_prefix: Union[VariableName, SpaceSeparatedIPv6Networks, None] = Field(
         None, serialization_alias="dataIPV6Prefix", validation_alias="dataIPV6Prefix"
     )
     data_ipv6_prefix_list: Optional[ReferenceList] = Field(
