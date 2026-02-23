@@ -109,6 +109,9 @@ class Tunnel(BaseModel):
         default=None, validation_alias="clearDontFragment", serialization_alias="clearDontFragment"
     )
     color: Optional[Union[Global[TLOCColor], Default[Literal["default"]], Variable]] = Field(default=None)
+    color_description: Optional[Union[Global[str], Default[None], Variable]] = Field(
+        default=None, validation_alias="colorDescription", serialization_alias="colorDescription"
+    )
     exclude_controller_group_list: Optional[Union[Variable, Global[str], Default[None]]] = Field(
         default=None, validation_alias="excludeControllerGroupList", serialization_alias="excludeControllerGroupList"
     )
