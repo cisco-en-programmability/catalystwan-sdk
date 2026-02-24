@@ -129,6 +129,9 @@ class Tunnel(BaseModel):
     port_hop: Optional[Union[Variable, Global[bool], Default[bool]]] = Field(
         default=None, validation_alias="portHop", serialization_alias="portHop"
     )
+    full_port_hop: Optional[Union[Global[bool], Variable, Default[bool]]] = Field(
+        default=None, validation_alias="fullPortHop", serialization_alias="fullPortHop"
+    )
     restrict: Optional[Union[Variable, Global[bool], Default[bool]]] = Field(default=None)
     tunnel_interface: Optional[Union[Global[bool], Default[bool]]] = Field(
         default=None, validation_alias="tunnelInterface", serialization_alias="tunnelInterface"

@@ -38,11 +38,11 @@ class InterfaceMultilinkParcel(_ParcelBase):
     all: Optional[Union[Variable, Global[bool], Default[bool]]] = Field(
         default=None, validation_alias=AliasPath("data", "all")
     )
-    authentication_type: Union[
-        Variable, Global[MultilinkAuthenticationType], Default[MultilinkAuthenticationType]
-    ] = Field(
-        default=Default[MultilinkAuthenticationType](value="unidirectional"),
-        validation_alias=AliasPath("data", "authenticationType"),
+    authentication_type: Union[Variable, Global[MultilinkAuthenticationType], Default[MultilinkAuthenticationType]] = (
+        Field(
+            default=Default[MultilinkAuthenticationType](value="unidirectional"),
+            validation_alias=AliasPath("data", "authenticationType"),
+        )
     )
     bandwidth_upstream: Optional[Union[Variable, Global[int], Default[None]]] = Field(
         default=None, validation_alias=AliasPath("data", "bandwidthUpstream")
@@ -171,6 +171,9 @@ class InterfaceMultilinkParcel(_ParcelBase):
     )
     port_hop: Optional[Union[Variable, Global[bool], Default[bool]]] = Field(
         default=None, validation_alias=AliasPath("data", "portHop")
+    )
+    full_port_hop: Optional[Union[Global[bool], Variable, Default[bool]]] = Field(
+        default=None, validation_alias=AliasPath("data", "fullPortHop")
     )
     ppp_auth_password: Optional[Union[Variable, Global[str]]] = Field(
         default=None, validation_alias=AliasPath("data", "pppAuthPassword")
