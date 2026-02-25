@@ -108,6 +108,4 @@ class SecurityObjectGroupParcel(_ParcelBase):
     entries: List[SecurityObjectGroupEntries] = Field(
         validation_alias=AliasPath("data", "entries"), default_factory=list
     )
-    sequence_ip_type: Optional[Global[SequenceIpType]] = Field(
-        default=None, validation_alias="sequenceIpType", serialization_alias="sequenceIpType"
-    )
+    sequence_ip_type: Global[SequenceIpType] = Field(validation_alias=AliasPath("data", "sequenceIpType"))

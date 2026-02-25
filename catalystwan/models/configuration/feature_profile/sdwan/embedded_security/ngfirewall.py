@@ -7,7 +7,7 @@ from pydantic import AliasPath, BaseModel, ConfigDict, Field, ValidationError, m
 from typing_extensions import Self
 
 from catalystwan.api.configuration_groups.parcel import Global, Variable, _ParcelBase
-from catalystwan.models.common import GeoLocation, ProtocolName, SecurityBaseAction
+from catalystwan.models.common import GeoLocation, ProtocolName, SecurityBaseAction, SecuritySequenceIpType
 from catalystwan.models.configuration.feature_profile.common import RefIdItem, RefIdList
 
 DefaultAction = Literal["pass", "drop"]
@@ -244,20 +244,20 @@ class RuleSetList(BaseModel):
         return cls(rule_set_list=RefIdList.from_uuids(uuids))
 
 
-class SourceSecurityGroup(BaseModel):
+class SourceObjectGroup(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
     source_security_group: RefIdList = Field(
-        validation_alias="sourceSecurityGroup",
-        serialization_alias="sourceSecurityGroup",
+        validation_alias="sourceObjectGroup",
+        serialization_alias="sourceObjectGroup",
         description="Available only in >= 20.18.2",
     )
 
 
-class DestinationSecurityGroup(BaseModel):
+class DestinationObjectGroup(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
     destination_security_group: RefIdList = Field(
-        validation_alias="destinationSecurityGroup",
-        serialization_alias="destinationSecurityGroup",
+        validation_alias="destinationObjectGroup",
+        serialization_alias="destinationObjectGroup",
         description="Available only in >= 20.18.2",
     )
 
@@ -428,10 +428,10 @@ MatchEntry = Union[
     DestinationGeoLocationList,
     DestinationIp,
     DestinationIpv6,
+    DestinationObjectGroup,
     DestinationPort,
     DestinationPortList,
     DestinationScalableGroupTagList,
-    DestinationSecurityGroup,
     Protocol,
     ProtocolNameList,
     ProtocolNameMatch,
@@ -445,10 +445,10 @@ MatchEntry = Union[
     SourceIdentityUserGroup,
     SourceIp,
     SourceIpv6,
+    SourceObjectGroup,
     SourcePort,
     SourcePortList,
     SourceScalableGroupTagList,
-    SourceSecurityGroup,
 ]
 
 
@@ -498,6 +498,12 @@ class NgFirewallSequence(BaseModel):
         default=Global[SequenceType](value="ngfirewall"),
         validation_alias="sequenceType",
         serialization_alias="sequenceType",
+    )
+    sequence_ip_type: Optional[Global[SecuritySequenceIpType]] = Field(
+        default=None,
+        validation_alias="sequenceIpType",
+        serialization_alias="sequenceIpType",
+        description="Available only in >= 20.18.2",
     )
     match: Match
     actions: List[Union[LogAction, AipAction]] = Field(

@@ -6,7 +6,7 @@ from pydantic import AliasPath, BaseModel, ConfigDict, Field
 
 from catalystwan.api.configuration_groups.parcel import Global, Variable, _ParcelBase
 from catalystwan.models.common import GeoLocation, IntStr, ProtocolName, SecurityBaseAction, SecuritySequenceIpType
-from catalystwan.models.configuration.feature_profile.common import RefIdItem, RefIdList
+from catalystwan.models.configuration.feature_profile.common import RefIdList
 
 
 class SourceIp(BaseModel):
@@ -93,7 +93,7 @@ class Sequences(BaseModel):
     destination_ipv6: Optional[DestinationIpv6] = Field(
         default=None, validation_alias="destinationIpv6", serialization_alias="destinationIpv6"
     )
-    destination_object_group: Optional[RefIdItem] = Field(
+    destination_object_group: Optional[RefIdList] = Field(
         default=None, validation_alias="destinationObjectGroup", serialization_alias="destinationObjectGroup"
     )
     destination_port: Optional[DestinationPort] = Field(
@@ -128,7 +128,7 @@ class Sequences(BaseModel):
     source_ipv6: Optional[SourceIpv6] = Field(
         default=None, validation_alias="sourceIpv6", serialization_alias="sourceIpv6"
     )
-    source_object_group: Optional[RefIdItem] = Field(
+    source_object_group: Optional[RefIdList] = Field(
         default=None, validation_alias="sourceObjectGroup", serialization_alias="sourceObjectGroup"
     )
     source_port: Optional[SourcePort] = Field(
