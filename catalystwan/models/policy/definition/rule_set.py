@@ -61,6 +61,7 @@ class IPv4Rule(RuleBase):
         default=None,
         serialization_alias="sourceIP",
         validation_alias="sourceIP",
+        description="please keep VariableName as first in Union otherwise json gets malformed during serialization",
     )
     source_data_prefix_list: Optional[ReferenceList] = Field(
         default=None, serialization_alias="sourceDataPrefixList", validation_alias="sourceDataPrefixList"
@@ -80,7 +81,10 @@ class IPv4Rule(RuleBase):
         default=None, serialization_alias="sourcePortList", validation_alias="sourcePortList"
     )
     destination_ip: Union[VariableName, SpaceSeparatedIPv4Networks, None] = Field(
-        default=None, serialization_alias="destinationIP", validation_alias="destinationIP"
+        default=None,
+        serialization_alias="destinationIP",
+        validation_alias="destinationIP",
+        description="please keep VariableName as first in Union otherwise json gets malformed during serialization",
     )
     destination_data_prefix_list: Optional[ReferenceList] = Field(
         default=None, serialization_alias="destinationDataPrefixList", validation_alias="destinationDataPrefixList"
@@ -136,13 +140,19 @@ class IPv6Rule(RuleBase):
         default="ipv6", serialization_alias="sequenceIpType", validation_alias="sequenceIpType"
     )
     source_ipv6: Union[VariableName, SpaceSeparatedIPv6Networks, None] = Field(
-        default=None, serialization_alias="sourceIPV6", validation_alias="sourceIPV6"
+        default=None,
+        serialization_alias="sourceIPV6",
+        validation_alias="sourceIPV6",
+        description="please keep VariableName as first in Union otherwise json gets malformed during serialization",
     )
     source_ipv6_data_prefix_list: Optional[ReferenceList] = Field(
         default=None, serialization_alias="sourceIPV6DataPrefixList", validation_alias="sourceIPV6DataPrefixList"
     )
     destination_ipv6: Union[VariableName, SpaceSeparatedIPv6Networks, None] = Field(
-        default=None, serialization_alias="destinationIPV6", validation_alias="destinationIPV6"
+        default=None,
+        serialization_alias="destinationIPV6",
+        validation_alias="destinationIPV6",
+        description="please keep VariableName as first in Union otherwise json gets malformed during serialization",
     )
     destination_ipv6_data_prefix_list: Optional[ReferenceList] = Field(
         default=None,

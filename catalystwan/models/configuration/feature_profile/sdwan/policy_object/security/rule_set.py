@@ -60,6 +60,13 @@ class DestinationPort(BaseModel):
 
 class Sequences(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
+    sequence_ip_type: Optional[Global[SecuritySequenceIpType]] = Field(
+        default=None,
+        validation_alias="sequenceIpType",
+        serialization_alias="sequenceIpType",
+        description="This field needs to go before other fields"
+        "because of how SDWAN Manager validates sequence content",
+    )
     action: Union[Global[SecurityBaseAction], Variable] = Field()
     sequence_id: Union[Variable, Global[IntStr]] = Field(
         validation_alias="sequenceId", serialization_alias="sequenceId"
@@ -108,9 +115,6 @@ class Sequences(BaseModel):
     )
     protocol_name_list: Optional[RefIdList] = Field(
         default=None, validation_alias="protocolNameList", serialization_alias="protocolNameList"
-    )
-    sequence_ip_type: Optional[Global[SecuritySequenceIpType]] = Field(
-        default=None, validation_alias="sequenceIpType", serialization_alias="sequenceIpType"
     )
     source_data_ipv6_prefix_list: Optional[RefIdList] = Field(
         default=None, validation_alias="sourceDataIpv6PrefixList", serialization_alias="sourceDataIpv6PrefixList"

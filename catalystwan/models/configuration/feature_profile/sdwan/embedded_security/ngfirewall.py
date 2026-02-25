@@ -246,7 +246,7 @@ class RuleSetList(BaseModel):
 
 class SourceObjectGroup(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    source_security_group: RefIdList = Field(
+    source_object_group: RefIdList = Field(
         validation_alias="sourceObjectGroup",
         serialization_alias="sourceObjectGroup",
         description="Available only in >= 20.18.2",
@@ -255,7 +255,7 @@ class SourceObjectGroup(BaseModel):
 
 class DestinationObjectGroup(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
-    destination_security_group: RefIdList = Field(
+    destination_object_group: RefIdList = Field(
         validation_alias="destinationObjectGroup",
         serialization_alias="destinationObjectGroup",
         description="Available only in >= 20.18.2",

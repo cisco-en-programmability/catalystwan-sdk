@@ -26,7 +26,10 @@ SequenceIPType = Literal[
 
 class SecurityGroupIPv4Definition(BaseModel):
     data_prefix: Union[VariableName, SpaceSeparatedIPv4Networks, None] = Field(
-        None, serialization_alias="dataPrefix", validation_alias="dataPrefix"
+        None,
+        serialization_alias="dataPrefix",
+        validation_alias="dataPrefix",
+        description="please keep VariableName as first in Union otherwise json gets malformed during serialization",
     )
     data_prefix_list: Optional[ReferenceList] = Field(
         None, serialization_alias="dataPrefixList", validation_alias="dataPrefixList"
@@ -57,7 +60,10 @@ class SecurityGroupIPv4Definition(BaseModel):
 
 class SecurityGroupIPv6Definition(BaseModel):
     data_ipv6_prefix: Union[VariableName, SpaceSeparatedIPv6Networks, None] = Field(
-        None, serialization_alias="dataIPV6Prefix", validation_alias="dataIPV6Prefix"
+        None,
+        serialization_alias="dataIPV6Prefix",
+        validation_alias="dataIPV6Prefix",
+        description="please keep VariableName as first in Union otherwise json gets malformed during serialization",
     )
     data_ipv6_prefix_list: Optional[ReferenceList] = Field(
         None, serialization_alias="dataIPV6PrefixList", validation_alias="dataIPV6PrefixList"
