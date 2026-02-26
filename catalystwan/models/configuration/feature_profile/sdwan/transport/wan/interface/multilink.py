@@ -38,11 +38,11 @@ class InterfaceMultilinkParcel(_ParcelBase):
     all: Optional[Union[Variable, Global[bool], Default[bool]]] = Field(
         default=None, validation_alias=AliasPath("data", "all")
     )
-    authentication_type: Union[Variable, Global[MultilinkAuthenticationType], Default[MultilinkAuthenticationType]] = (
-        Field(
-            default=Default[MultilinkAuthenticationType](value="unidirectional"),
-            validation_alias=AliasPath("data", "authenticationType"),
-        )
+    authentication_type: Optional[
+        Union[Variable, Global[MultilinkAuthenticationType], Default[MultilinkAuthenticationType]]
+    ] = Field(
+        default=Default[MultilinkAuthenticationType](value="unidirectional"),
+        validation_alias=AliasPath("data", "authenticationType"),
     )
     bandwidth_upstream: Optional[Union[Variable, Global[int], Default[None]]] = Field(
         default=None, validation_alias=AliasPath("data", "bandwidthUpstream")
@@ -213,6 +213,9 @@ class InterfaceMultilinkParcel(_ParcelBase):
     )
     value: Optional[Union[Variable, Default[TLOCColor], Global[TLOCColor]]] = Field(
         default=None, validation_alias=AliasPath("data", "value")
+    )
+    color_description: Optional[Union[Global[str], Default[None], Variable]] = Field(
+        default=None, validation_alias=AliasPath("data", "colorDescription")
     )
     vbond_as_stun_server: Optional[Union[Variable, Global[bool], Default[bool]]] = Field(
         default=None, validation_alias=AliasPath("data", "vbondAsStunServer")

@@ -161,6 +161,9 @@ class Tunnel(BaseModel):
         default=None, validation_alias="clearDontFragment", serialization_alias="clearDontFragment"
     )
     color: Optional[Union[Global[TLOCColor], Default[Literal["mpls"]], Variable]] = Field(default=None)
+    color_description: Optional[Union[Global[str], Default[None], Variable]] = Field(
+        default=None, validation_alias="colorDescription", serialization_alias="colorDescription"
+    )
     cts_sgt_propagation: Optional[Union[Variable, Global[bool], Default[bool]]] = Field(
         default=None, validation_alias="ctsSgtPropagation", serialization_alias="ctsSgtPropagation"
     )
