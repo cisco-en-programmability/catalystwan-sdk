@@ -67,6 +67,9 @@ class Tunnel(BaseModel):
     port_hop: Optional[Union[Default[bool], Global[bool], Variable]] = Field(
         default=None, validation_alias="portHop", serialization_alias="portHop"
     )
+    full_port_hop: Optional[Union[Global[bool], Variable, Default[bool]]] = Field(
+        default=None, validation_alias="fullPortHop", serialization_alias="fullPortHop"
+    )
     restrict: Optional[Union[Default[bool], Global[bool], Variable]] = Field(default=None)
     tunnel_tcp_mss: Optional[Union[Global[int], Default[None], Variable]] = Field(
         default=None, validation_alias="tunnelTcpMss", serialization_alias="tunnelTcpMss"

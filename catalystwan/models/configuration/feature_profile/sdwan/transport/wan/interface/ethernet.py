@@ -196,6 +196,9 @@ class Tunnel(BaseModel):
     port_hop: Optional[Union[Variable, Global[bool], Default[bool]]] = Field(
         default=None, validation_alias="portHop", serialization_alias="portHop"
     )
+    full_port_hop: Optional[Union[Global[bool], Variable, Default[bool]]] = Field(
+        default=None, validation_alias="fullPortHop", serialization_alias="fullPortHop"
+    )
     restrict: Optional[Union[Variable, Global[bool], Default[bool]]] = Field(default=None)
     tloc_extension_gre_to: Optional[Union[Variable, Global[str], Global[IPv4Address], Default[None]]] = Field(
         default=None, validation_alias="tlocExtensionGreTo", serialization_alias="tlocExtensionGreTo"
