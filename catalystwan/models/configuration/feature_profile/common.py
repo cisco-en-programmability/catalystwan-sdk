@@ -663,6 +663,24 @@ class InterfaceStaticIPv4Address(BaseModel):
     static: StaticIPv4AddressConfig = Field(default_factory=StaticIPv4AddressConfig)
 
 
+AddressType = Literal["dynamic", "static"]
+
+
+class EitherIPv4AddressConfig(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
+
+    address_type: Union[Global[AddressType], Variable] = Field(
+        serialization_alias="addressType", validation_alias="addressType"
+    )
+    static: Optional[StaticIPv4AddressConfig] = Field(default=None)
+    dynamic: Optional[DynamicDhcpDistance] = Field(default=None)
+
+
+class InterfaceEitherIPv4Address(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
+    either: EitherIPv4AddressConfig = Field()
+
+
 class DynamicIPv6Dhcp(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
 

@@ -7,8 +7,10 @@ from pydantic import AliasPath, BaseModel, ConfigDict, Field
 from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase
 from catalystwan.models.common import EthernetDuplexMode, MediaType, Speed
 from catalystwan.models.configuration.feature_profile.common import (
+    AddressType,
     Arp,
     InterfaceDynamicIPv4Address,
+    InterfaceEitherIPv4Address,
     InterfaceStaticIPv4Address,
 )
 
@@ -48,6 +50,21 @@ class InterfaceStaticIPv6Address(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
 
     static: StaticIPv6AddressConfig
+
+
+class EitherIPv6AddressConfig(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
+
+    address_type: Union[Global[AddressType], Variable] = Field(
+        serialization_alias="addressType", validation_alias="addressType"
+    )
+    static: Optional[StaticIPv6AddressConfig] = Field(default=None)
+    dynamic: Optional[DhcpClient] = Field(default=None)
+
+
+class InterfaceEitherIPv6Address(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
+    either: EitherIPv6AddressConfig = Field()
 
 
 class Advanced(BaseModel):
@@ -98,7 +115,7 @@ class InterfaceEthernetParcel(_ParcelBase):
     interface_description: Union[Variable, Global[str], Default[None]] = Field(
         default=Default[None](value=None), validation_alias=AliasPath("data", "description")
     )
-    intf_ip_address: Union[InterfaceDynamicIPv4Address, InterfaceStaticIPv4Address] = Field(
+    intf_ip_address: Union[InterfaceDynamicIPv4Address, InterfaceStaticIPv4Address, InterfaceEitherIPv4Address] = Field(
         validation_alias=AliasPath("data", "intfIpAddress")
     )
     shutdown: Union[Variable, Global[bool], Default[bool]] = Field(
@@ -113,9 +130,9 @@ class InterfaceEthernetParcel(_ParcelBase):
     dhcp_helper: Optional[Union[Variable, Default[None], Global[List[str]]]] = Field(
         default=None, validation_alias=AliasPath("data", "dhcpHelper")
     )
-    intf_ip_v6_address: Optional[Union[InterfaceDynamicIPv6Address, InterfaceStaticIPv6Address]] = Field(
-        default=None, validation_alias=AliasPath("data", "intfIpV6Address")
-    )
+    intf_ip_v6_address: Optional[
+        Union[InterfaceDynamicIPv6Address, InterfaceStaticIPv6Address, InterfaceEitherIPv6Address]
+    ] = Field(default=None, validation_alias=AliasPath("data", "intfIpV6Address"))
     iperf_server: Optional[Union[Variable, Global[str], Default[None]]] = Field(
         default=None, validation_alias=AliasPath("data", "iperfServer")
     )

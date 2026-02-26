@@ -16,12 +16,15 @@ from catalystwan.models.common import (
 )
 from catalystwan.models.configuration.feature_profile.common import (
     AclQos,
+    AddressType,
     AllowService,
     Arp,
+    DynamicIPv6Dhcp,
     Encapsulation,
     EthernetNatAttributesIpv4,
     InterfaceDynamicIPv4Address,
     InterfaceDynamicIPv6Address,
+    InterfaceEitherIPv4Address,
     InterfaceStaticIPv4Address,
     MultiRegionFabric,
     RefIdItem,
@@ -147,6 +150,21 @@ class Static(BaseModel):
 
 class InterfaceStaticIPv6Address(BaseModel):
     static: Static = Field()
+
+
+class EitherIPv6AddressConfig(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
+
+    address_type: Union[Global[AddressType], Variable] = Field(
+        serialization_alias="addressType", validation_alias="addressType"
+    )
+    static: Optional[Static] = Field(default=None)
+    dynamic: Optional[DynamicIPv6Dhcp] = Field(default=None)
+
+
+class InterfaceEitherIPv6Address(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
+    either: EitherIPv6AddressConfig = Field()
 
 
 class Tunnel(BaseModel):
@@ -314,9 +332,9 @@ class InterfaceEthernetParcel(_ParcelBase):
         default_factory=list, validation_alias=AliasPath("data", "encapsulation"), description="Encapsulation for TLOC"
     )
     interface_name: Union[Variable, Global[str]] = Field(validation_alias=AliasPath("data", "interfaceName"))
-    interface_ip_address: Optional[Union[InterfaceDynamicIPv4Address, InterfaceStaticIPv4Address]] = Field(
-        validation_alias=AliasPath("data", "intfIpAddress"), default=None
-    )
+    interface_ip_address: Optional[
+        Union[InterfaceDynamicIPv4Address, InterfaceStaticIPv4Address, InterfaceEitherIPv4Address]
+    ] = Field(validation_alias=AliasPath("data", "intfIpAddress"), default=None)
     interface_description: Optional[Union[Variable, Global[str], Default[None]]] = Field(
         default=None, validation_alias=AliasPath("data", "description")
     )
@@ -354,9 +372,9 @@ class InterfaceEthernetParcel(_ParcelBase):
     dhcp_helper: Optional[Union[Variable, Default[None], Global[List[str]]]] = Field(
         default=None, validation_alias=AliasPath("data", "dhcpHelper")
     )
-    intf_ip_v6_address: Optional[Union[InterfaceDynamicIPv6Address, InterfaceStaticIPv6Address]] = Field(
-        default=None, validation_alias=AliasPath("data", "intfIpV6Address")
-    )
+    intf_ip_v6_address: Optional[
+        Union[InterfaceDynamicIPv6Address, InterfaceStaticIPv6Address, InterfaceEitherIPv6Address]
+    ] = Field(default=None, validation_alias=AliasPath("data", "intfIpV6Address"))
     iperf_server: Optional[Union[Variable, Global[str], Default[None]]] = Field(
         default=None, validation_alias=AliasPath("data", "iperfServer")
     )
