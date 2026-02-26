@@ -335,6 +335,10 @@ class RefIdList(BaseModel):
     def from_uuids(cls, uuids: List[UUID]) -> Self:
         return cls(ref_id=as_global([str(uuid) for uuid in uuids]))
 
+    @classmethod
+    def from_uuid(cls, uuid: UUID) -> Self:
+        return cls(ref_id=as_global([str(uuid)]))
+
 
 class MultiRegionFabric(BaseModel):
     model_config = ConfigDict(

@@ -39,6 +39,7 @@ from .security.ips_signature import IPSSignatureListEntry, IPSSignatureParcel
 from .security.local_domain import LocalDomainListEntry, LocalDomainParcel
 from .security.object_group import SecurityObjectGroupEntries, SecurityObjectGroupParcel
 from .security.protocol_list import ProtocolListEntry, ProtocolListParcel
+from .security.rule_set import SecurityRuleSetParcel
 from .security.scalable_group_tag import ScalableGroupTagEntry, ScalableGroupTagParcel
 from .security.security_port import SecurityPortListEntry, SecurityPortParcel
 from .security.ssl_decryption import SslDecryptionParcel
@@ -76,7 +77,9 @@ AnyPolicyObjectParcel = Annotated[
         ScalableGroupTagParcel,
         SecurityApplicationListParcel,
         SecurityDataPrefixParcel,
+        SecurityObjectGroupParcel,
         SecurityPortParcel,
+        SecurityRuleSetParcel,
         SecurityZoneListParcel,
         ServiceObjectGroupParcel,
         SslDecryptionParcel,
@@ -149,6 +152,7 @@ __all__ = (
     "SecurityObjectGroupParcel",
     "SecurityPortListEntry",
     "SecurityPortParcel",
+    "SecurityRuleSetParcel",
     "SecurityZoneListEntry",
     "SecurityZoneListParcel",
     "ServiceObjectGroupParcel",
