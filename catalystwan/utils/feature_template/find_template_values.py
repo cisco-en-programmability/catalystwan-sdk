@@ -55,13 +55,8 @@ def find_template_values(
             # vipType is "variableName" so we need to return
             # {"dns-addr": DeviceVariable(name="vpn_dns_primary")}
             if var_name := template_definition.get("vipVariableName"):
-                current_nesting = get_nested_dict(templated_values, path[:-1])
                 new_value = DeviceVariable(name=var_name)
-                if previous_value := current_nesting.get(field_key):
-                    logger.error(
-                        f"Overwriting existing value for field: '{field_key}' in templated_values. "
-                        f"Previous value: {previous_value}, new value: {new_value}."
-                    )
+                current_nesting = get_nested_dict(templated_values, path[:-1])
                 current_nesting[field_key] = new_value
             return templated_values
 
