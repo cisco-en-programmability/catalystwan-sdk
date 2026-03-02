@@ -6,6 +6,7 @@ import logging
 from typing import TYPE_CHECKING, List, cast
 
 from tenacity import retry, retry_if_exception_type, retry_if_result, stop_after_attempt, wait_fixed  # type: ignore
+from tenacity.retry import retry_base  # type: ignore
 
 from catalystwan.exceptions import ManagerRequestException, TaskValidationError
 
@@ -59,6 +60,7 @@ class Task:
         failure_statuses_ids: List[OperationStatusId] = [
             OperationStatusId.FAILURE,
         ],
+        expect_conn_drop: bool = False,
     ) -> TaskResult:
         """
         Method to check subtasks statuses of the task
@@ -91,6 +93,8 @@ class Task:
             success_statuses_ids (Union[List[OperationStatus], str]): list of positive sub-tasks statuses id's
             fails_statuses_id (Union[List[OperationStatusId], str]): list of negative sub-tasks statuses
             fails_statuses_ids (Union[List[OperationStatusId], str]): list of negative sub-tasks statuses id's
+            expect_conn_drop (bool): set to true when performing action which can result in connection drop like:
+                                     server reboot or server configuration change
 
         Returns:
             TaskResult(): result attr is True if all subtasks are success
@@ -136,10 +140,14 @@ class Task:
         def log_exception(self) -> None:
             logger.error("Operation status not achieved in given time")
 
+        retry_condition: retry_base = retry_if_result(check_status)
+        if expect_conn_drop:
+            retry_condition |= retry_if_exception_type(ManagerRequestException)
+
         @retry(
             wait=wait_fixed(interval_seconds),
             stop=stop_after_attempt(int(timeout_seconds / interval_seconds)),
-            retry=retry_if_result(check_status) | retry_if_exception_type(ManagerRequestException),
+            retry=retry_condition,
             retry_error_callback=log_exception,
         )
         def wait_for_action_finish() -> List[SubTaskData]:
