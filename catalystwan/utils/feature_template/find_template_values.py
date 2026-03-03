@@ -56,12 +56,8 @@ def find_template_values(
             # {"dns-addr": DeviceVariable(name="vpn_dns_primary")}
             if var_name := template_definition.get("vipVariableName"):
                 new_value = DeviceVariable(name=var_name)
-                if previous_value := templated_values.get(field_key):
-                    logger.error(
-                        f"Overwriting existing value for field: '{field_key}' in templated_values. "
-                        f"Previous value: {previous_value}, new value: {new_value}."
-                    )
-                templated_values[field_key] = new_value
+                current_nesting = get_nested_dict(templated_values, path[:-1])
+                current_nesting[field_key] = new_value
             return templated_values
 
         if template_value is None:
