@@ -167,6 +167,31 @@ class InterfaceEitherIPv6Address(BaseModel):
     either: EitherIPv6AddressConfig = Field()
 
 
+class Trustsec(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
+
+    enable_sgt_propogation: Union[Global[bool], Default[bool]] = Field(
+        serialization_alias="enableSGTPropogation",
+        validation_alias="enableSGTPropogation",
+        default=Default[bool](value=False),
+    )
+    propagate: Optional[Union[Global[bool], Default[bool]]] = Default[bool](value=True)
+    security_group_tag: Optional[Union[Global[int], Variable, Default[str]]] = Field(
+        serialization_alias="securityGroupTag", validation_alias="securityGroupTag", default=None
+    )
+    enable_enforced_propogation: Union[Global[bool], Default[None]] = Field(
+        default=Default[None](),
+        serialization_alias="enableEnforcedPropogation",
+        validation_alias="enableEnforcedPropogation",
+    )
+    enforced_security_group_tag: Union[Global[int], Variable, Default[str]] = Field(
+        default=Default[str](value=""),
+        serialization_alias="enforcedSecurityGroupTag",
+        validation_alias="enforcedSecurityGroupTag",
+    )
+    trusted: Optional[Union[Global[bool], Default[bool]]] = Field(default=None)
+
+
 class Tunnel(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
     bandwidth_percent: Optional[Union[Variable, Default[int], Global[int]]] = Field(
@@ -348,6 +373,7 @@ class InterfaceEthernetParcel(_ParcelBase):
         default=Global[bool](value=False), validation_alias=AliasPath("data", "tunnelInterface")
     )
     acl_qos: Optional[AclQos] = Field(default=None, validation_alias=AliasPath("data", "aclQos"), description="ACL/QOS")
+    trustsec: Optional[Trustsec] = Field(validation_alias=AliasPath("data", "trustsec"), default=None)
     advanced: Optional[Advanced] = Field(
         default=None, validation_alias=AliasPath("data", "advanced"), description="Advanced Attributes"
     )

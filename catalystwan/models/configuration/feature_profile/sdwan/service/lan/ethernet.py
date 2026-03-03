@@ -281,19 +281,20 @@ class Trustsec(BaseModel):
     propogate: Annotated[
         Optional[Union[Global[bool], Default[bool]]], VersionedField(versions="<=20.12", forbidden=True)
     ] = Default[bool](value=True)
-    security_group_tag: Optional[Union[Global[int], Variable, Default[None]]] = Field(
+    security_group_tag: Optional[Union[Global[int], Variable, Default[str], Default[None]]] = Field(
         serialization_alias="securityGroupTag", validation_alias="securityGroupTag", default=None
     )
     enable_enforced_propogation: Union[Global[bool], Default[None]] = Field(
-        default=Default[None](value=None),
+        default=Default[None](),
         serialization_alias="enableEnforcedPropogation",
         validation_alias="enableEnforcedPropogation",
     )
-    enforced_security_group_tag: Union[Global[int], Variable, Default[None]] = Field(
-        default=Default[None](value=None),
+    enforced_security_group_tag: Union[Global[int], Variable, Default[str], Default[None]] = Field(
+        default=Default[None](),
         serialization_alias="enforcedSecurityGroupTag",
         validation_alias="enforcedSecurityGroupTag",
     )
+    trusted: Optional[Union[Global[bool], Default[bool]]] = Field(default=None)
 
     @model_serializer(mode="wrap", when_used="json")
     def serialize(self, handler: SerializerFunctionWrapHandler, info: SerializationInfo) -> Dict[str, Any]:
