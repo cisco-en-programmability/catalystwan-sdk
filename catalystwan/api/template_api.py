@@ -51,6 +51,7 @@ from catalystwan.models.templates import DeviceTemplateInformation, FeatureTempl
 from catalystwan.response import ManagerResponse
 from catalystwan.typed_list import DataSequence
 from catalystwan.utils.dict import merge
+from catalystwan.utils.personality import Personality
 from catalystwan.utils.pydantic_field import get_extra_field
 from catalystwan.utils.template_type import TemplateType
 
@@ -195,7 +196,9 @@ class TemplatesAPI:
         endpoint = "/dataservice/template/device/config/attachfeature"
         logger.info(f"Attaching a template: {name} to the device: {device.hostname}.")
         response = self.session.post(url=endpoint, json=payload).json()
-        task = Task(session=self.session, task_id=response["id"]).wait_for_completed(timeout_seconds=timeout_seconds)
+        task = Task(session=self.session, task_id=response["id"]).wait_for_completed(
+            timeout_seconds=timeout_seconds, expect_conn_drop=device.personality is Personality.VMANAGE
+        )
         if task.result:
             return True
         logger.warning(f"Failed to attach template: {name} to the device: {device.hostname}.")
@@ -240,7 +243,9 @@ class TemplatesAPI:
         endpoint = "/dataservice/template/device/config/attachcli"
         logger.info(f"Attaching a template: {name} to the device: {device.hostname}.")
         response = self.session.post(url=endpoint, json=payload).json()
-        task = Task(session=self.session, task_id=response["id"]).wait_for_completed(timeout_seconds=timeout_seconds)
+        task = Task(session=self.session, task_id=response["id"]).wait_for_completed(
+            timeout_seconds=timeout_seconds, expect_conn_drop=device.personality is Personality.VMANAGE
+        )
         if task.result:
             return True
         logger.warning(f"Failed to attach tempate: {name} to the device: {device.hostname}.")
@@ -264,7 +269,9 @@ class TemplatesAPI:
         endpoint = "/dataservice/template/config/device/mode/cli"
         logger.info(f"Changing mode to cli mode for {device.hostname}.")
         response = self.session.post(url=endpoint, json=payload).json()
-        task = Task(session=self.session, task_id=response["id"]).wait_for_completed()
+        task = Task(session=self.session, task_id=response["id"]).wait_for_completed(
+            expect_conn_drop=device.personality is Personality.VMANAGE
+        )
         if task.result:
             return True
         logger.warning(f"Failed to change to cli mode for device: {device.hostname}.")
@@ -358,16 +365,13 @@ class TemplatesAPI:
         return True
 
     @overload
-    def edit(self, template: FeatureTemplate) -> Any:
-        ...
+    def edit(self, template: FeatureTemplate) -> Any: ...
 
     @overload
-    def edit(self, template: CLITemplate) -> Any:
-        ...
+    def edit(self, template: CLITemplate) -> Any: ...
 
     @overload
-    def edit(self, template: DeviceTemplate) -> Any:
-        ...
+    def edit(self, template: DeviceTemplate) -> Any: ...
 
     def edit(self, template):
         template_info = self.get(template).filter(name=template.template_name).single_or_default()
@@ -407,16 +411,13 @@ class TemplatesAPI:
         return response
 
     @overload
-    def create(self, template: FeatureTemplate, debug=False) -> str:
-        ...
+    def create(self, template: FeatureTemplate, debug=False) -> str: ...
 
     @overload
-    def create(self, template: DeviceTemplate) -> str:
-        ...
+    def create(self, template: DeviceTemplate) -> str: ...
 
     @overload
-    def create(self, template: CLITemplate) -> str:
-        ...
+    def create(self, template: CLITemplate) -> str: ...
 
     def create(self, template, debug: bool = False):
         if isinstance(template, list):
