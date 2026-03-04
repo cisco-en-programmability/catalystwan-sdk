@@ -17,11 +17,14 @@ from typing_extensions import Annotated
 from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase
 from catalystwan.models.common import EthernetDuplexMode, MediaType, VersionedField
 from catalystwan.models.configuration.feature_profile.common import (
+    AddressType,
     Arp,
     DynamicDhcpDistance,
+    DynamicIPv6Dhcp,
     EthernetNatAttributesIpv4,
     InterfaceDynamicIPv4Address,
     InterfaceDynamicIPv6Address,
+    InterfaceEitherIPv4Address,
     InterfaceStaticIPv4Address,
     RefIdItem,
     StaticIPv4Address,
@@ -166,6 +169,21 @@ class InterfaceStaticIPv6Address(BaseModel):
     static: StaticIPv6AddressConfig
 
 
+class EitherIPv6AddressConfig(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
+
+    address_type: Union[Global[AddressType], Variable] = Field(
+        serialization_alias="addressType", validation_alias="addressType"
+    )
+    static: Optional[StaticIPv6AddressConfig] = Field(default=None)
+    dynamic: Optional[DynamicIPv6Dhcp] = Field(default=None)
+
+
+class InterfaceEitherIPv6Address(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
+    either: EitherIPv6AddressConfig = Field()
+
+
 class NatAttributesIPv6(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
 
@@ -263,19 +281,20 @@ class Trustsec(BaseModel):
     propogate: Annotated[
         Optional[Union[Global[bool], Default[bool]]], VersionedField(versions="<=20.12", forbidden=True)
     ] = Default[bool](value=True)
-    security_group_tag: Optional[Union[Global[int], Variable, Default[None]]] = Field(
+    security_group_tag: Optional[Union[Global[int], Variable, Default[str], Default[None]]] = Field(
         serialization_alias="securityGroupTag", validation_alias="securityGroupTag", default=None
     )
     enable_enforced_propogation: Union[Global[bool], Default[None]] = Field(
-        default=Default[None](value=None),
+        default=Default[None](),
         serialization_alias="enableEnforcedPropogation",
         validation_alias="enableEnforcedPropogation",
     )
-    enforced_security_group_tag: Union[Global[int], Variable, Default[None]] = Field(
-        default=Default[None](value=None),
+    enforced_security_group_tag: Union[Global[int], Variable, Default[str], Default[None]] = Field(
+        default=Default[None](),
         serialization_alias="enforcedSecurityGroupTag",
         validation_alias="enforcedSecurityGroupTag",
     )
+    trusted: Optional[Union[Global[bool], Default[bool]]] = Field(default=None)
 
     @model_serializer(mode="wrap", when_used="json")
     def serialize(self, handler: SerializerFunctionWrapHandler, info: SerializationInfo) -> Dict[str, Any]:
@@ -334,15 +353,15 @@ class InterfaceEthernetParcel(_ParcelBase):
     ethernet_description: Optional[Union[Global[str], Variable, Default[None]]] = Field(
         default=Default[None](value=None), validation_alias=AliasPath("data", "description")
     )
-    interface_ip_address: Optional[Union[InterfaceDynamicIPv4Address, InterfaceStaticIPv4Address]] = Field(
-        validation_alias=AliasPath("data", "intfIpAddress"), default=None
-    )
+    interface_ip_address: Optional[
+        Union[InterfaceDynamicIPv4Address, InterfaceStaticIPv4Address, InterfaceEitherIPv4Address]
+    ] = Field(validation_alias=AliasPath("data", "intfIpAddress"), default=None)
     dhcp_helper: Optional[Union[Variable, Global[List[str]], Default[None]]] = Field(
         validation_alias=AliasPath("data", "dhcpHelper"), default=None
     )
-    interface_ipv6_address: Optional[Union[InterfaceDynamicIPv6Address, InterfaceStaticIPv6Address]] = Field(
-        validation_alias=AliasPath("data", "intfIpV6Address"), default=None
-    )
+    interface_ipv6_address: Optional[
+        Union[InterfaceDynamicIPv6Address, InterfaceStaticIPv6Address, InterfaceEitherIPv6Address]
+    ] = Field(validation_alias=AliasPath("data", "intfIpV6Address"), default=None)
     nat: Union[Global[bool], Default[bool]] = Field(
         validation_alias=AliasPath("data", "nat"), default=Default[bool](value=False)
     )
@@ -398,6 +417,15 @@ class InterfaceEthernetParcel(_ParcelBase):
             raise ValueError("Interface IP Address is already dynamic")
 
         secondary_ip_address = StaticIPv4Address(ip_address=ip_address, subnet_mask=subnet_mask)
-        if self.interface_ip_address.static.secondary_ip_address is None:
-            self.interface_ip_address.static.secondary_ip_address = []
-        self.interface_ip_address.static.secondary_ip_address.append(secondary_ip_address)
+
+        if isinstance(self.interface_ip_address, InterfaceStaticIPv4Address):
+            if self.interface_ip_address.static.secondary_ip_address is None:
+                self.interface_ip_address.static.secondary_ip_address = []
+            self.interface_ip_address.static.secondary_ip_address.append(secondary_ip_address)
+
+        if isinstance(self.interface_ip_address, InterfaceEitherIPv4Address):
+            if self.interface_ip_address.either.static is None:
+                raise ValueError("Missing static primary IP Address")
+            if self.interface_ip_address.either.static.secondary_ip_address is None:
+                self.interface_ip_address.either.static.secondary_ip_address = []
+            self.interface_ip_address.either.static.secondary_ip_address.append(secondary_ip_address)
