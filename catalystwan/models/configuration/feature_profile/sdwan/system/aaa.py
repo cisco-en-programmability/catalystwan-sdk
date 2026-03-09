@@ -116,7 +116,7 @@ class Radius(BaseModel):
         validation_alias="groupName", serialization_alias="groupName", description="Set Radius server Group Name"
     )
 
-    vpn: Union[Global[int], Default[int], None] = Field(
+    vpn: Union[Global[int], Default[int], None, Variable] = Field(
         default=None, description="Set VPN in which Radius server is located"
     )
     source_interface: Optional[Union[Global[str], Default[None], Variable]] = Field(
@@ -191,7 +191,7 @@ class Tacacs(BaseModel):
     group_name: Global[str] = Field(
         validation_alias="groupName", serialization_alias="groupName", description="Set TACACS server Group Name"
     )
-    vpn: Union[Global[int], Default[int], None] = Field(
+    vpn: Union[Global[int], Default[int], None, Variable] = Field(
         default=None, description="Set VPN in which TACACS server is located"
     )
     source_interface: Optional[Union[Global[str], Default[str], Variable]] = Field(
