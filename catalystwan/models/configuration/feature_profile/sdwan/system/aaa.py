@@ -11,9 +11,7 @@ DEFAULT_USER_PRIVILEGE = "15"
 
 
 class PubkeyChainItem(BaseModel):
-    model_config = ConfigDict(
-        extra="forbid", populate_by_name=True
-    )
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
     key_string: Global[str] = Field(
         validation_alias="keyString",
         serialization_alias="keyString",
@@ -285,8 +283,14 @@ class AAAParcel(_ParcelBase):
     user: Optional[List[UserItem]] = Field(
         default=None, validation_alias=AliasPath("data", "user"), description="Create local login account", min_length=1
     )
+    cts_auth_list: Optional[Union[Global[str], Variable, Default[Literal[""]]]] = Field(
+        default=None, validation_alias=AliasPath("data", "ctsAuthList")
+    )
     radius: Optional[List[Radius]] = Field(
         default=None, validation_alias=AliasPath("data", "radius"), description="Configure the Radius serverGroup"
+    )
+    radius_trustsec_group: Optional[Union[Global[str], Default[Literal[""]]]] = Field(
+        default=None, validation_alias=AliasPath("data", "radiusTrustsecGroup")
     )
     tacacs: Optional[List[Tacacs]] = Field(
         default=None, validation_alias=AliasPath("data", "tacacs"), description="Configure the TACACS serverGroup"
