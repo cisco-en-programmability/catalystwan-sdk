@@ -11,9 +11,7 @@ DEFAULT_USER_PRIVILEGE = "15"
 
 
 class PubkeyChainItem(BaseModel):
-    model_config = ConfigDict(
-        extra="forbid", populate_by_name=True
-    )
+    model_config = ConfigDict(extra="forbid", populate_by_name=True)
     key_string: Global[str] = Field(
         validation_alias="keyString",
         serialization_alias="keyString",
@@ -118,7 +116,7 @@ class Radius(BaseModel):
         validation_alias="groupName", serialization_alias="groupName", description="Set Radius server Group Name"
     )
 
-    vpn: Union[Global[int], Default[int], None] = Field(
+    vpn: Union[Global[int], Default[int], None, Variable] = Field(
         default=None, description="Set VPN in which Radius server is located"
     )
     source_interface: Optional[Union[Global[str], Default[None], Variable]] = Field(
@@ -193,7 +191,7 @@ class Tacacs(BaseModel):
     group_name: Global[str] = Field(
         validation_alias="groupName", serialization_alias="groupName", description="Set TACACS server Group Name"
     )
-    vpn: Union[Global[int], Default[int], None] = Field(
+    vpn: Union[Global[int], Default[int], None, Variable] = Field(
         default=None, description="Set VPN in which TACACS server is located"
     )
     source_interface: Optional[Union[Global[str], Default[str], Variable]] = Field(
@@ -285,8 +283,16 @@ class AAAParcel(_ParcelBase):
     user: Optional[List[UserItem]] = Field(
         default=None, validation_alias=AliasPath("data", "user"), description="Create local login account", min_length=1
     )
+    cts_auth_list: Optional[Union[Global[str], Variable, Default[Literal[""]]]] = Field(
+        default=None, validation_alias=AliasPath("data", "ctsAuthList"), description="Available only in >= 20.18.1"
+    )
     radius: Optional[List[Radius]] = Field(
         default=None, validation_alias=AliasPath("data", "radius"), description="Configure the Radius serverGroup"
+    )
+    radius_trustsec_group: Optional[Union[Global[str], Default[Literal[""]]]] = Field(
+        default=None,
+        validation_alias=AliasPath("data", "radiusTrustsecGroup"),
+        description="Available only in >= 20.18.1",
     )
     tacacs: Optional[List[Tacacs]] = Field(
         default=None, validation_alias=AliasPath("data", "tacacs"), description="Configure the TACACS serverGroup"
