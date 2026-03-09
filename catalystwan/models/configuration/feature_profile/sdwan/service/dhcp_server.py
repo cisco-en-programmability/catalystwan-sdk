@@ -126,5 +126,5 @@ class LanVpnDhcpServerParcel(_ParcelBase):
         default=None, validation_alias=AliasPath("data", "optionCode"), description="Configure Options Code"
     )
     dhcp_ha_enable: Optional[Union[Variable, Global[bool], Default[bool]]] = Field(
-        default=None, validation_alias=AliasPath("data", "dhcpHaEnable")
+        default=None, validation_alias=AliasPath("data", "dhcpHaEnable"), description="Available only in >= 20.18.2"
     )
