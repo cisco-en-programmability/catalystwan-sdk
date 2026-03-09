@@ -284,13 +284,15 @@ class AAAParcel(_ParcelBase):
         default=None, validation_alias=AliasPath("data", "user"), description="Create local login account", min_length=1
     )
     cts_auth_list: Optional[Union[Global[str], Variable, Default[Literal[""]]]] = Field(
-        default=None, validation_alias=AliasPath("data", "ctsAuthList")
+        default=None, validation_alias=AliasPath("data", "ctsAuthList"), description="Available only in >= 20.18.1"
     )
     radius: Optional[List[Radius]] = Field(
         default=None, validation_alias=AliasPath("data", "radius"), description="Configure the Radius serverGroup"
     )
     radius_trustsec_group: Optional[Union[Global[str], Default[Literal[""]]]] = Field(
-        default=None, validation_alias=AliasPath("data", "radiusTrustsecGroup")
+        default=None,
+        validation_alias=AliasPath("data", "radiusTrustsecGroup"),
+        description="Available only in >= 20.18.1",
     )
     tacacs: Optional[List[Tacacs]] = Field(
         default=None, validation_alias=AliasPath("data", "tacacs"), description="Configure the TACACS serverGroup"
