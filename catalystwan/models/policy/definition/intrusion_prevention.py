@@ -4,7 +4,13 @@ from typing import List, Literal, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
-from catalystwan.models.common import PolicyModeType, VpnId
+from catalystwan.models.common import (
+    IntrusionPreventionInspectionMode,
+    IntrusionPreventionLogLevel,
+    IntrusionPreventionSignatureSet,
+    PolicyModeType,
+    VpnId,
+)
 from catalystwan.models.policy.policy_definition import (
     PolicyDefinitionBase,
     PolicyDefinitionGetResponse,
@@ -12,19 +18,21 @@ from catalystwan.models.policy.policy_definition import (
     Reference,
 )
 
-SignatureSetType = Literal["balanced", "connectivity", "security", "max-detect"]
-InspectionModeType = Literal["protection", "detection"]
-LogLevel = Literal["emergency", "alert", "critical", "error", "warning", "notice", "info", "debug"]
-
 
 class IntrusionPreventionDefinition(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
-    signature_set: SignatureSetType = Field(validation_alias="signatureSet", serialization_alias="signatureSet")
-    inspection_mode: InspectionModeType = Field(validation_alias="inspectionMode", serialization_alias="inspectionMode")
+    signature_set: IntrusionPreventionSignatureSet = Field(
+        validation_alias="signatureSet", serialization_alias="signatureSet"
+    )
+    inspection_mode: IntrusionPreventionInspectionMode = Field(
+        validation_alias="inspectionMode", serialization_alias="inspectionMode"
+    )
     signature_white_list: Optional[Reference] = Field(
         default=None, validation_alias="signatureWhiteList", serialization_alias="signatureWhiteList"
     )
-    log_level: Optional[LogLevel] = Field(default="error", validation_alias="logLevel", serialization_alias="logLevel")
+    log_level: Optional[IntrusionPreventionLogLevel] = Field(
+        default="error", validation_alias="logLevel", serialization_alias="logLevel"
+    )
     logging: List[str] = Field(default_factory=list)
     target_vpns: List[VpnId] = Field(
         default_factory=list, validation_alias="targetVpns", serialization_alias="targetVpns"
