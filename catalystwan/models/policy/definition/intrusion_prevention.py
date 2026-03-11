@@ -12,7 +12,7 @@ from catalystwan.models.policy.policy_definition import (
     Reference,
 )
 
-SignatureSetType = Literal["balanced", "connectivity", "security"]
+SignatureSetType = Literal["balanced", "connectivity", "security", "max-detect"]
 InspectionModeType = Literal["protection", "detection"]
 LogLevel = Literal["emergency", "alert", "critical", "error", "warning", "notice", "info", "debug"]
 

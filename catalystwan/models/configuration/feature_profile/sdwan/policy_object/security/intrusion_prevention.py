@@ -8,7 +8,7 @@ from pydantic import AliasPath, ConfigDict, Field
 from catalystwan.api.configuration_groups.parcel import Global, _ParcelBase
 from catalystwan.models.configuration.feature_profile.common import RefIdItem
 
-SignatureSet = Literal["balanced", "connectivity", "security"]
+SignatureSet = Literal["balanced", "connectivity", "security", "max-detect", "no-rules-active"]
 InspectionMode = Literal["detection", "protection"]
 LogLevel = Literal["emergency", "alert", "critical", "error", "warning", "notice", "info", "debug"]
 
