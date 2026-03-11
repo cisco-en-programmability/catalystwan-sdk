@@ -2049,3 +2049,7 @@ SpaceSeparatedServiceAreaList = Annotated[
     PlainSerializer(lambda x: " ".join(map(str, x)), return_type=str, when_used="json-unless-none"),
     BeforeValidator(str_as_service_area_list),
 ]
+
+IntrusionPreventionSignatureSet = Literal["balanced", "connectivity", "security", "max-detect"]
+IntrusionPreventionInspectionMode = Literal["protection", "detection"]
+IntrusionPreventionLogLevel = Literal["emergency", "alert", "critical", "error", "warning", "notice", "info", "debug"]

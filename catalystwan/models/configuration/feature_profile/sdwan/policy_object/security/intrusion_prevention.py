@@ -6,11 +6,14 @@ from uuid import UUID
 from pydantic import AliasPath, ConfigDict, Field
 
 from catalystwan.api.configuration_groups.parcel import Global, _ParcelBase
+from catalystwan.models.common import (
+    IntrusionPreventionInspectionMode,
+    IntrusionPreventionLogLevel,
+    IntrusionPreventionSignatureSet,
+)
 from catalystwan.models.configuration.feature_profile.common import RefIdItem
 
-SignatureSet = Literal["balanced", "connectivity", "security"]
-InspectionMode = Literal["detection", "protection"]
-LogLevel = Literal["emergency", "alert", "critical", "error", "warning", "notice", "info", "debug"]
+SignatureSet = Literal[IntrusionPreventionSignatureSet, "no-rules-active"]
 
 
 class IntrusionPreventionParcel(_ParcelBase):
@@ -19,14 +22,15 @@ class IntrusionPreventionParcel(_ParcelBase):
     signature_set: Global[SignatureSet] = Field(
         default=Global[SignatureSet](value="balanced"), validation_alias=AliasPath("data", "signatureSet")
     )
-    inspection_mode: Global[InspectionMode] = Field(
-        default=Global[InspectionMode](value="detection"), validation_alias=AliasPath("data", "inspectionMode")
+    inspection_mode: Global[IntrusionPreventionInspectionMode] = Field(
+        default=Global[IntrusionPreventionInspectionMode](value="detection"),
+        validation_alias=AliasPath("data", "inspectionMode"),
     )
     signature_allowed_list: Optional[RefIdItem] = Field(
         default=None, validation_alias=AliasPath("data", "signatureAllowedList")
     )
-    log_level: Global[LogLevel] = Field(
-        default=Global[LogLevel](value="error"), validation_alias=AliasPath("data", "logLevel")
+    log_level: Global[IntrusionPreventionLogLevel] = Field(
+        default=Global[IntrusionPreventionLogLevel](value="error"), validation_alias=AliasPath("data", "logLevel")
     )
     custom_signature: Global[bool] = Field(
         default=Global[bool](value=False), validation_alias=AliasPath("data", "customSignature")
@@ -38,9 +42,9 @@ class IntrusionPreventionParcel(_ParcelBase):
         parcel_name: str,
         parcel_description: str,
         signature_set: SignatureSet = "balanced",
-        inspection_mode: InspectionMode = "detection",
+        inspection_mode: IntrusionPreventionInspectionMode = "detection",
         signature_allowed_list: Optional[UUID] = None,
-        log_level: LogLevel = "error",
+        log_level: IntrusionPreventionLogLevel = "error",
         custom_signature: bool = False,
     ) -> "IntrusionPreventionParcel":
         sal: Optional[RefIdItem] = None
@@ -51,8 +55,8 @@ class IntrusionPreventionParcel(_ParcelBase):
             parcel_name=parcel_name,
             parcel_description=parcel_description,
             signature_set=Global[SignatureSet](value=signature_set),
-            inspection_mode=Global[InspectionMode](value=inspection_mode),
+            inspection_mode=Global[IntrusionPreventionInspectionMode](value=inspection_mode),
             signature_allowed_list=sal,
-            log_level=Global[LogLevel](value=log_level),
+            log_level=Global[IntrusionPreventionLogLevel](value=log_level),
             custom_signature=Global[bool](value=custom_signature),
         )
