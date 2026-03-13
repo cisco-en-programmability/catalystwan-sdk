@@ -112,11 +112,11 @@ from catalystwan.models.configuration.feature_profile.sdwan.service.switchport i
 from catalystwan.models.configuration.feature_profile.sdwan.service.wireless_lan import (
     SSID,
     CountryCode,
+    EnterpriseSecurityConfig,
     MeIpConfig,
     MeStaticIpConfig,
     QosProfile,
     RadioType,
-    SecurityConfig,
     SecurityType,
     WirelessLanParcel,
 )
@@ -685,7 +685,7 @@ class TestServiceFeatureProfileModels(TestCaseBase):
                     broadcast_ssid=as_global(True),
                     radio_type=as_global("all", RadioType),
                     qos_profile=as_global("platinum", QosProfile),
-                    security_config=SecurityConfig(
+                    security_config=EnterpriseSecurityConfig(
                         security_type=as_global("enterprise", SecurityType),
                         radius_server_ip=as_global(IPv4Address("1.1.1.1")),
                         radius_server_port=as_global(1884),
