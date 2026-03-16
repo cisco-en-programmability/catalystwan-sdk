@@ -161,20 +161,43 @@ class MeIpConfig(BaseModel):
     )
 
 
-class SecurityConfig(BaseModel):
+class OpenSecurityConfig(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
+    security_type: Global[Literal["open"]] = Field(
+        default=Global[Literal["open"]](value="open"),
+        serialization_alias="securityType",
+        validation_alias="securityType",
+    )
+
+
+class PersonalSecurityConfig(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
 
-    security_type: Global[SecurityType] = Field(serialization_alias="securityType", validation_alias="securityType")
-    radius_server_ip: Optional[Union[Global[IPv4Address], Variable]] = Field(
-        serialization_alias="radiusServerIp", validation_alias="radiusServerIp", default=None
+    security_type: Global[Literal["personal"]] = Field(
+        default=Global[Literal["personal"]](value="personal"),
+        serialization_alias="securityType",
+        validation_alias="securityType",
     )
-    radius_server_port: Optional[Union[Global[int], Variable, Default[int]]] = Field(
-        serialization_alias="radiusServerPort", validation_alias="radiusServerPort", default=None
+    passphrase: Union[Global[str], Variable] = Field()
+
+
+class EnterpriseSecurityConfig(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
+
+    security_type: Global[Literal["enterprise"]] = Field(
+        default=Global[Literal["enterprise"]](value="enterprise"),
+        serialization_alias="securityType",
+        validation_alias="securityType",
     )
-    radius_server_secret: Optional[Union[Global[str], Variable]] = Field(
-        serialization_alias="radiusServerSecret", validation_alias="radiusServerSecret", default=None
+    radius_server_ip: Union[Global[IPv4Address], Variable] = Field(
+        serialization_alias="radiusServerIp", validation_alias="radiusServerIp"
     )
-    passphrase: Optional[Union[Global[str], Variable]] = None
+    radius_server_port: Union[Global[int], Variable, Default[int]] = Field(
+        serialization_alias="radiusServerPort", validation_alias="radiusServerPort"
+    )
+    radius_server_secret: Union[Global[str], Variable] = Field(
+        serialization_alias="radiusServerSecret", validation_alias="radiusServerSecret"
+    )
 
 
 class SSID(BaseModel):
@@ -191,7 +214,9 @@ class SSID(BaseModel):
     radio_type: Union[Global[RadioType], Variable, Default[RadioType]] = Field(
         serialization_alias="radioType", validation_alias="radioType", default=Default[RadioType](value="all")
     )
-    security_config: SecurityConfig = Field(serialization_alias="securityConfig", validation_alias="securityConfig")
+    security_config: Union[OpenSecurityConfig, PersonalSecurityConfig, EnterpriseSecurityConfig] = Field(
+        serialization_alias="securityConfig", validation_alias="securityConfig"
+    )
     qos_profile: Union[Global[QosProfile], Variable, Default[QosProfile]] = Field(
         serialization_alias="qosProfile",
         validation_alias="qosProfile",
