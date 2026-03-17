@@ -90,8 +90,9 @@ from catalystwan.models.configuration.feature_profile.sdwan.service.multicast im
     PimAttributes,
     PimBsrAttributes,
     PimInterfaceParameters,
-    RPAnnounce,
     RpDiscoveryScope,
+    SendRpAnnounce,
+    SendRpDiscovery,
     SsmAttributes,
     SsmFlag,
     StaticJoin,
@@ -616,10 +617,10 @@ class TestServiceFeatureProfileModels(TestCaseBase):
                 auto_rp=AutoRpAttributes(
                     enable_auto_rp_flag=as_global(False),
                     send_rp_announce_list=[
-                        RPAnnounce(interface_name=as_global("GigabitEthernet0/0/0"), scope=as_global(3))
+                        SendRpAnnounce(interface_name=as_global("GigabitEthernet0/0/0"), scope=as_global(3))
                     ],
                     send_rp_discovery=[
-                        RPAnnounce(interface_name=as_global("GigabitEthernet0/0/0"), scope=as_global(3))
+                        SendRpDiscovery(interface_name=as_global("GigabitEthernet0/0/0"), scope=as_global(3))
                     ],
                 ),
                 pim_bsr=PimBsrAttributes(
