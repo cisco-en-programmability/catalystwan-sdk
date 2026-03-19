@@ -98,11 +98,13 @@ class StaticRpAddress(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
 
     address: Union[Global[IPv4Address], Variable]
-    access_list: Union[Global[str], Variable] = Field(serialization_alias="accessList", validation_alias="accessList")
+    access_list: Union[Global[str], Variable, Default[None]] = Field(
+        serialization_alias="accessList", validation_alias="accessList"
+    )
     override: Optional[Union[Global[bool], Variable, Default[bool]]] = Default[bool](value=False)
 
 
-class RPAnnounce(BaseModel):
+class SendRpDiscovery(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
 
     interface_name: Union[Global[str], Variable] = Field(
@@ -111,16 +113,29 @@ class RPAnnounce(BaseModel):
     scope: Union[Global[int], Variable]
 
 
+class SendRpAnnounce(BaseModel):
+    model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
+
+    interface_name: Union[Global[str], Variable] = Field(
+        validation_alias="interfaceName", serialization_alias="interfaceName"
+    )
+    scope: Union[Global[int], Variable] = Field()
+    group_list: Optional[Union[Global[str], Variable, Default[None]]] = Field(
+        default=None, validation_alias="groupList", serialization_alias="groupList"
+    )
+    interval: Optional[Union[Default[None], Global[int], Variable]] = Field(default=None)
+
+
 class AutoRpAttributes(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
 
     enable_auto_rp_flag: Optional[Union[Global[bool], Variable, Default[bool]]] = Field(
         serialization_alias="enableAutoRPFlag", validation_alias="enableAutoRPFlag", default=Default[bool](value=False)
     )
-    send_rp_announce_list: Optional[List[RPAnnounce]] = Field(
+    send_rp_announce_list: Optional[List[SendRpAnnounce]] = Field(
         serialization_alias="sendRpAnnounceList", validation_alias="sendRpAnnounceList", default=None
     )
-    send_rp_discovery: Optional[List[RPAnnounce]] = Field(
+    send_rp_discovery: Optional[List[SendRpDiscovery]] = Field(
         serialization_alias="sendRpDiscovery", validation_alias="sendRpDiscovery", default=None
     )
 
