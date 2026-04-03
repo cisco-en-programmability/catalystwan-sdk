@@ -13,11 +13,15 @@ from catalystwan.utils.personality import Personality
 
 
 class UnlockDeviceDetail(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
     device_id: str = Field(validation_alias="deviceId", serialization_alias="deviceId")
     device_ip: str = Field(validation_alias="deviceIP", serialization_alias="deviceIP")
 
 
 class DeviceUnlockPayload(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
     device_type: str = Field(validation_alias="deviceType", serialization_alias="deviceType")
     devices: List[UnlockDeviceDetail]
 
