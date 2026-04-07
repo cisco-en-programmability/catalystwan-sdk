@@ -13,11 +13,15 @@ from catalystwan.utils.personality import Personality
 
 
 class UnlockDeviceDetail(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
     device_id: str = Field(validation_alias="deviceId", serialization_alias="deviceId")
     device_ip: str = Field(validation_alias="deviceIP", serialization_alias="deviceIP")
 
 
 class DeviceUnlockPayload(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
     device_type: str = Field(validation_alias="deviceType", serialization_alias="deviceType")
     devices: List[UnlockDeviceDetail]
 
@@ -274,16 +278,13 @@ class UploadSerialFileResponse(BaseModel):
 class ConfigurationDeviceInventory(APIEndpoints):
     @versions(supported_versions=(">=20.9"), raises=False)
     @post("/system/device/{device_uuid}/unlock")
-    def unlock(self, device_uuid: UUID, payload: DeviceUnlockPayload) -> DeviceUnlockResponse:
-        ...
+    def unlock(self, device_uuid: UUID, payload: DeviceUnlockPayload) -> DeviceUnlockResponse: ...
 
     @post("/system/device")
-    def create_device(self, payload: DeviceCreationPayload) -> None:
-        ...
+    def create_device(self, payload: DeviceCreationPayload) -> None: ...
 
     @delete("/system/device/{uuid}")
-    def delete_device(self, uuid: UUID) -> DeviceDeletionResponse:
-        ...
+    def delete_device(self, uuid: UUID) -> DeviceDeletionResponse: ...
 
     # Covers:
     # url = "/dataservice/system/device/controllers"
@@ -291,19 +292,15 @@ class ConfigurationDeviceInventory(APIEndpoints):
     @get("/system/device/{device_category}", "data")
     def get_device_details(
         self, device_category: DeviceCategory, params: DeviceDetailsQueryParams = DeviceDetailsQueryParams()
-    ) -> DataSequence[DeviceDetailsResponse]:
-        ...
+    ) -> DataSequence[DeviceDetailsResponse]: ...
 
     @post("/system/device/smartaccount/sync")
-    def sync_devices_from_smart_account(self, payload: SmartAccountSyncParams) -> ProcessId:
-        ...
+    def sync_devices_from_smart_account(self, payload: SmartAccountSyncParams) -> ProcessId: ...
 
     @post("/system/device/fileupload")
-    def upload_wan_edge_list(self, payload: SerialFilePayload) -> UploadSerialFileResponse:
-        ...
+    def upload_wan_edge_list(self, payload: SerialFilePayload) -> UploadSerialFileResponse: ...
 
     @get("/system/device/bootstrap/device/{uuid}")
     def generate_bootstrap_configuration(
         self, uuid: UUID, params: GenerateBoostrapConfigurationQueryParams = GenerateBoostrapConfigurationQueryParams()
-    ) -> BoostrapConfiguration:
-        ...
+    ) -> BoostrapConfiguration: ...
