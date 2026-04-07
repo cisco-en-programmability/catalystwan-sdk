@@ -11,3 +11,7 @@ class DeviceVariable(BaseModel):
     name: str
     _object_type: VariableObjectType = PrivateAttr(default="variableName")
     _template_path: Optional[Tuple[str, ...]] = PrivateAttr(default=None)
+
+    def __eq__(self, other):
+        # do not compare private attributes for backward compatibility
+        return self.__dict__ == other.__dict__
