@@ -48,6 +48,11 @@ class LocalizedPolicySettings(BaseModel):
     implicit_acl_logging: Optional[bool] = Field(
         default=None, serialization_alias="implicitAclLogging", validation_alias="implicitAclLogging"
     )
+    data_policy_ignore_affinity_metric: Optional[bool] = Field(
+        default=None,
+        serialization_alias="dataPolicyIgnoreAffinityMetric",
+        validation_alias="dataPolicyIgnoreAffinityMetric",
+    )
     log_frequency: Optional[int] = Field(
         default=None, serialization_alias="logFrequency", validation_alias="logFrequency", ge=0, le=2147483647
     )
