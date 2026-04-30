@@ -56,6 +56,8 @@ def find_template_values(
             # {"dns-addr": DeviceVariable(name="vpn_dns_primary")}
             if var_name := template_definition.get("vipVariableName"):
                 new_value = DeviceVariable(name=var_name)
+                new_value._object_type = value
+                new_value._template_path = tuple(path)
                 current_nesting = get_nested_dict(templated_values, path[:-1])
                 current_nesting[field_key] = new_value
             return templated_values
