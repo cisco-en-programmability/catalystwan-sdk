@@ -69,6 +69,7 @@ class ServiceFeatureProfileBuilder(TrackerMixin):
         self._interfaces_with_attached_dhcp_server: Dict[str, LanVpnDhcpServerParcel] = {}
         # Trackers
         self.init_tracker()
+        self._dhcp_server_uuids: Dict[str, UUID] = {}
 
     def add_profile_name_and_description(self, feature_profile: FeatureProfileCreationPayload) -> None:
         """
@@ -216,7 +217,7 @@ class ServiceFeatureProfileBuilder(TrackerMixin):
                         continue
 
                     if dhcp_server:
-                        dhcp_server_uuid = self._create_parcel(profile_uuid, dhcp_server)
+                        dhcp_server_uuid = self._get_or_create_dhcp_server_uuid(profile_uuid, dhcp_server)
                         if dhcp_server_uuid is not None:
                             with handle_association_request(self.build_report, sub_parcel):
                                 self._endpoints.associate_dhcp_server_with_vpn_interface(
@@ -246,3 +247,11 @@ class ServiceFeatureProfileBuilder(TrackerMixin):
     @handle_create_parcel
     def _create_parcel(self, profile_uuid: UUID, parcel: AnyServiceParcel, vpn_uuid: Optional[None] = None) -> UUID:
         return self._api.create_parcel(profile_uuid, parcel, vpn_uuid).id
+
+    def _get_or_create_dhcp_server_uuid(self, profile_uuid: UUID, dhcp_server: LanVpnDhcpServerParcel) -> UUID:
+        existing_uuid = self._dhcp_server_uuids.get(dhcp_server.parcel_name)
+        if existing_uuid:
+            return existing_uuid
+        dhcp_server_uuid = self._create_parcel(profile_uuid, dhcp_server)
+        self._dhcp_server_uuids[dhcp_server.parcel_name] = dhcp_server_uuid
+        return dhcp_server_uuid
