@@ -3,7 +3,7 @@
 import logging
 from http.cookies import SimpleCookie
 from threading import RLock
-from typing import Optional, Union
+from typing import Optional, Union, cast
 from urllib.parse import urlparse
 
 from packaging.version import Version  # type: ignore
@@ -52,13 +52,23 @@ def update_headers(
         # preserve existing cookies and insert JSESSIONID
         # PreparedRequest.preparce_cookies cannot be used as they can be already set in session context
         cookie: SimpleCookie = SimpleCookie()
-        cookie.load(request.headers.get("Cookie", ""))
+        cookie.load(_normalize_header_value(request.headers.get("Cookie", "")))
         cookie["JSESSIONID"] = jsessionid
         request.headers["Cookie"] = cookie.output(header="", sep=";").strip()
     if xsrftoken is not None:
         request.headers["x-xsrf-token"] = xsrftoken
     if vsessionid is not None:
         request.headers["VSessionId"] = vsessionid
+
+
+def _normalize_headers(headers: dict) -> dict:
+    return {key: _normalize_header_value(value) for key, value in headers.items() if value is not None}
+
+
+def _normalize_header_value(value: str | bytes) -> str:
+    if isinstance(value, bytes):
+        return value.decode("latin-1")
+    return value
 
 
 class vManageAuth(AuthBase, AuthProtocol):
@@ -94,7 +104,7 @@ class vManageAuth(AuthBase, AuthProtocol):
             return request
 
     def sync_cookies(self, cookies: RequestsCookieJar) -> None:
-        self.cookies = merge_cookies(self.cookies, cookies)
+        self.cookies = cast(RequestsCookieJar, merge_cookies(self.cookies, cookies))
 
     @property
     def jsessionid(self) -> Optional[str]:
@@ -153,11 +163,17 @@ class vManageAuth(AuthBase, AuthProtocol):
                 headers = {"x-xsrf-token": self.xsrftoken, "User-Agent": USER_AGENT}
                 if version >= Version("20.12"):
                     response = post(
-                        f"{self._base_url}/logout", headers=headers, cookies=self.cookies, verify=self.verify
+                        f"{self._base_url}/logout",
+                        headers=_normalize_headers(headers),
+                        cookies=self.cookies,
+                        verify=self.verify,
                     )
                 else:
                     response = get(
-                        f"{self._base_url}/logout", headers=headers, cookies=self.cookies, verify=self.verify
+                        f"{self._base_url}/logout",
+                        headers=_normalize_headers(headers),
+                        cookies=self.cookies,
+                        verify=self.verify,
                     )
                 self.logger.debug(auth_response_debug(response, str(self)))
                 if response.status_code != 200:
@@ -184,7 +200,7 @@ class vManageAuth(AuthBase, AuthProtocol):
                 jsessionid = None
             else:
                 cookie: SimpleCookie = SimpleCookie()
-                cookie.load(last_request.headers.get("Cookie", ""))
+                cookie.load(_normalize_header_value(last_request.headers.get("Cookie", "")))
                 try:
                     jsessionid = cookie["JSESSIONID"].value
                 except KeyError:
@@ -231,7 +247,7 @@ class vSessionAuth(vManageAuth):
         response: Response = get(
             url=url,
             cookies=self.cookies,
-            headers=headers,
+            headers=_normalize_headers(headers),
             verify=self.verify,
         )
         self.sync_cookies(response.cookies)
@@ -248,7 +264,7 @@ class vSessionAuth(vManageAuth):
         response: Response = post(
             url=url,
             cookies=self.cookies,
-            headers=headers,
+            headers=_normalize_headers(headers),
             verify=self.verify,
         )
         self.sync_cookies(response.cookies)
