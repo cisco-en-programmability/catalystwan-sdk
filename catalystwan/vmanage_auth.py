@@ -65,7 +65,7 @@ def _normalize_headers(headers: dict) -> dict:
     return {key: _normalize_header_value(value) for key, value in headers.items() if value is not None}
 
 
-def _normalize_header_value(value: str | bytes) -> str:
+def _normalize_header_value(value: Union[str, bytes]) -> str:
     if isinstance(value, bytes):
         return value.decode("latin-1")
     return value
