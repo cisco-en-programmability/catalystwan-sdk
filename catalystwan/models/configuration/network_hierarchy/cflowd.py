@@ -134,9 +134,6 @@ class CflowdParcel(_ParcelBase):
         if self.collectors is None:
             return True
 
-        if len(self.collectors) >= 4:
-            return False
-
         for collector in self.collectors:
             if (
                 collector.vpn_id == as_optional_global(vpn_id)
