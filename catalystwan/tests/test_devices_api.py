@@ -132,16 +132,19 @@ class TestDevicesAPI(TestCase):
                 "deviceState": "valid",
             }
         )
-        self.inventory_edge_dataclass = Device(
-            uuid="dddddddd-6169-445c-8e49-c0bdaaaaaaa",
-            personality=Personality.EDGE,
-            id="169.254.10.81",
-            hostname="vm81",
-            reachability=Reachability.UNKNOWN,
-            local_system_ip="169.254.10.81",
-            status="valid",
-            model="vedge-C8000V",
-            site_id="81",
+        self.inventory_edge_dataclass = create_dataclass(
+            Device,
+            {
+                "uuid": "dddddddd-6169-445c-8e49-c0bdaaaaaaa",
+                "personality": Personality.EDGE,
+                "id": "169.254.10.81",
+                "hostname": "vm81",
+                "reachability": Reachability.UNKNOWN,
+                "local_system_ip": "169.254.10.81",
+                "status": "valid",
+                "model": "vedge-C8000V",
+                "site_id": "81",
+            },
         )
 
     @patch("catalystwan.response.ManagerResponse")

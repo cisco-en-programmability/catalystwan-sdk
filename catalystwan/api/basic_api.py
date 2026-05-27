@@ -163,30 +163,35 @@ class DevicesAPI:
             device_id,
         )
 
-        if not all([device_id, uuid, hostname, local_system_ip]):
+        if device_id is None or uuid is None or hostname is None or local_system_ip is None:
             raise ValueError(f"Incomplete device inventory entry: {device_details!r}")
 
-        return Device(
-            uuid=uuid,
-            personality=cls._first_present(getattr(device_details, "personality", None), Personality.EDGE.value),
-            id=device_id,
-            hostname=hostname,
-            reachability=cls._first_present(getattr(device_details, "reachability", None), Reachability.UNKNOWN.value),
-            local_system_ip=local_system_ip,
-            status=cls._first_present(
-                getattr(device_details, "device_state", None),
-                getattr(device_details, "state", None),
-                getattr(device_details, "validity", None),
-            ),
-            model=cls._first_present(
-                getattr(device_details, "device_model", None),
-                getattr(device_details, "device_type", None),
-            ),
-            site_id=cls._first_present(
-                getattr(device_details, "site_id", None),
-                getattr(device_details, "configured_site_id", None),
-            ),
-            site_name=getattr(device_details, "site_name", None),
+        return create_dataclass(
+            Device,
+            {
+                "uuid": uuid,
+                "personality": cls._first_present(getattr(device_details, "personality", None), Personality.EDGE.value),
+                "id": device_id,
+                "hostname": hostname,
+                "reachability": cls._first_present(
+                    getattr(device_details, "reachability", None), Reachability.UNKNOWN.value
+                ),
+                "local_system_ip": local_system_ip,
+                "status": cls._first_present(
+                    getattr(device_details, "device_state", None),
+                    getattr(device_details, "state", None),
+                    getattr(device_details, "validity", None),
+                ),
+                "model": cls._first_present(
+                    getattr(device_details, "device_model", None),
+                    getattr(device_details, "device_type", None),
+                ),
+                "site_id": cls._first_present(
+                    getattr(device_details, "site_id", None),
+                    getattr(device_details, "configured_site_id", None),
+                ),
+                "site_name": getattr(device_details, "site_name", None),
+            },
         )
 
     def _get_unmonitored_wan_edges(self, known_devices: DataSequence[Device]) -> DataSequence[Device]:
