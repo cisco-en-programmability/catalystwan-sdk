@@ -12,7 +12,8 @@ from catalystwan.api.templates.device_template.device_template import DeviceTemp
 from catalystwan.api.templates.feature_template import FeatureTemplate
 from catalystwan.api.templates.models.cisco_aaa_model import CiscoAAAModel
 from catalystwan.api.templates.payloads.aaa.aaa_model import AAAModel, AuthenticationOrder
-from catalystwan.dataclasses import Device, FeatureTemplateInfo, TemplateInfo
+from catalystwan.dataclasses import Device, DeviceTemplateInfo, FeatureTemplateInfo, TemplateInfo
+from catalystwan.exceptions import InvalidOperationError, TemplateNotFoundError
 from catalystwan.typed_list import DataSequence
 from catalystwan.utils.creation_tools import create_dataclass
 from catalystwan.utils.device_model import DeviceModel
@@ -260,6 +261,29 @@ class TestTemplatesAPI(unittest.TestCase):
         assert not mock_create_device_template.called
         assert not mock_create_feature_template.called
         assert not mock_create_by_generator.called
+
+    @patch("catalystwan.session.ManagerSession")
+    def test_attach_missing_template_raises_template_not_found(self, mock_session):
+        # Arrange
+        mock_session.get.return_value.dataseq.return_value = DataSequence(DeviceTemplateInfo, [])
+        templates_api = TemplatesAPI(mock_session)
+
+        # Act / Assert
+        with self.assertRaises(TemplateNotFoundError):
+            templates_api.attach("missing_template", self.device_info)
+
+    @patch("catalystwan.session.ManagerSession")
+    def test_attach_missing_device_raises_invalid_operation(self, mock_session):
+        # Arrange
+        mock_session.get.return_value.dataseq.return_value = DataSequence(
+            DeviceTemplateInfo,
+            [create_dataclass(DeviceTemplateInfo, self.data_template[0])],
+        )
+        templates_api = TemplatesAPI(mock_session)
+
+        # Act / Assert
+        with self.assertRaises(InvalidOperationError):
+            templates_api.attach("template_1", None)
 
     # @patch.object(TemplatesAPI, "templates")
     # @patch("catalystwan.api.template_api.wait_for_completed")

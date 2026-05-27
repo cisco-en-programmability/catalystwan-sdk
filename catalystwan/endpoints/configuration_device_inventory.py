@@ -5,7 +5,7 @@ from pathlib import Path
 from typing import Dict, List, Literal, Optional, Union
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 from catalystwan.endpoints import APIEndpoints, CustomPayloadType, PreparedPayload, delete, get, post, versions
 from catalystwan.typed_list import DataSequence
@@ -63,6 +63,7 @@ class DeviceDetailsResponse(BaseModel):
     model_config = ConfigDict(populate_by_name=True, protected_namespaces=())
 
     device_type: Optional[str] = Field(default=None, validation_alias="deviceType", serialization_alias="deviceType")
+    device_id: Optional[str] = Field(default=None, validation_alias="deviceId", serialization_alias="deviceId")
     serial_number: Optional[str] = Field(
         default=None, validation_alias="serialNumber", serialization_alias="serialNumber"
     )
@@ -76,7 +77,9 @@ class DeviceDetailsResponse(BaseModel):
     config_operation_mode: Optional[str] = Field(
         default=None, validation_alias="configOperationMode", serialization_alias="configOperationMode"
     )
-    device_model: Optional[str] = Field(default=None, validation_alias="deviceModel", serialization_alias="deviceModel")
+    device_model: Optional[str] = Field(
+        default=None, validation_alias=AliasChoices("deviceModel", "device-model"), serialization_alias="deviceModel"
+    )
     device_state: Optional[str] = Field(default=None, validation_alias="deviceState", serialization_alias="deviceState")
     validity: Optional[str] = None
     platform_family: Optional[str] = Field(
@@ -169,12 +172,20 @@ class DeviceDetailsResponse(BaseModel):
     )
     domain_id: Optional[str] = Field(default=None, validation_alias="domain-id", serialization_alias="domain-id")
     local_system_ip: Optional[str] = Field(
-        default=None, validation_alias="local-system-ip", serialization_alias="ocal-system-ip"
+        default=None,
+        validation_alias=AliasChoices("local-system-ip", "localSystemIp", "localSystemIP"),
+        serialization_alias="local-system-ip",
     )
-    system_ip: Optional[str] = Field(default=None, validation_alias="system-ip", serialization_alias="system-ip")
+    system_ip: Optional[str] = Field(
+        default=None,
+        validation_alias=AliasChoices("system-ip", "systemIp", "systemIP"),
+        serialization_alias="system-ip",
+    )
     model_sku: Optional[str] = Field(default=None)
     site_id: Optional[str] = Field(default=None, validation_alias="site-id", serialization_alias="site-id")
-    host_name: Optional[str] = Field(default=None, validation_alias="host-name", serialization_alias="host-name")
+    host_name: Optional[str] = Field(
+        default=None, validation_alias=AliasChoices("host-name", "hostName"), serialization_alias="host-name"
+    )
     sp_organization_name: Optional[str] = Field(
         default=None, validation_alias="sp-organization-name", serialization_alias="sp-organization-name"
     )

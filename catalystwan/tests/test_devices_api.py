@@ -9,6 +9,7 @@ from tenacity import RetryError  # type: ignore
 
 from catalystwan.api.basic_api import DevicesAPI, DeviceStateAPI
 from catalystwan.dataclasses import BfdSessionData, Connection, Device, WanInterface
+from catalystwan.endpoints.configuration_device_inventory import DeviceDetailsResponse
 from catalystwan.endpoints.endpoints_container import APIEndpointContainter
 from catalystwan.endpoints.monitoring.device_details import DeviceData
 from catalystwan.endpoints.real_time_monitoring.reboot_history import RebootEntry
@@ -17,6 +18,7 @@ from catalystwan.response import ManagerResponse
 from catalystwan.typed_list import DataSequence
 from catalystwan.utils.creation_tools import create_dataclass
 from catalystwan.utils.personality import Personality
+from catalystwan.utils.reachability import Reachability
 
 
 class ResponseMock:
@@ -118,6 +120,32 @@ class TestDevicesAPI(TestCase):
         self.system_ips_list = [device["local-system-ip"] for device in self.devices]
         self.ips_list = [device["deviceId"] for device in self.devices]
         self.list_all_devices_resp = DataSequence(DeviceData, [DeviceData.model_validate(dev) for dev in self.devices])
+        self.inventory_edge = DeviceDetailsResponse.model_validate(
+            {
+                "uuid": "dddddddd-6169-445c-8e49-c0bdaaaaaaa",
+                "deviceIP": "169.254.10.81",
+                "host-name": "vm81",
+                "personality": "vedge",
+                "local-system-ip": "169.254.10.81",
+                "deviceModel": "vedge-C8000V",
+                "site-id": "81",
+                "deviceState": "valid",
+            }
+        )
+        self.inventory_edge_dataclass = create_dataclass(
+            Device,
+            {
+                "uuid": "dddddddd-6169-445c-8e49-c0bdaaaaaaa",
+                "personality": Personality.EDGE,
+                "id": "169.254.10.81",
+                "hostname": "vm81",
+                "reachability": Reachability.UNKNOWN,
+                "local_system_ip": "169.254.10.81",
+                "status": "valid",
+                "model": "vedge-C8000V",
+                "site_id": "81",
+            },
+        )
 
     @patch("catalystwan.response.ManagerResponse")
     @patch("catalystwan.session.ManagerSession")
@@ -198,6 +226,28 @@ class TestDevicesAPI(TestCase):
 
         # Assert
         self.assertEqual(answer, self.devices_dataseq)
+
+    @patch("catalystwan.response.ManagerResponse")
+    @patch("catalystwan.session.ManagerSession")
+    def test_get_includes_unmonitored_wan_edge_inventory(self, mock_session, mock_response):
+        # Arrange
+        mock_session.get.return_value = mock_response
+        mock_session.endpoints.monitoring_device_details.list_all_devices.return_value = DataSequence(
+            DeviceData, [DeviceData.model_validate(self.devices[0])]
+        )
+        mock_session.endpoints.configuration_device_inventory.get_device_details.return_value = DataSequence(
+            DeviceDetailsResponse, [self.inventory_edge]
+        )
+        mock_response.dataseq.return_value = DataSequence(Device, [create_dataclass(Device, self.devices[0])])
+
+        # Act
+        answer = DevicesAPI(mock_session).get()
+
+        # Assert
+        self.assertEqual(
+            answer,
+            DataSequence(Device, [create_dataclass(Device, self.devices[0]), self.inventory_edge_dataclass]),
+        )
 
     @parameterized.expand(
         [
