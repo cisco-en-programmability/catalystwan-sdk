@@ -4,7 +4,7 @@ import unittest
 from unittest.mock import patch
 from urllib.error import HTTPError
 
-from ciscoconfparse import CiscoConfParse  # type: ignore
+from ciscoconfparse2 import CiscoConfParse, Diff  # type: ignore
 
 from catalystwan.api.templates.cli_template import CLITemplate
 from catalystwan.dataclasses import Device
@@ -33,7 +33,7 @@ class TestCLITemplate(unittest.TestCase):
         !\n
         usergroup netadmin\n
         """
-        self.template = CiscoConfParse(self.config.splitlines())
+        self.template = CiscoConfParse(self.config)
 
     @patch("catalystwan.session.ManagerSession")
     def test_load_success(self, mock_session):
@@ -43,7 +43,7 @@ class TestCLITemplate(unittest.TestCase):
         temp = CLITemplate(template_name="test", template_description="test", device_model=DeviceModel.VEDGE)
         answer = temp.load(session=mock_session, id="temp_id")
         # Assert
-        self.assertEqual(answer.ioscfg, self.template.ioscfg)
+        self.assertEqual(answer.get_text(), self.template.get_text())
 
     @patch("catalystwan.session.ManagerSession")
     def test_load_raise(self, mock_session):
@@ -82,7 +82,7 @@ class TestCLITemplate(unittest.TestCase):
         temp = CLITemplate(template_name="test", template_description="test", device_model=DeviceModel.VEDGE)
         answer = temp.load_running(session=mock_session, device=device)
         # Assert
-        self.assertEqual(answer.ioscfg, self.template.ioscfg)
+        self.assertEqual(answer.get_text(), self.template.get_text())
 
     def test_generate_payload(self):
         # Arrange
@@ -92,25 +92,25 @@ class TestCLITemplate(unittest.TestCase):
         # Act
         answer = template.generate_payload()
         # Assert
-        templateConfiguration = (
-            "        system\n"
-            "        host-name               host5\n"
-            "        system-ip               192.168.1.25\n"
-            "        site-id                 2\n"
-            "        admin-tech-on-failure\n"
-            "        no route-consistency-check\n"
-            "        no vrrp-advt-with-phymac\n"
-            '        sp-organization-name    "organization"\n'
-            '        organization-name       "organization"\n'
-            "        vbond vbond\n"
-            "        aaa\n"
-            "        auth-order      local radius tacacs\n"
-            "        usergroup basic\n"
-            "        task system read\n"
-            "        task interface read\n"
-            "        !\n"
+        templateConfiguration = '\n'.join([
+            "        system",
+            "        host-name               host5",
+            "        system-ip               192.168.1.25",
+            "        site-id                 2",
+            "        admin-tech-on-failure",
+            "        no route-consistency-check",
+            "        no vrrp-advt-with-phymac",
+            '        sp-organization-name    "organization"',
+            '        organization-name       "organization"',
+            "        vbond vbond",
+            "        aaa",
+            "        auth-order      local radius tacacs",
+            "        usergroup basic",
+            "        task system read",
+            "        task interface read",
+            "        !",
             "        usergroup netadmin"
-        )
+            ])
         proper_answer = {
             "templateName": "test",
             "templateDescription": "test",
@@ -167,12 +167,12 @@ class TestCLITemplate(unittest.TestCase):
     def test_update_suceess(self, mock_session):
         # Arrange
         mock_session.put.return_value = {"data": {"attachedDevices": []}}
-        templateConfiguration = (
-            "        system\n"
-            "        host-name               host6\n"
-            "        system-ip               192.168.1.26\n"
-        )
-        config = CiscoConfParse(templateConfiguration.splitlines())
+        templateConfiguration = '\n'.join([
+            "        system",
+            "        host-name               host6",
+            "        system-ip               192.168.1.26",
+            ])
+        config = CiscoConfParse(templateConfiguration)
         # Act
         template = CLITemplate(template_name="test", template_description="test", device_model=DeviceModel.VEDGE)
         result = template.update(session=mock_session, id="temp_id", config=config)
@@ -190,7 +190,7 @@ class TestCLITemplate(unittest.TestCase):
             "        host-name               host6\n"
             "        system-ip               192.168.1.26\n"
         )
-        config = CiscoConfParse(templateConfiguration.splitlines())
+        config = CiscoConfParse(templateConfiguration)
         template = CLITemplate(template_name="test", template_description="test", device_model=DeviceModel.VEDGE)
 
         # Act
@@ -204,13 +204,13 @@ class TestCLITemplate(unittest.TestCase):
             "        host-name               host6\n"
             "        system-ip               192.168.1.26\n"
         )
-        config1 = CiscoConfParse(templateConfiguration1.splitlines())
+        config1 = CiscoConfParse(templateConfiguration1)
         templateConfiguration2 = (
             "        system\n"
             "        host-name               host6\n"
             "        system-ip               192.168.1.26\n"
         )
-        config2 = CiscoConfParse(templateConfiguration2.splitlines())
+        config2 = CiscoConfParse(templateConfiguration2)
         # Act
         result = CLITemplate(
             template_name="test", template_description="test", device_model=DeviceModel.VEDGE
