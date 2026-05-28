@@ -54,6 +54,8 @@ def response_debug(response: Optional[Response], request: Union[Request, Prepare
         "json": getattr(_request, "json", None),
     }
     if content_type := {k.lower(): v for k, v in _request.headers.items()}.get("content-type"):
+        if isinstance(content_type, bytes):
+            content_type = content_type.decode("latin-1")
         if not re.search(PRINTABLE_CONTENT, content_type):
             del request_debug["body"]
     if urlparse(_request.url).path in SENSITIVE_URL_PATHS:
