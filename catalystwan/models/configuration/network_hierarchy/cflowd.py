@@ -95,6 +95,9 @@ class CflowdParcel(_ParcelBase):
             # export_interval should be default 600 only if bfd_metrics_export is True
             export_interval = 600
 
+        if not self._can_add_collector(vpn_id, address, udp_port):
+            return
+
         self.collectors.append(
             Collectors(
                 address=as_optional_global(address),
@@ -126,3 +129,17 @@ class CflowdParcel(_ParcelBase):
 
     def set_protocol(self, protocol: Protocol):
         self.protocol = Global[Protocol](value=protocol)
+
+    def _can_add_collector(self, vpn_id: Optional[int], address: Optional[str], udp_port: Optional[int]) -> bool:
+        if self.collectors is None:
+            return True
+
+        for collector in self.collectors:
+            if (
+                collector.vpn_id == as_optional_global(vpn_id)
+                and collector.address == as_optional_global(address)
+                and collector.udp_port == as_optional_global(udp_port)
+            ):
+                return False
+
+        return True
