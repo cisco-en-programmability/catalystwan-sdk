@@ -91,6 +91,12 @@ WebCategories = Literal[
     "web-advertisements",
     "web-based-email",
     "web-hosting",
+    "unused-food-and-dining",
+    "unused-reputation",
+    "self-harm",
+    "dns-over-https",
+    "low-thc-cannabis-products",
+    "generative-ai",
 ]
 
 WebCategoriesAction = Literal["block", "allow"]
