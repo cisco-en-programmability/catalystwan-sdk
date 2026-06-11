@@ -92,6 +92,12 @@ Categories = Literal[
     "web-advertisements",
     "web-based-email",
     "web-hosting",
+    "unused-food-and-dining",
+    "unused-reputation",
+    "self-harm",
+    "dns-over-https",
+    "low-thc-cannabis-products",
+    "generative-ai",
 ]
 
 DecryptThreshold = Literal["high-risk", "low-risk", "moderate-risk", "suspicious", "trustworthy"]
