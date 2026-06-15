@@ -38,6 +38,9 @@ class Collectors(BaseModel):
         default=Global[int](value=4739), validation_alias="udpPort", serialization_alias="udpPort"
     )
     vpn_id: Optional[Global[int]] = Field(default=None, validation_alias="vpnId", serialization_alias="vpnId")
+    source_interface: Optional[Global[str]] = Field(
+        default=None, validation_alias="sourceInterface", serialization_alias="sourceInterface"
+    )
 
 
 class CflowdParcel(_ParcelBase):
@@ -85,6 +88,7 @@ class CflowdParcel(_ParcelBase):
         export_spread: Optional[bool] = False,
         udp_port: Optional[int] = 4739,
         vpn_id: Optional[int] = None,
+        source_interface: Optional[str] = None,
     ):
         if self.collectors is None:
             self.collectors = []
@@ -106,6 +110,7 @@ class CflowdParcel(_ParcelBase):
                 export_spread=as_optional_global(export_spread),
                 bfd_metrics_export=as_optional_global(bfd_metrics_export),
                 export_interval=as_optional_global(export_interval),
+                source_interface=as_optional_global(source_interface),
             )
         )
 
