@@ -904,6 +904,19 @@ class PrefferedColorGroupListEntry(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
 
+class PreferredRemoteColorValue(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+    color: TLOCColor
+    remote_color_restrict: Optional[bool] = Field(
+        default=None, serialization_alias="remoteColorRestrict", validation_alias="remoteColorRestrict"
+    )
+
+
+class PreferredRemoteColorEntry(BaseModel):
+    field: Literal["preferredRemoteColor"] = "preferredRemoteColor"
+    value: PreferredRemoteColorValue = Field()
+
+
 class ColorListEntry(BaseModel):
     field: Literal["colorList"] = "colorList"
     ref: UUID
@@ -1166,6 +1179,9 @@ class SlaPreferredRemoteColor(BaseModel):
 
 class SlaPreferredColorGroup(BaseModel):
     field: Literal["preferredColorGroup"] = "preferredColorGroup"
+    color_restrict: Optional[bool] = Field(
+        default=None, serialization_alias="colorRestrict", validation_alias="colorRestrict"
+    )
     ref: UUID
 
 
@@ -1249,6 +1265,7 @@ ActionSetEntry = Annotated[
         PolicerListEntry,
         PreferenceEntry,
         PrefferedColorGroupListEntry,
+        PreferredRemoteColorEntry,
         ServiceChainEntry,
         ServiceEntry,
         TLOCActionEntry,

@@ -60,6 +60,8 @@ from catalystwan.models.policy.policy_definition import (
     PolicyDefinitionGetResponse,
     PolicyDefinitionId,
     PolicyDefinitionSequenceBase,
+    PreferredRemoteColorEntry,
+    PreferredRemoteColorValue,
     PrefferedColorGroupListEntry,
     ProtocolEntry,
     RedirectDNSAction,
@@ -236,12 +238,19 @@ class TrafficDataPolicySequence(PolicyDefinitionSequenceBase):
         self._insert_action_in_set(PrefferedColorGroupListEntry(ref=color_group_list_id, color_restrict=restrict))
 
     @accept_action
+    def associate_preferred_remote_color(self, color_group_list_id: TLOCColor, restrict: bool = False) -> None:
+        self._insert_action_in_set(
+            PreferredRemoteColorEntry(
+                value=PreferredRemoteColorValue(color=color_group_list_id, remote_color_restrict=restrict)
+            )
+        )
+
+    @accept_action
     def associate_cflowd_action(self) -> None:
         self._insert_action(CFlowDAction())
 
     @overload
-    def associate_nat_action(self, *, nat_pool: int = 0) -> None:
-        ...
+    def associate_nat_action(self, *, nat_pool: int = 0) -> None: ...
 
     @overload
     def associate_nat_action(
@@ -252,8 +261,7 @@ class TrafficDataPolicySequence(PolicyDefinitionSequenceBase):
         bypass: bool = False,
         dia_pool: List[int] = [],
         dia_interface: List[str] = []
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @accept_action
     def associate_nat_action(
@@ -287,12 +295,10 @@ class TrafficDataPolicySequence(PolicyDefinitionSequenceBase):
         self._insert_action_in_set(PolicerListEntry(ref=policer_list_id))
 
     @overload
-    def associate_redirect_dns_action(self, *, ip: IPv4Address) -> None:
-        ...
+    def associate_redirect_dns_action(self, *, ip: IPv4Address) -> None: ...
 
     @overload
-    def associate_redirect_dns_action(self, *, dns_type: DNSTypeEntryType = "host") -> None:
-        ...
+    def associate_redirect_dns_action(self, *, dns_type: DNSTypeEntryType = "host") -> None: ...
 
     @accept_action
     def associate_redirect_dns_action(self, *, ip=None, dns_type=None) -> None:
@@ -379,12 +385,10 @@ class TrafficDataPolicySequence(PolicyDefinitionSequenceBase):
         self._insert_action_in_set(VPNEntry(value=str(vpn)))
 
     @overload
-    def associate_tloc_action(self, *, tloc_list_id: UUID) -> None:
-        ...
+    def associate_tloc_action(self, *, tloc_list_id: UUID) -> None: ...
 
     @overload
-    def associate_tloc_action(self, *, ip: IPv4Address, color: TLOCColor, encap: EncapType) -> None:
-        ...
+    def associate_tloc_action(self, *, ip: IPv4Address, color: TLOCColor, encap: EncapType) -> None: ...
 
     @accept_action
     def associate_tloc_action(self, *, tloc_list_id=None, ip=None, color=None, encap=None) -> None:
@@ -420,8 +424,7 @@ class TrafficDataPolicySequence(PolicyDefinitionSequenceBase):
         tloc_list_id: UUID,
         local: bool = False,
         restrict: bool = False
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @overload
     def associate_service_action(
@@ -434,8 +437,7 @@ class TrafficDataPolicySequence(PolicyDefinitionSequenceBase):
         encap: EncapType,
         local: bool = False,
         restrict: bool = False
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @accept_action
     def associate_service_action(

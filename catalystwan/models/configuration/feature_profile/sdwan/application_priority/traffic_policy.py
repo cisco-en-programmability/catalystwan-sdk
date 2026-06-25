@@ -255,6 +255,9 @@ class SlaClass(BaseModel):
     preferred_color_group: Optional[RefIdItem] = Field(
         default=None, validation_alias="preferredColorGroup", serialization_alias="preferredColorGroup"
     )
+    preferred_color_group_restrict: Optional[Global[bool]] = Field(
+        default=None, validation_alias="preferredColorGroupRestrict", serialization_alias="preferredColorGroupRestrict"
+    )
     preferred_remote_color: Optional[Global[List[TLOCColor]]] = Field(
         default=None, validation_alias="preferredRemoteColor", serialization_alias="preferredRemoteColor"
     )
@@ -281,7 +284,7 @@ class LocalTlocList(BaseModel):
 class PreferredRemoteColor(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
     color: Global[List[TLOCColor]]
-    remote_color_restrict: Optional[Global[Global[bool]]] = Field(
+    remote_color_restrict: Optional[Global[bool]] = Field(
         default=None, validation_alias="remoteColorRestrict", serialization_alias="remoteColorRestrict"
     )
 
@@ -373,6 +376,13 @@ class SetPreferredColorGroup(BaseModel):
     )
 
 
+class SetPreferredColorGroupRestrict(BaseModel):
+    model_config = ConfigDict(populate_by_name=True, extra="forbid")
+    preferred_color_group_restrict: Optional[Global[bool]] = Field(
+        default=None, validation_alias="preferredColorGroupRestrict", serialization_alias="preferredColorGroupRestrict"
+    )
+
+
 class SetPreferredRemoteColor(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
     preferred_remote_color: Optional[PreferredRemoteColor] = Field(
@@ -416,6 +426,7 @@ Set = Union[
     SetNextHopLoose,
     SetPolicer,
     SetPreferredColorGroup,
+    SetPreferredColorGroupRestrict,
     SetPreferredRemoteColor,
     SetService,
     SetServiceChain,
@@ -515,6 +526,7 @@ class SlaClassAction(BaseModel):
         sla_name: Optional[UUID] = None,
         preferred_color: Optional[List[TLOCColor]] = None,
         preferred_color_group: Optional[UUID] = None,
+        preferred_color_group_restrict: Optional[bool] = None,
         preferred_remote_color: Optional[List[TLOCColor]] = None,
         remote_color_restrict: Optional[bool] = None,
         strict: Optional[bool] = None,
@@ -528,6 +540,10 @@ class SlaClassAction(BaseModel):
             action.sla_class.append(SlaClass(preferred_color=Global[List[TLOCColor]](value=preferred_color)))
         if preferred_color_group:
             action.sla_class.append(SlaClass(preferred_color_group=RefIdItem.from_uuid(preferred_color_group)))
+        if preferred_color_group_restrict is not None:
+            action.sla_class.append(
+                SlaClass(preferred_color_group_restrict=Global[bool](value=preferred_color_group_restrict))
+            )
         if preferred_remote_color:
             action.sla_class.append(
                 SlaClass(preferred_remote_color=Global[List[TLOCColor]](value=preferred_remote_color))
@@ -883,20 +899,27 @@ class Sequence(BaseModel):
     def associate_preferred_color_group_action(self, group_id: UUID) -> None:
         self._insert_action_in_set(SetPreferredColorGroup(preferred_color_group=RefIdItem.from_uuid(group_id)))
 
-    def associate_preferred_remote_color_action(self) -> None:
-        pass
+    def associate_preferred_color_group_restrict_action(self, restrict: bool) -> None:
+        self._insert_action_in_set(SetPreferredColorGroupRestrict(preferred_color_group_restrict=as_global(restrict)))
+
+    def associate_preferred_remote_color_action(self, color: List[TLOCColor], restrict: Optional[bool] = False) -> None:
+        self._insert_action_in_set(
+            SetPreferredRemoteColor(
+                preferred_remote_color=PreferredRemoteColor(
+                    color=Global[List[TLOCColor]](value=color), remote_color_restrict=as_global(restrict)
+                )
+            )
+        )
 
     @overload
     def associate_service_action(
         self, service_type: ServiceType, vpn: Optional[int] = None, *, tloc_list_id: UUID
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @overload
     def associate_service_action(
         self, service_type: ServiceType, vpn: int, *, ip: IPv4Address, color: List[TLOCColor], encap: EncapType
-    ) -> None:
-        ...
+    ) -> None: ...
 
     def associate_service_action(
         self,
@@ -1016,6 +1039,7 @@ class Sequence(BaseModel):
         sla_name: Optional[UUID] = None,
         preferred_color: Optional[List[TLOCColor]] = None,
         preferred_color_group: Optional[UUID] = None,
+        preferred_color_group_restrict: Optional[bool] = None,
         preferred_remote_color: Optional[List[TLOCColor]] = None,
         remote_color_restrict: Optional[bool] = None,
         strict: Optional[bool] = None,
@@ -1025,6 +1049,7 @@ class Sequence(BaseModel):
             sla_name=sla_name,
             preferred_color=preferred_color,
             preferred_color_group=preferred_color_group,
+            preferred_color_group_restrict=preferred_color_group_restrict,
             preferred_remote_color=preferred_remote_color,
             remote_color_restrict=remote_color_restrict,
             strict=strict,
