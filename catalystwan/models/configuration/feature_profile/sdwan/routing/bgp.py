@@ -8,7 +8,7 @@ from typing import List, Literal, Optional, Union
 from pydantic import AliasPath, BaseModel, ConfigDict, Field
 
 from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase
-from catalystwan.models.configuration.feature_profile.common import AddressWithMask, RefIdItem
+from catalystwan.models.configuration.feature_profile.common import AddressWithMask, RefIdVariableItem
 
 FamilyType = Literal["ipv4-unicast", "vpnv4-unicast", "vpnv6-unicast", "ipv6-unicast"]
 PolicyTypeOff = Literal["off"]
@@ -118,13 +118,13 @@ class AddressFamilyItem(BaseModel):
         description="Set maximum number of prefixes accepted from BGP peer"
         "and threshold exceeded policy actions (restart or warning)",
     )
-    in_route_policy: Optional[Union[RefIdItem, Default[None]]] = Field(
+    in_route_policy: Optional[Union[RefIdVariableItem, Default[None]]] = Field(
         default=None,
         serialization_alias="inRoutePolicy",
         validation_alias="inRoutePolicy",
         description="In direction route policy name",
     )
-    out_route_policy: Optional[Union[RefIdItem, Default[None]]] = Field(
+    out_route_policy: Optional[Union[RefIdVariableItem, Default[None]]] = Field(
         default=None,
         serialization_alias="outRoutePolicy",
         validation_alias="outRoutePolicy",
@@ -367,7 +367,7 @@ class RedistributeItem(BaseModel):
         description="Set the protocol to redistribute routes from. "
         "Transport and Management Protocols don't have a 'omp' option",
     )
-    route_policy: Optional[Union[Default[None], RefIdItem]] = Field(
+    route_policy: Optional[Union[Default[None], RefIdVariableItem]] = Field(
         default=None,
         serialization_alias="routePolicy",
         validation_alias="routePolicy",
@@ -404,7 +404,7 @@ class AddressFamily(BaseModel):
     originate: Optional[Union[Variable, Global[bool], Default[Literal[False]]]] = Field(
         default=None, description="BGP Default Information Variable"
     )
-    name: Optional[Union[Default[None], RefIdItem]] = Field(default=None, description="Table Map Policy name")
+    name: Optional[Union[Default[None], RefIdVariableItem]] = Field(default=None, description="Table Map Policy name")
     filter: Optional[Union[Variable, Global[bool], Default[Literal[False]]]] = Field(
         default=None, description="Table map filtered or not"
     )
@@ -450,7 +450,7 @@ class Ipv6RedistributeItem(BaseModel):
         description="Set the protocol to redistribute routes from. "
         "Transport and Management Protocols don't have a 'omp' option",
     )
-    route_policy: Optional[Union[Default[None], RefIdItem]] = Field(
+    route_policy: Optional[Union[Default[None], RefIdVariableItem]] = Field(
         default=None,
         serialization_alias="routePolicy",
         validation_alias="routePolicy",
@@ -490,7 +490,7 @@ class Ipv6AddressFamily(BaseModel):
     originate: Optional[Union[Variable, Global[bool], Default[Literal[False]]]] = Field(
         default=None, description="BGP Default Information Variable"
     )
-    name: Optional[Union[Default[None], RefIdItem]] = Field(default=None, description="Table Map Policy name")
+    name: Optional[Union[Default[None], RefIdVariableItem]] = Field(default=None, description="Table Map Policy name")
     filter: Optional[Union[Variable, Global[bool], Default[Literal[False]]]] = Field(
         default=None, description="Table map filtered or not"
     )

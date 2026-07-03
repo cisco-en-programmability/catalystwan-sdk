@@ -5,7 +5,7 @@ from typing import List, Literal, Optional, Union
 from pydantic import AliasPath, BaseModel, ConfigDict, Field
 
 from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase
-from catalystwan.models.configuration.feature_profile.common import AddressWithMask, RefIdItem
+from catalystwan.models.configuration.feature_profile.common import AddressWithMask, RefIdVariableItem
 
 EigrpAuthType = Literal[
     "md5",
@@ -46,7 +46,7 @@ class EigrpAuthentication(BaseModel):
 class TableMap(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
 
-    name: Optional[Union[Default[None], RefIdItem]] = Default[None](value=None)
+    name: Optional[Union[Default[None], RefIdVariableItem]] = Default[None](value=None)
     filter: Optional[Union[Global[bool], Variable, Default[bool]]] = Default[bool](value=False)
 
 
@@ -70,7 +70,7 @@ class RedistributeIntoEigrp(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
 
     protocol: Union[Global[RedistributeProtocol], Variable]
-    route_policy: Optional[Union[Default[None], RefIdItem]] = Field(
+    route_policy: Optional[Union[Default[None], RefIdVariableItem]] = Field(
         default=Default[None](value=None), serialization_alias="routePolicy", validation_alias="routePolicy"
     )
 

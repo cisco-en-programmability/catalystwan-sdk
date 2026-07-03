@@ -13,7 +13,7 @@ from catalystwan.models.configuration.feature_profile.common import (
     AllowService,
     Encapsulation,
     MultiRegionFabric,
-    RefIdItem,
+    RefIdVariableItem,
 )
 
 EncapsulationSerial = Literal[
@@ -93,16 +93,16 @@ class AclQos(BaseModel):
         extra="forbid",
         populate_by_name=True,
     )
-    ipv4_acl_egress: Optional[RefIdItem] = Field(
+    ipv4_acl_egress: Optional[RefIdVariableItem] = Field(
         default=None, validation_alias="ipv4AclEgress", serialization_alias="ipv4AclEgress"
     )
-    ipv4_acl_ingress: Optional[RefIdItem] = Field(
+    ipv4_acl_ingress: Optional[RefIdVariableItem] = Field(
         default=None, validation_alias="ipv4AclIngress", serialization_alias="ipv4AclIngress"
     )
-    ipv6_acl_egress: Optional[RefIdItem] = Field(
+    ipv6_acl_egress: Optional[RefIdVariableItem] = Field(
         default=None, validation_alias="ipv6AclEgress", serialization_alias="ipv6AclEgress"
     )
-    ipv6_acl_ingress: Optional[RefIdItem] = Field(
+    ipv6_acl_ingress: Optional[RefIdVariableItem] = Field(
         default=None, validation_alias="ipv6AclIngress", serialization_alias="ipv6AclIngress"
     )
     shaping_rate: Optional[Union[Global[int], Variable, Default[None]]] = Field(
