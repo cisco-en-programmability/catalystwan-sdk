@@ -8,7 +8,7 @@ from pydantic import AliasPath, BaseModel, ConfigDict, Field
 
 from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase, as_default
 from catalystwan.models.common import MetricType
-from catalystwan.models.configuration.feature_profile.common import RefIdItem
+from catalystwan.models.configuration.feature_profile.common import RefIdVariableItem
 
 NetworkType = Literal[
     "broadcast",
@@ -112,7 +112,7 @@ class RedistributedRoute(BaseModel):
 
     protocol: Union[Global[RedistributeProtocolOspf], Variable]
     dia: Optional[Union[Global[bool], Variable, Default[bool]]] = None
-    route_policy: Optional[Union[Default[None], RefIdItem]] = Field(
+    route_policy: Optional[Union[Default[None], RefIdVariableItem]] = Field(
         serialization_alias="routePolicy", validation_alias="routePolicy", default=None
     )
     translate_rib_metric: Optional[Union[Variable, Global[bool], Default[bool]]] = Field(
@@ -167,7 +167,7 @@ class RoutingOspfParcel(_ParcelBase):
         validation_alias=AliasPath("data", "redistribute"), default=None
     )
     router_lsa: Optional[List[RouterLsa]] = Field(validation_alias=AliasPath("data", "routerLsa"), default=None)
-    route_policy: Optional[Union[Default[None], RefIdItem]] = Field(
+    route_policy: Optional[Union[Default[None], RefIdVariableItem]] = Field(
         validation_alias=AliasPath("data", "routePolicy"), default=None
     )
     area: Optional[List[OspfArea]] = Field(validation_alias=AliasPath("data", "area"), default=None)

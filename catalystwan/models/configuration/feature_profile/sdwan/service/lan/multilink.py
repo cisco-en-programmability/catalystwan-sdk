@@ -12,7 +12,7 @@ from catalystwan.models.configuration.feature_profile.common import (
     MultilinkControllerType,
     MultilinkMethod,
     MultilinkNimList,
-    RefIdItem,
+    RefIdVariableItem,
 )
 
 
@@ -67,10 +67,18 @@ class InterfaceMultilinkParcel(_ParcelBase):
     ip_directed_broadcast: Optional[Union[Default[bool], Global[bool], Variable]] = Field(
         default=None, validation_alias=AliasPath("data", "ipDirectedBroadcast")
     )
-    ipv4_acl_egress: Optional[RefIdItem] = Field(default=None, validation_alias=AliasPath("data", "ipv4AclEgress"))
-    ipv4_acl_ingress: Optional[RefIdItem] = Field(default=None, validation_alias=AliasPath("data", "ipv4AclIngress"))
-    ipv6_acl_egress: Optional[RefIdItem] = Field(default=None, validation_alias=AliasPath("data", "ipv6AclEgress"))
-    ipv6_acl_ingress: Optional[RefIdItem] = Field(default=None, validation_alias=AliasPath("data", "ipv6AclIngress"))
+    ipv4_acl_egress: Optional[RefIdVariableItem] = Field(
+        default=None, validation_alias=AliasPath("data", "ipv4AclEgress")
+    )
+    ipv4_acl_ingress: Optional[RefIdVariableItem] = Field(
+        default=None, validation_alias=AliasPath("data", "ipv4AclIngress")
+    )
+    ipv6_acl_egress: Optional[RefIdVariableItem] = Field(
+        default=None, validation_alias=AliasPath("data", "ipv6AclEgress")
+    )
+    ipv6_acl_ingress: Optional[RefIdVariableItem] = Field(
+        default=None, validation_alias=AliasPath("data", "ipv6AclIngress")
+    )
     mask_ipv4: Optional[Union[Global[SubnetMask], Default[None], Variable]] = Field(
         default=None, validation_alias=AliasPath("data", "maskIpv4")
     )

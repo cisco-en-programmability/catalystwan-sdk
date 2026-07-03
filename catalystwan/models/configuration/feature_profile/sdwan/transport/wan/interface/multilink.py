@@ -13,7 +13,7 @@ from catalystwan.models.configuration.feature_profile.common import (
     MultilinkMethod,
     MultilinkNimList,
     MultiRegionFabric,
-    RefIdItem,
+    RefIdVariableItem,
 )
 
 
@@ -128,10 +128,18 @@ class InterfaceMultilinkParcel(_ParcelBase):
     ipsec_weight: Optional[Union[Variable, Default[int], Global[int]]] = Field(
         default=None, validation_alias=AliasPath("data", "ipsecWeight")
     )
-    ipv4_acl_egress: Optional[RefIdItem] = Field(default=None, validation_alias=AliasPath("data", "ipv4AclEgress"))
-    ipv4_acl_ingress: Optional[RefIdItem] = Field(default=None, validation_alias=AliasPath("data", "ipv4AclIngress"))
-    ipv6_acl_egress: Optional[RefIdItem] = Field(default=None, validation_alias=AliasPath("data", "ipv6AclEgress"))
-    ipv6_acl_ingress: Optional[RefIdItem] = Field(default=None, validation_alias=AliasPath("data", "ipv6AclIngress"))
+    ipv4_acl_egress: Optional[RefIdVariableItem] = Field(
+        default=None, validation_alias=AliasPath("data", "ipv4AclEgress")
+    )
+    ipv4_acl_ingress: Optional[RefIdVariableItem] = Field(
+        default=None, validation_alias=AliasPath("data", "ipv4AclIngress")
+    )
+    ipv6_acl_egress: Optional[RefIdVariableItem] = Field(
+        default=None, validation_alias=AliasPath("data", "ipv6AclEgress")
+    )
+    ipv6_acl_ingress: Optional[RefIdVariableItem] = Field(
+        default=None, validation_alias=AliasPath("data", "ipv6AclIngress")
+    )
     last_resort_circuit: Optional[Union[Variable, Global[bool], Default[bool]]] = Field(
         default=None, validation_alias=AliasPath("data", "lastResortCircuit")
     )

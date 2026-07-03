@@ -12,7 +12,7 @@ from catalystwan.models.configuration.feature_profile.common import (
     DNSIPv4,
     DNSIPv6,
     HostMapping,
-    RefIdItem,
+    RefIdVariableItem,
 )
 
 ProtocolIPv4 = Literal[
@@ -139,7 +139,7 @@ class OmpAdvertiseIPv4(BaseModel):
     omp_protocol: Union[Variable, Global[ProtocolIPv4]] = Field(
         serialization_alias="ompProtocol", validation_alias="ompProtocol"
     )
-    route_policy: Optional[Union[Default[None], RefIdItem]] = Field(
+    route_policy: Optional[Union[Default[None], RefIdVariableItem]] = Field(
         serialization_alias="routePolicy", validation_alias="routePolicy", default=None
     )
     prefix_list: Optional[List[IPv4Prefix]] = Field(
@@ -153,7 +153,7 @@ class OmpAdvertiseIPv6(BaseModel):
     omp_protocol: Union[Variable, Global[ProtocolIPv6]] = Field(
         serialization_alias="ompProtocol", validation_alias="ompProtocol"
     )
-    route_policy: Optional[Union[Default[None], RefIdItem]] = Field(
+    route_policy: Optional[Union[Default[None], RefIdVariableItem]] = Field(
         serialization_alias="routePolicy", validation_alias="routePolicy", default=None
     )
     protocol_sub_type: Optional[Union[Variable, Default[None], Global[Literal["External"]]]] = Field(
@@ -486,7 +486,7 @@ class RedistributeToService(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True)
 
     protocol: Union[Variable, Global[RedistributeToServiceProtocol]]
-    policy: Union[Default[None], RefIdItem] = Default[None](value=None)
+    policy: Union[Default[None], RefIdVariableItem] = Default[None](value=None)
 
 
 class RedistributeToGlobal(BaseModel):
@@ -502,7 +502,7 @@ class RouteLeakFromGlobal(BaseModel):
     route_protocol: Union[Variable, Global[RouteLeakFromGlobalProtocol]] = Field(
         serialization_alias="routeProtocol", validation_alias="routeProtocol"
     )
-    route_policy: Optional[Union[Default[None], RefIdItem]] = Field(
+    route_policy: Optional[Union[Default[None], RefIdVariableItem]] = Field(
         serialization_alias="routePolicy", validation_alias="routePolicy", default=None
     )
     redistribute_to_protocol: Optional[List[RedistributeToService]] = Field(
@@ -516,7 +516,7 @@ class RouteLeakFromService(BaseModel):
     route_protocol: Union[Variable, Global[RouteLeakFromServiceProtocol]] = Field(
         serialization_alias="routeProtocol", validation_alias="routeProtocol"
     )
-    route_policy: Optional[Union[Default[None], RefIdItem]] = Field(
+    route_policy: Optional[Union[Default[None], RefIdVariableItem]] = Field(
         serialization_alias="routePolicy", validation_alias="routePolicy", default=None
     )
     redistribute_to_protocol: Optional[List[RedistributeToService]] = Field(
@@ -531,7 +531,7 @@ class RouteLeakBetweenServices(BaseModel):
     route_protocol: Union[Variable, Global[RouteLeakFromServiceProtocol]] = Field(
         serialization_alias="routeProtocol", validation_alias="routeProtocol"
     )
-    route_policy: Optional[Union[Default[None], RefIdItem]] = Field(
+    route_policy: Optional[Union[Default[None], RefIdVariableItem]] = Field(
         serialization_alias="routePolicy", validation_alias="routePolicy", default=None
     )
     redistribute_to_protocol: Optional[List[RedistributeToService]] = Field(

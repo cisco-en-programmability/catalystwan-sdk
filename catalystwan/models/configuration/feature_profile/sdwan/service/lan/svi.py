@@ -6,7 +6,12 @@ from typing import List, Literal, Optional, Union
 from pydantic import AliasPath, BaseModel, ConfigDict, Field
 
 from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase
-from catalystwan.models.configuration.feature_profile.common import Arp, RefIdItem, StaticIPv4Address, StaticIPv6Address
+from catalystwan.models.configuration.feature_profile.common import (
+    Arp,
+    RefIdVariableItem,
+    StaticIPv4Address,
+    StaticIPv6Address,
+)
 from catalystwan.models.configuration.feature_profile.sdwan.service.lan.common import (
     VrrpIPv6Address,
     VrrpTrackingObject,
@@ -138,16 +143,16 @@ class IPv6AddressConfiguration(BaseModel):
 class AclQos(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
 
-    ipv4_acl_egress: Optional[RefIdItem] = Field(
+    ipv4_acl_egress: Optional[RefIdVariableItem] = Field(
         serialization_alias="ipv4AclEgress", validation_alias="ipv4AclEgress", default=None
     )
-    ipv4_acl_ingress: Optional[RefIdItem] = Field(
+    ipv4_acl_ingress: Optional[RefIdVariableItem] = Field(
         serialization_alias="ipv4AclIngress", validation_alias="ipv4AclIngress", default=None
     )
-    ipv6_acl_egress: Optional[RefIdItem] = Field(
+    ipv6_acl_egress: Optional[RefIdVariableItem] = Field(
         serialization_alias="ipv6AclEgress", validation_alias="ipv6AclEgress", default=None
     )
-    ipv6_acl_ingress: Optional[RefIdItem] = Field(
+    ipv6_acl_ingress: Optional[RefIdVariableItem] = Field(
         serialization_alias="ipv6AclIngress", validation_alias="ipv6AclIngress", default=None
     )
 

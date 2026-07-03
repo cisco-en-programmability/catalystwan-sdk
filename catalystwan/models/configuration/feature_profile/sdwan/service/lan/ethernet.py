@@ -27,6 +27,7 @@ from catalystwan.models.configuration.feature_profile.common import (
     InterfaceEitherIPv4Address,
     InterfaceStaticIPv4Address,
     RefIdItem,
+    RefIdVariableItem,
     StaticIPv4Address,
     StaticIPv4AddressConfig,
     StaticIPv6Address,
@@ -196,16 +197,16 @@ class AclQos(BaseModel):
     shaping_rate: Optional[Union[Global[int], Variable, Default[None]]] = Field(
         serialization_alias="shapingRate", validation_alias="shapingRate", default=None
     )
-    ipv4_acl_egress: Optional[RefIdItem] = Field(
+    ipv4_acl_egress: Optional[RefIdVariableItem] = Field(
         serialization_alias="ipv4AclEgress", validation_alias="ipv4AclEgress", default=None
     )
-    ipv4_acl_ingress: Optional[RefIdItem] = Field(
+    ipv4_acl_ingress: Optional[RefIdVariableItem] = Field(
         serialization_alias="ipv4AclIngress", validation_alias="ipv4AclIngress", default=None
     )
-    ipv6_acl_egress: Optional[RefIdItem] = Field(
+    ipv6_acl_egress: Optional[RefIdVariableItem] = Field(
         serialization_alias="ipv6AclEgress", validation_alias="ipv6AclEgress", default=None
     )
-    ipv6_acl_ingress: Optional[RefIdItem] = Field(
+    ipv6_acl_ingress: Optional[RefIdVariableItem] = Field(
         serialization_alias="ipv6AclIngress", validation_alias="ipv6AclIngress", default=None
     )
 

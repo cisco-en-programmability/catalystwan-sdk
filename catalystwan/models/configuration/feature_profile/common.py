@@ -308,12 +308,14 @@ class WANService(BaseModel):
     service_type: Global[Literal["TE"]] = Field(serialization_alias="serviceType", validation_alias="serviceType")
 
 
-class RefIdItem(BaseModel):
+class RefIdVariableItem(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
         populate_by_name=True,
     )
-    ref_id: Union[Global[str], Default[None]] = Field(..., serialization_alias="refId", validation_alias="refId")
+    ref_id: Union[Global[str], Default[None], Variable] = Field(
+        ..., serialization_alias="refId", validation_alias="refId"
+    )
 
     @classmethod
     def from_uuid(cls, ref_id: UUID):
@@ -321,6 +323,10 @@ class RefIdItem(BaseModel):
 
     def __hash__(self) -> int:
         return hash(self.ref_id.value)
+
+
+class RefIdItem(RefIdVariableItem):
+    ref_id: Union[Global[str], Default[None]] = Field(..., serialization_alias="refId", validation_alias="refId")
 
 
 class RefIdList(BaseModel):
@@ -466,16 +472,16 @@ class AclQos(BaseModel):
     adaptive_qos: Optional[Union[Global[bool], Default[bool]]] = Field(
         default=None, validation_alias="adaptiveQoS", serialization_alias="adaptiveQoS"
     )
-    ipv4_acl_egress: Optional[RefIdItem] = Field(
+    ipv4_acl_egress: Optional[RefIdVariableItem] = Field(
         default=None, validation_alias="ipv4AclEgress", serialization_alias="ipv4AclEgress"
     )
-    ipv4_acl_ingress: Optional[RefIdItem] = Field(
+    ipv4_acl_ingress: Optional[RefIdVariableItem] = Field(
         default=None, validation_alias="ipv4AclIngress", serialization_alias="ipv4AclIngress"
     )
-    ipv6_acl_egress: Optional[RefIdItem] = Field(
+    ipv6_acl_egress: Optional[RefIdVariableItem] = Field(
         default=None, validation_alias="ipv6AclEgress", serialization_alias="ipv6AclEgress"
     )
-    ipv6_acl_ingress: Optional[RefIdItem] = Field(
+    ipv6_acl_ingress: Optional[RefIdVariableItem] = Field(
         default=None, validation_alias="ipv6AclIngress", serialization_alias="ipv6AclIngress"
     )
     shaping_rate: Optional[Union[Variable, Global[int], Default[None]]] = Field(
