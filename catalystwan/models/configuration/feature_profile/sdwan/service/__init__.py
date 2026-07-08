@@ -56,7 +56,7 @@ AnyLanVpnInterfaceParcel = Annotated[
 AnyAssociatoryParcel = Annotated[
     Union[
         MulticastParcel,
-        # DHCP
+        LanVpnDhcpServerParcel,
     ],
     Field(discriminator="type_"),
 ]

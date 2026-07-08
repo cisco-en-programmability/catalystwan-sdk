@@ -15,7 +15,6 @@ from catalystwan.api.administration import (
 )
 from catalystwan.api.alarms_api import AlarmsAPI
 from catalystwan.api.basic_api import DevicesAPI, DeviceStateAPI
-from catalystwan.api.builders import BuilderAPI
 from catalystwan.api.config_device_inventory_api import ConfigurationDeviceInventoryAPI
 from catalystwan.api.config_group_api import ConfigGroupAPI
 from catalystwan.api.dashboard_api import DashboardAPI
@@ -70,4 +69,3 @@ class APIContainer:
         self.policy = PolicyAPI(session)
         self.sd_routing_feature_profiles = SDRoutingFeatureProfilesAPI(session)
         self.sdwan_feature_profiles = SDWANFeatureProfilesAPI(session)
-        self.builders = BuilderAPI(session)
