@@ -231,6 +231,9 @@ class NeighborItem(BaseModel):
         description="Set BGP address family",
         max_length=3,
     )
+    originate: Optional[Union[Variable, Global[bool], Default[Literal[False]]]] = Field(
+        default=None, description="BGP Default Information Originate"
+    )
 
 
 class Ipv6NeighborItem(BaseModel):
@@ -323,6 +326,9 @@ class Ipv6NeighborItem(BaseModel):
         description="Set IPv6 BGP address family",
         max_length=2,
     )
+    originate: Optional[Union[Variable, Global[bool], Default[Literal[False]]]] = Field(
+        default=None, description="BGP Default Information Originate"
+    )
 
 
 class AggregateAddres(BaseModel):
@@ -376,6 +382,13 @@ class RedistributeItem(BaseModel):
     metric: Optional[Union[Variable, Global[int], Default[None]]] = Field(default=None)
     ospf_match_route: Optional[Union[Global[List[OspfMatchRoute]], Variable, Default[None]]] = Field(
         default=None, validation_alias="ospfMatchRoute", serialization_alias="ospfMatchRoute"
+    )
+    dia_outside: Optional[Union[Variable, Global[bool], Default[Literal[False]]]] = Field(
+        default=None,
+        serialization_alias="diaOutside",
+        validation_alias="diaOutside",
+        description="When diaOutside is enabled, only DIA outside routes are redistributed into BGP."
+        " Available only in NAT protocol.",
     )
 
 
