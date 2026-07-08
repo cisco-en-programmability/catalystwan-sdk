@@ -7,7 +7,6 @@ from uuid import UUID, uuid4
 
 from packaging.version import Version  # type: ignore
 
-from catalystwan.api.builders.feature_profiles.uc_voice import UcVoiceFeatureProfileAPI
 from catalystwan.api.feature_profile_api import (
     ApplicationPriorityFeatureProfileAPI,
     CliFeatureProfileAPI,
@@ -73,7 +72,6 @@ class TestCaseBase(unittest.TestCase):
         SIGSecurityAPI,
         SystemFeatureProfileAPI,
         TransportFeatureProfileAPI,
-        UcVoiceFeatureProfileAPI,
     ]
 
     @classmethod
