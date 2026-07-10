@@ -251,7 +251,7 @@ class VrrpIPv4(BaseModel):
     tloc_pref_change: Union[Global[bool], Default[bool]] = Field(
         serialization_alias="tlocPrefChange", validation_alias="tlocPrefChange", default=Default[bool](value=False)
     )
-    tloc_pref_change_value: Optional[Union[Global[int], Default[None]]] = Field(
+    tloc_pref_change_value: Optional[Union[Global[int], Variable, Default[None]]] = Field(
         serialization_alias="tlocPrefChangeValue", validation_alias="tlocPrefChangeValue", default=None
     )
     tracking_object: Optional[List[VrrpTrackingObject]] = Field(
