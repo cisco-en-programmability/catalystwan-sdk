@@ -15,7 +15,7 @@ from pydantic import (
 from typing_extensions import Annotated
 
 from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase
-from catalystwan.models.common import EthernetDuplexMode, MediaType, VersionedField
+from catalystwan.models.common import EthernetDuplexMode, MediaType, Speed, VersionedField
 from catalystwan.models.configuration.feature_profile.common import (
     AddressType,
     Arp,
@@ -251,7 +251,7 @@ class VrrpIPv4(BaseModel):
     tloc_pref_change: Union[Global[bool], Default[bool]] = Field(
         serialization_alias="tlocPrefChange", validation_alias="tlocPrefChange", default=Default[bool](value=False)
     )
-    tloc_pref_change_value: Optional[Union[Global[int], Default[None]]] = Field(
+    tloc_pref_change_value: Optional[Union[Global[int], Variable, Default[None]]] = Field(
         serialization_alias="tlocPrefChangeValue", validation_alias="tlocPrefChangeValue", default=None
     )
     tracking_object: Optional[List[VrrpTrackingObject]] = Field(
@@ -318,7 +318,7 @@ class AdvancedEthernetAttributes(BaseModel):
     tcp_mss: Optional[Union[Global[int], Variable, Default[int]]] = Field(
         serialization_alias="tcpMss", validation_alias="tcpMss", default=None
     )
-    speed: Optional[Union[Global[str], Variable, Default[None]]] = None
+    speed: Optional[Union[Global[Speed], Variable, Default[None]]] = None
     arp_timeout: Union[Global[int], Variable, Default[int]] = Field(
         serialization_alias="arpTimeout", validation_alias="arpTimeout", default=Default[int](value=1200)
     )

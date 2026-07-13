@@ -5,7 +5,7 @@ from typing import List, Literal, Optional, Union
 from pydantic import AliasPath, BaseModel, ConfigDict, Field
 
 from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase
-from catalystwan.models.common import EthernetDuplexMode, MediaType, Speed
+from catalystwan.models.common import EthernetDuplexMode, MediaType
 from catalystwan.models.configuration.feature_profile.common import (
     AddressType,
     Arp,
@@ -13,6 +13,8 @@ from catalystwan.models.configuration.feature_profile.common import (
     InterfaceEitherIPv4Address,
     InterfaceStaticIPv4Address,
 )
+
+Speed = Literal["10", "100", "1000", "2500", "5000", "10000", "25000"]
 
 
 class DhcpClient(BaseModel):
