@@ -666,6 +666,14 @@ class SseAction(BaseModel):
     sse: Sse
 
 
+LoadBalanceType = Literal["src-dst-ip", "ppl", "ip-and-ports", "src-ip-only"]
+
+
+class LoadBalanceAction(BaseModel):
+    model_config = ConfigDict(populate_by_name=True, extra="forbid")
+    load_balance: Global[LoadBalanceType] = Field(validation_alias="loadBalance", serialization_alias="loadBalance")
+
+
 Action = Union[
     AppqoeOptimizationAction,
     BackupSlaPreferredColorAction,
@@ -683,6 +691,7 @@ Action = Union[
     SigAction,
     SlaClassAction,
     SseAction,
+    LoadBalanceAction,
 ]
 
 TA = TypeVar("TA", bound=Action)
@@ -1059,6 +1068,9 @@ class Sequence(BaseModel):
 
     def associate_sse_action(self) -> None:
         pass  # TODO
+
+    def associate_load_balance_action(self, load_balance: LoadBalanceType) -> None:
+        self._insert_action(LoadBalanceAction(load_balance=as_global(load_balance, LoadBalanceType)))
 
 
 class TrafficPolicyParcel(_ParcelBase):
