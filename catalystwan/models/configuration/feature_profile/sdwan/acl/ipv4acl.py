@@ -5,7 +5,7 @@ from uuid import UUID
 
 from pydantic import AliasPath, BaseModel, ConfigDict, Field, model_validator
 
-from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase, as_global, as_variable
+from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase, as_global
 from catalystwan.models.common import AcceptDropActionType, IcmpMsgType, check_fields_exclusive
 from catalystwan.models.configuration.feature_profile.common import RefIdItem
 
@@ -178,9 +178,10 @@ class Sequence(BaseModel):
         value = as_global(str(prefix))
         self._entry.destination_data_prefix = DestinationDataPrefix(destination_ip_prefix=value)
 
-    def match_destination_data_prefix_variable(self, prefix: str):
-        value = as_variable(prefix)
-        self._entry.destination_data_prefix = DestinationDataPrefix(destination_ip_prefix=value)
+    def match_destination_data_prefix_variable(self, prefix: str) -> Variable:
+        prefix_var = Variable(value=prefix)
+        self._entry.destination_data_prefix = DestinationDataPrefix(destination_ip_prefix=prefix_var)
+        return prefix_var
 
     def match_destination_data_prefix_list(self, prefix: UUID):
         self._entry.destination_data_prefix = DestinationDataPrefixList(
@@ -220,9 +221,10 @@ class Sequence(BaseModel):
         value = as_global(str(prefix))
         self._entry.source_data_prefix = SourceDataPrefix(source_ip_prefix=value)
 
-    def match_source_data_prefix_variable(self, prefix: str):
-        value = as_variable(prefix)
+    def match_source_data_prefix_variable(self, prefix: str) -> Variable:
+        value = Variable(value=prefix)
         self._entry.source_data_prefix = SourceDataPrefix(source_ip_prefix=value)
+        return value
 
     def match_source_data_prefix_list(self, prefix: UUID):
         self._entry.source_data_prefix = SourceDataPrefixList(source_data_prefix_list=RefIdItem.from_uuid(prefix))

@@ -5,7 +5,7 @@ from uuid import UUID
 
 from pydantic import AliasPath, BaseModel, ConfigDict, Field
 
-from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase, as_global, as_variable
+from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase, as_global
 from catalystwan.models.common import AcceptDropActionType, DeviceAccessProtocolPort
 from catalystwan.models.configuration.feature_profile.common import RefIdItem
 
@@ -86,10 +86,10 @@ class Sequence(BaseModel):
             destination_data_prefix_list=RefIdItem.from_uuid(list_id)
         )
 
-    def match_destination_data_prefix_variable(self, variable_name: str):
-        self.match_entries.destination_data_prefix = DestinationIPPrefix(
-            destination_ip_prefix_list=as_variable(value=variable_name)
-        )
+    def match_destination_data_prefix_variable(self, variable_name: str) -> Variable:
+        prefix_var = Variable(value=variable_name)
+        self.match_entries.destination_data_prefix = DestinationIPPrefix(destination_ip_prefix_list=prefix_var)
+        return prefix_var
 
     def match_destination_port(self, port: DeviceAccessProtocolPort):
         self.match_entries.destination_port = Global[DeviceAccessProtocolPort](value=port)
@@ -102,8 +102,10 @@ class Sequence(BaseModel):
     def match_source_data_prefix_list(self, list_id: UUID):
         self.match_entries.source_data_prefix = SourceDataPrefix(source_data_prefix_list=RefIdItem.from_uuid(list_id))
 
-    def match_source_data_prefix_variable(self, variable_name: str):
-        self.match_entries.source_data_prefix = SourceIPPrefix(source_ip_prefix_list=as_variable(value=variable_name))
+    def match_source_data_prefix_variable(self, variable_name: str) -> Variable:
+        prefix_var = Variable(value=variable_name)
+        self.match_entries.source_data_prefix = SourceIPPrefix(source_ip_prefix_list=prefix_var)
+        return prefix_var
 
     def match_source_ports(self, ports: List[int]):
         self.match_entries.source_ports = Global[List[int]](value=ports)
