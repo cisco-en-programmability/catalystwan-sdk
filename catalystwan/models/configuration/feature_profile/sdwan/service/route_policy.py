@@ -340,9 +340,11 @@ class RoutePolicySequence(BaseModel):
         set_community = SetCommunity(additive=as_global(additive), community=as_global(communities))
         self._accept_action.community = set_community
 
-    def associate_community_variable_action(self, additive: bool, community: str) -> None:
-        set_community = SetCommunity(additive=as_global(additive), community=as_variable(community))
+    def associate_community_variable_action(self, additive: bool, community: str) -> SetCommunity:
+        community_var = as_variable(community)
+        set_community = SetCommunity(additive=as_global(additive), community=community_var)
         self._accept_action.community = set_community
+        return set_community
 
     def associate_local_preference_action(self, preference: int) -> None:
         self._accept_action.local_preference = as_global(preference)

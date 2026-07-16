@@ -178,9 +178,10 @@ class Sequence(BaseModel):
         value = as_global(str(prefix))
         self._entry.destination_data_prefix = DestinationDataPrefix(destination_ip_prefix=value)
 
-    def match_destination_data_prefix_variable(self, prefix: str):
-        value = as_variable(prefix)
-        self._entry.destination_data_prefix = DestinationDataPrefix(destination_ip_prefix=value)
+    def match_destination_data_prefix_variable(self, prefix: str) -> Variable:
+        prefix_var = as_variable(prefix)
+        self._entry.destination_data_prefix = DestinationDataPrefix(destination_ip_prefix=prefix_var)
+        return prefix_var
 
     def match_destination_data_prefix_list(self, prefix: UUID):
         self._entry.destination_data_prefix = DestinationDataPrefixList(
@@ -220,9 +221,10 @@ class Sequence(BaseModel):
         value = as_global(str(prefix))
         self._entry.source_data_prefix = SourceDataPrefix(source_ip_prefix=value)
 
-    def match_source_data_prefix_variable(self, prefix: str):
-        value = as_variable(prefix)
-        self._entry.source_data_prefix = SourceDataPrefix(source_ip_prefix=value)
+    def match_source_data_prefix_variable(self, prefix: str) -> Variable:
+        prefix_var = as_variable(prefix)
+        self._entry.source_data_prefix = SourceDataPrefix(source_ip_prefix=prefix_var)
+        return prefix_var
 
     def match_source_data_prefix_list(self, prefix: UUID):
         self._entry.source_data_prefix = SourceDataPrefixList(source_data_prefix_list=RefIdItem.from_uuid(prefix))

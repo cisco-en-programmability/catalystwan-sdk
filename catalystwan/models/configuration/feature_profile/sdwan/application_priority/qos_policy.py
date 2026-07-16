@@ -95,8 +95,10 @@ class QosPolicyParcel(_ParcelBase):
             )
         )
 
-    def set_variable_target(self, variable: str) -> None:
-        self.target = QosPolicyTarget(interfaces=as_variable(value=variable))
+    def set_variable_target(self, variable: str) -> Variable:
+        target_if_var = as_variable(variable)
+        self.target = QosPolicyTarget(interfaces=target_if_var)
+        return target_if_var
 
     def set_list_target(self, interfaces: List[str]) -> None:
         self.target = QosPolicyTarget(interfaces=as_global(value=interfaces))
