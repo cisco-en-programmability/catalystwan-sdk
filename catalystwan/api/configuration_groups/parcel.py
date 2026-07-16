@@ -163,7 +163,7 @@ def as_global(value: Any, generic_alias: Any = None):
     )
 
 
-def as_variable(value: str):
+def as_variable(value: str) -> Variable:
     """Produces Variable object from variable name string
 
     Args:

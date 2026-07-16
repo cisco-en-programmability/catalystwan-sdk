@@ -7,7 +7,15 @@ from uuid import UUID
 
 from pydantic import AliasPath, BaseModel, ConfigDict, Field
 
-from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase, as_default, as_global
+from catalystwan.api.configuration_groups.parcel import (
+    Default,
+    Global,
+    Variable,
+    _ParcelBase,
+    as_default,
+    as_global,
+    as_variable,
+)
 from catalystwan.models.common import AcceptRejectActionType, AsPrepend
 from catalystwan.models.configuration.feature_profile.common import RefIdItem
 
@@ -333,7 +341,7 @@ class RoutePolicySequence(BaseModel):
         self._accept_action.community = set_community
 
     def associate_community_variable_action(self, additive: bool, community: str) -> SetCommunity:
-        community_var = Variable(value=community)
+        community_var = as_variable(community)
         set_community = SetCommunity(additive=as_global(additive), community=community_var)
         self._accept_action.community = set_community
         return set_community

@@ -5,7 +5,14 @@ from uuid import UUID
 from pydantic import AliasPath, BaseModel, ConfigDict, Field
 from typing_extensions import Self
 
-from catalystwan.api.configuration_groups.parcel import Global, Variable, _ParcelBase, as_global, as_optional_global
+from catalystwan.api.configuration_groups.parcel import (
+    Global,
+    Variable,
+    _ParcelBase,
+    as_global,
+    as_optional_global,
+    as_variable,
+)
 from catalystwan.models.configuration.feature_profile.common import RefIdItem
 
 
@@ -89,7 +96,7 @@ class QosPolicyParcel(_ParcelBase):
         )
 
     def set_variable_target(self, variable: str) -> Variable:
-        target_if_var = Variable(value=variable)
+        target_if_var = as_variable(variable)
         self.target = QosPolicyTarget(interfaces=target_if_var)
         return target_if_var
 
