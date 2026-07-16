@@ -47,6 +47,7 @@ class SwitchportInterface(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True, populate_by_name=True, extra="forbid")
 
     interface_name: Union[Global[str], Variable] = Field(serialization_alias="ifName", validation_alias="ifName")
+    description: Optional[Union[Global[str], Default[None], Variable]] = Field(default=None)
     control_direction: Optional[Union[Global[ControlDirection], Default[None], Variable]] = Field(
         default=None, validation_alias="controlDirection", serialization_alias="controlDirection"
     )
