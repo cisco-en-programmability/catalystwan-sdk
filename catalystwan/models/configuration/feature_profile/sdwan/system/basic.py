@@ -6,7 +6,7 @@ from typing import List, Literal, Optional, Union
 from pydantic import AliasPath, BaseModel, ConfigDict, Field
 
 from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase, as_default
-from catalystwan.models.common import Timezone
+from catalystwan.models.common import Timezone, TLOCColor
 
 ConsoleBaudRate = Literal["1200", "2400", "4800", "9600", "19200", "38400", "57600", "115200"]
 DefaultConsoleBaudRate = Literal["9600"]
@@ -14,6 +14,8 @@ Epfr = Literal["disabled", "aggressive", "moderate", "conservative"]
 DefaultEpfr = Literal["disabled"]
 SiteType = Literal["type-1", "type-2", "type-3", "cloud", "branch", "br", "spoke"]
 DefaultTimezone = Literal["UTC"]
+FlowSplitting = Literal["Packets", "Packet Gap"]
+CTG = Literal["All tunnels", "Latency Offset", "Adaptive cluster"]
 
 
 class Clock(BaseModel):
@@ -111,6 +113,62 @@ class AffinityPerVrfItem(BaseModel):
         serialization_alias="vrfRange",
         validation_alias="vrfRange",
         description="Range of VRFs",
+    )
+
+
+class PPL(BaseModel):
+    model_config = ConfigDict(
+        extra="forbid",
+        populate_by_name=True,
+    )
+    enable: Union[Variable, Global[bool], Default[bool]] = Field(
+        default=as_default(False),
+        description="Enable or disable PPL",
+    )
+    local_colors: Optional[Union[Global[List[TLOCColor]], Default[Literal["all"]], Variable]] = Field(
+        default=None,
+        validation_alias="localColors",
+        serialization_alias="localColors",
+    )
+    flow_splitting: Optional[Union[Variable, Global[FlowSplitting], Default[Literal["Packets"]]]] = Field(
+        default=None,
+        validation_alias="flowSplitting",
+        serialization_alias="flowSplitting",
+    )
+    flow_split_max_duration: Optional[Union[Variable, Global[int]]] = Field(
+        default=None,
+        validation_alias="flowSplitMaxDuration",
+        serialization_alias="flowSplitMaxDuration",
+    )
+    flow_split_max_pkts: Optional[Union[Variable, Global[int]]] = Field(
+        default=None,
+        validation_alias="flowSplitMaxPkts",
+        serialization_alias="flowSplitMaxPkts",
+    )
+    flow_split_max_size: Optional[Union[Variable, Global[int]]] = Field(
+        default=None,
+        validation_alias="flowSplitMaxSize",
+        serialization_alias="flowSplitMaxSize",
+    )
+    flow_split_packet_gap_adaptive: Optional[Union[Variable, Global[bool]]] = Field(
+        default=None,
+        validation_alias="flowSplitPacketGapAdaptive",
+        serialization_alias="flowSplitPacketGapAdaptive",
+    )
+    flow_split_packet_gap_duration: Optional[Union[Variable, Global[int]]] = Field(
+        default=None,
+        validation_alias="flowSplitPacketGapDuration",
+        serialization_alias="flowSplitPacketGapDuration",
+    )
+    ctg: Optional[Union[Global[CTG], Variable, Default[Literal["All tunnels"]]]] = Field(default=None)
+    ctg_latency_offset: Optional[Union[Variable, Global[int]]] = Field(
+        default=None,
+        validation_alias="ctgLatencyOffset",
+        serialization_alias="ctgLatencyOffset",
+    )
+    reordering: Union[Variable, Global[bool], Default[bool]] = Field(
+        default=as_default(False),
+        description="Enable Reordering",
     )
 
 
@@ -287,4 +345,9 @@ class BasicParcel(_ParcelBase):
         description="Affinity Group Range for VRFs",
         max_length=4,
         min_length=0,
+    )
+    ppl: Optional[PPL] = Field(
+        default=None,
+        validation_alias=AliasPath("data", "ppl"),
+        description="Per Packet Load Balancing",
     )
