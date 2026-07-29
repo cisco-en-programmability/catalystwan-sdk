@@ -178,10 +178,15 @@ class BfdSessionData(DataclassBase):
     destinationPublicIp: str = field(metadata={FIELD_NAME: "dst-ip"})
 
 
+def _remove_omp_peer_prefix(value: str, prefix: str) -> str:
+    """Normalize OMP peer enum values returned by different SD-WAN versions."""
+    return value[len(prefix) :] if value.startswith(prefix) else value
+
+
 @define
 class OmpPeerData(DataclassBase):
-    type: str
-    state: str
+    type: str = field(converter=lambda value: _remove_omp_peer_prefix(value, "device-"))
+    state: str = field(converter=lambda value: _remove_omp_peer_prefix(value, "peer-state-"))
     peerIp: str = field(metadata={FIELD_NAME: "peer"})
     siteId: str = field(metadata={FIELD_NAME: "site-id"})
     domainId: str = field(metadata={FIELD_NAME: "domain-id"})
