@@ -12,8 +12,8 @@ from catalystwan.api.configuration_groups.parcel import Default, Global, Variabl
 from catalystwan.models.common import CarrierType, TLOCColor, TunnelMode
 from catalystwan.models.configuration.feature_profile.common import (
     AclQos,
-    AddressWithMask,
     AllowService,
+    InterfaceStaticIPv4Address,
     MultiRegionFabric,
 )
 
@@ -290,25 +290,8 @@ class Dynamic(BaseModel):
     )
 
 
-class Static(BaseModel):
-    model_config = ConfigDict(
-        extra="forbid",
-        populate_by_name=True,
-    )
-    static_ip_v4: Optional[AddressWithMask] = Field(
-        default=None,
-        validation_alias="staticIpV4AddressPrimary",
-        serialization_alias="staticIpV4AddressPrimary",
-        description="Static IpV4Address Primary",
-    )
-
-
 class DynamicIntfIpAddress(BaseModel):
     dynamic: Dynamic = Field()
-
-
-class StaticIntfIpAddress(BaseModel):
-    static: Static = Field()
 
 
 class IPoEEthernet(Ethernet):
@@ -316,7 +299,7 @@ class IPoEEthernet(Ethernet):
         extra="forbid",
         populate_by_name=True,
     )
-    intf_ip_address: Union[DynamicIntfIpAddress, StaticIntfIpAddress] = Field(
+    intf_ip_address: Union[DynamicIntfIpAddress, InterfaceStaticIPv4Address] = Field(
         validation_alias="intfIpAddress", serialization_alias="intfIpAddress"
     )
 
