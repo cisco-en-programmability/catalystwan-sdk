@@ -72,6 +72,7 @@ class ProfileInfo(BaseModel):
     pdn_type: Optional[Union[Variable, Default[PdnType], Global[PdnType]]] = Field(
         default=None, validation_alias="pdnType", serialization_alias="pdnType"
     )
+    slot: Optional[Union[Variable, Global[int], Default[None]]] = Field(default=None)
 
 
 class ProfileConfig(BaseModel):
