@@ -39,7 +39,7 @@ from catalystwan.api.templates.models.security_vsmart_model import SecurityvSmar
 from catalystwan.api.templates.models.system_vsmart_model import SystemVsmart
 from catalystwan.dataclasses import Device, DeviceTemplateInfo, FeatureTemplateInfo, FeatureTemplatesTypes, TemplateInfo
 from catalystwan.endpoints.configuration_device_template import FeatureToCLIPayload
-from catalystwan.exceptions import AttachedError, TemplateNotFoundError
+from catalystwan.exceptions import AttachedError, InvalidOperationError, TemplateNotFoundError
 from catalystwan.response import ManagerResponse
 from catalystwan.typed_list import DataSequence
 from catalystwan.utils.device_model import DeviceModel
@@ -122,8 +122,15 @@ class TemplatesAPI:
         templates = self.session.get(url=endpoint, params=params)
         return templates.dataseq(DeviceTemplateInfo)
 
-    def attach(self, name: str, device: Device, timeout_seconds: int = 300, **kwargs):
-        template_type = self.get(DeviceTemplate).filter(name=name).single_or_default().config_type
+    def attach(self, name: str, device: Optional[Device], timeout_seconds: int = 300, **kwargs):
+        template_info = self.get(DeviceTemplate).filter(name=name).single_or_default()
+        if template_info is None:
+            raise TemplateNotFoundError(name)
+
+        if device is None:
+            raise InvalidOperationError(f"Device is required to attach template '{name}'.")
+
+        template_type = template_info.config_type
         if template_type == TemplateType.CLI:
             return self._attach_cli(name, device, timeout_seconds=timeout_seconds, **kwargs)
 
@@ -156,6 +163,7 @@ class TemplatesAPI:
             values = self.session.post(endpoint, json=body).json()["header"]["columns"]
             return [DeviceSpecificValue(**value) for value in values]
 
+        device_specific_vars = kwargs.get("device_specific_vars", {})
         vars = get_device_specific_variables(name)
         template_id = self.get(DeviceTemplate).filter(name=name).single_or_default().id
         payload = {
@@ -179,11 +187,11 @@ class TemplatesAPI:
         for var in vars:
             if var.property not in payload["deviceTemplateList"][0]["device"][0]:
                 pointer = payload["deviceTemplateList"][0]["device"][0]
-                if var.property not in kwargs["device_specific_vars"]:
+                if var.property not in device_specific_vars:
                     invalid = True
                     logger.error(f"{var.property} should be provided in attach method as device_specific_vars kwarg.")
                 else:
-                    pointer[var.property] = kwargs["device_specific_vars"][var.property]  # type: ignore
+                    pointer[var.property] = device_specific_vars[var.property]  # type: ignore
 
         if invalid:
             raise TypeError()
