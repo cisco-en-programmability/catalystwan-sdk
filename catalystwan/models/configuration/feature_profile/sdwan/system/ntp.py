@@ -43,13 +43,25 @@ class AuthenticationVariable(BaseModel):
     key_id: Union[Variable, Global[int]] = Field(
         ..., serialization_alias="keyId", validation_alias="keyId", description="MD5 authentication key ID"
     )
-    md5_value: Union[Variable, Global[str]] = Field(
-        ...,
+    md5_value: Optional[Union[Variable, Global[str]]] = Field(
+        default=None,
         serialization_alias="md5Value",
         validation_alias="md5Value",
         description="Enter cleartext or AES-encrypted MD5 authentication key"
         "[Note: Catalyst SD-WAN Manager will encrypt this field before saving."
         "Cleartext strings will not be returned back to the user in GET responses for sensitive fields.]",
+    )
+    hmac_sha2_256_value: Optional[Union[Variable, Global[str]]] = Field(
+        default=None,
+        serialization_alias="hmacSha2Value",
+        validation_alias="hmacSha2Value",
+        description="HMAC-SHA2-256 (digest length = 256 bits, key length = [1-32] bytes)",
+    )
+    cmac_aes_128_value: Optional[Union[Variable, Global[str]]] = Field(
+        default=None,
+        serialization_alias="cmacAes128Value",
+        validation_alias="cmacAes128Value",
+        description="CMAC-AES-128 (digest length = 128 bits, key length = [16 or 32] bytes)",
     )
 
 
@@ -62,7 +74,7 @@ class Authentication(BaseModel):
         default_factory=list,
         serialization_alias="authenticationKeys",
         validation_alias="authenticationKeys",
-        description="Set MD5 authentication key",
+        description="Set MD5, HMAC-SHA2-256, CMAC-AES-128 authentication key",
     )
     trusted_keys: Optional[Union[Variable, Global[List[int]], Default[None]]] = Field(
         None,
