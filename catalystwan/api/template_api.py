@@ -45,7 +45,12 @@ from catalystwan.api.templates.models.vpn_vsmart_interface_model import VpnVsmar
 from catalystwan.api.templates.models.vpn_vsmart_model import VpnVsmartModel
 from catalystwan.dataclasses import Device, FeatureTemplatesTypes
 from catalystwan.endpoints.configuration_device_template import FeatureToCLIPayload
-from catalystwan.exceptions import AttachedError, CatalystwanDeprecationWarning, TemplateNotFoundError
+from catalystwan.exceptions import (
+    AttachedError,
+    CatalystwanDeprecationWarning,
+    InvalidOperationError,
+    TemplateNotFoundError,
+)
 from catalystwan.models.common import DeviceModel
 from catalystwan.models.templates import DeviceTemplateInformation, FeatureTemplateInformation, TemplateInformation
 from catalystwan.response import ManagerResponse
@@ -82,16 +87,13 @@ class TemplatesAPI:
         self.session = session
 
     @overload
-    def get(self, template: Type[DeviceTemplate]) -> DataSequence[DeviceTemplateInformation]:
-        ...
+    def get(self, template: Type[DeviceTemplate]) -> DataSequence[DeviceTemplateInformation]: ...
 
     @overload
-    def get(self, template: Type[FeatureTemplate]) -> DataSequence[FeatureTemplateInformation]:
-        ...
+    def get(self, template: Type[FeatureTemplate]) -> DataSequence[FeatureTemplateInformation]: ...
 
     @overload
-    def get(self, template: Type[CLITemplate]) -> DataSequence[TemplateInformation]:
-        ...
+    def get(self, template: Type[CLITemplate]) -> DataSequence[TemplateInformation]: ...
 
     def get(self, template):
         if isinstance(template, FeatureTemplate):
@@ -122,10 +124,13 @@ class TemplatesAPI:
             params={"feature": feature.value}
         )
 
-    def attach(self, name: str, device: Device, timeout_seconds: int = 300, **kwargs):
+    def attach(self, name: str, device: Optional[Device], timeout_seconds: int = 300, **kwargs):
         template_info = self.get(DeviceTemplate).filter(name=name).single_or_default()
         if not template_info:
-            raise TemplateNotFoundError(f"Template with name [{name}] does not exists.")
+            raise TemplateNotFoundError(name)
+
+        if device is None:
+            raise InvalidOperationError(f"Device is required to attach template '{name}'.")
 
         if template_info.config_type == TemplateType.CLI.value:
             return self._attach_cli(name, device, timeout_seconds=timeout_seconds, **kwargs)
@@ -159,6 +164,7 @@ class TemplatesAPI:
             values = self.session.post(endpoint, json=body).json()["header"]["columns"]
             return [DeviceSpecificValue(**value) for value in values]
 
+        device_specific_vars = kwargs.get("device_specific_vars", {})
         vars = get_device_specific_variables(name)
         template_id = self.get(DeviceTemplate).filter(name=name).single_or_default().id
         payload = {
@@ -183,12 +189,12 @@ class TemplatesAPI:
         for var in vars:
             if var.property not in payload["deviceTemplateList"][0]["device"][0]:
                 pointer = payload["deviceTemplateList"][0]["device"][0]
-                if var.property not in kwargs["device_specific_vars"]:
+                if var.property not in device_specific_vars:
                     invalid = True
                     msg[var.property] = "should be provided in attach method as device_specific_vars kwarg."
                     logger.error(f"{var.property} should be provided in attach method as device_specific_vars kwarg.")
                 else:
-                    pointer[var.property] = kwargs["device_specific_vars"][var.property]  # type: ignore
+                    pointer[var.property] = device_specific_vars[var.property]  # type: ignore
 
         if invalid:
             raise TypeError(f"{msg}")

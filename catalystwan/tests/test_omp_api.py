@@ -25,6 +25,31 @@ class TestOmpAPI(unittest.TestCase):
         answer = OmpAPI(mock_session).get_omp_peers(self.device_id)
         # Assert
         self.assertEqual(answer, self.omp_peer_dataclass)
+        self.assertEqual(answer[0].type, "vsmart")
+        self.assertEqual(answer[0].state, "up")
+
+    @patch("catalystwan.session.Session")
+    def test_omp_peers_normalizes_prefixed_values(self, mock_session):
+        # Arrange
+        mock_session.get_data.return_value = [
+            {
+                **self.omp_peer[0],
+                "type": "device-vsmart",
+                "state": "peer-state-up",
+            },
+            {
+                **self.omp_peer[1],
+                "type": "device-vsmart",
+                "state": "peer-state-down",
+            },
+        ]
+        # Act
+        answer = OmpAPI(mock_session).get_omp_peers(self.device_id)
+        # Assert
+        self.assertEqual(answer[0].type, "vsmart")
+        self.assertEqual(answer[0].state, "up")
+        self.assertEqual(answer[1].type, "vsmart")
+        self.assertEqual(answer[1].state, "down")
 
     @patch("catalystwan.session.Session")
     def test_omp_peers_empty(self, mock_session):

@@ -14,6 +14,7 @@ from catalystwan.api.templates.models.cisco_aaa_model import CiscoAAAModel
 from catalystwan.api.templates.payloads.aaa.aaa_model import AAAModel, AuthenticationOrder
 from catalystwan.dataclasses import Device
 from catalystwan.endpoints.configuration_template_master import DeviceTemplateInformation
+from catalystwan.exceptions import InvalidOperationError, TemplateNotFoundError
 from catalystwan.typed_list import DataSequence
 from catalystwan.utils.personality import Personality
 from catalystwan.utils.reachability import Reachability
@@ -257,6 +258,30 @@ class TestTemplatesAPI(unittest.TestCase):
         assert not mock_create_device_template.called
         assert not mock_create_feature_template.called
         assert not mock_create_by_generator.called
+
+    @patch("catalystwan.session.ManagerSession")
+    def test_attach_missing_template_raises_template_not_found(self, mock_session):
+        mock_session.endpoints.configuration_template_master.get_device_template_list.return_value = DataSequence(
+            DeviceTemplateInformation, []
+        )
+
+        templates_api = TemplatesAPI(mock_session)
+
+        with self.assertRaises(TemplateNotFoundError):
+            templates_api.attach("missing_template", self.device_info)
+
+    @patch("catalystwan.session.ManagerSession")
+    def test_attach_missing_device_raises_invalid_operation(self, mock_session):
+        # Arrange
+        mock_session.get.return_value.dataseq.return_value = DataSequence(
+            DeviceTemplateInformation,
+            [DeviceTemplateInformation.model_validate(self.data_template[0])],
+        )
+        templates_api = TemplatesAPI(mock_session)
+
+        # Act / Assert
+        with self.assertRaises(InvalidOperationError):
+            templates_api.attach("template_1", None)
 
     # @patch.object(TemplatesAPI, "templates")
     # @patch("catalystwan.api.template_api.wait_for_completed")

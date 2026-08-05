@@ -5,7 +5,7 @@ from __future__ import annotations
 
 import logging
 from contextlib import contextmanager
-from typing import TYPE_CHECKING, Iterator, List, Union
+from typing import TYPE_CHECKING, Any, Iterator, List, Optional, Union
 
 from tenacity import retry, retry_if_result, stop_after_attempt, wait_fixed  # type: ignore
 
@@ -134,11 +134,104 @@ class DevicesAPI:
 
         return True if wait_for_state() else False
 
-    def get(self, rediscover: bool = False) -> DataSequence[Device]:
+    @staticmethod
+    def _first_present(*values: Any) -> Optional[str]:
+        for value in values:
+            if value is not None and value != "":
+                return str(value)
+        return None
+
+    @classmethod
+    def _device_from_inventory(cls, device_details) -> Device:
+        device_id = cls._first_present(
+            getattr(device_details, "device_id", None),
+            getattr(device_details, "device_ip", None),
+            getattr(device_details, "system_ip", None),
+            getattr(device_details, "management_system_ip", None),
+            getattr(device_details, "local_system_ip", None),
+        )
+        uuid = cls._first_present(getattr(device_details, "uuid", None), getattr(device_details, "chasis_number", None))
+        hostname = cls._first_present(
+            getattr(device_details, "host_name", None),
+            getattr(device_details, "ncs_device_name", None),
+            device_id,
+        )
+        local_system_ip = cls._first_present(
+            getattr(device_details, "local_system_ip", None),
+            getattr(device_details, "system_ip", None),
+            getattr(device_details, "device_ip", None),
+            device_id,
+        )
+
+        if device_id is None or uuid is None or hostname is None or local_system_ip is None:
+            raise ValueError(f"Incomplete device inventory entry: {device_details!r}")
+
+        return create_dataclass(
+            Device,
+            {
+                "uuid": uuid,
+                "personality": cls._first_present(getattr(device_details, "personality", None), Personality.EDGE.value),
+                "id": device_id,
+                "hostname": hostname,
+                "reachability": cls._first_present(
+                    getattr(device_details, "reachability", None), Reachability.UNKNOWN.value
+                ),
+                "local_system_ip": local_system_ip,
+                "status": cls._first_present(
+                    getattr(device_details, "device_state", None),
+                    getattr(device_details, "state", None),
+                    getattr(device_details, "validity", None),
+                ),
+                "model": cls._first_present(
+                    getattr(device_details, "device_model", None),
+                    getattr(device_details, "device_type", None),
+                ),
+                "site_id": cls._first_present(
+                    getattr(device_details, "site_id", None),
+                    getattr(device_details, "configured_site_id", None),
+                ),
+                "site_name": getattr(device_details, "site_name", None),
+            },
+        )
+
+    def _get_unmonitored_wan_edges(self, known_devices: DataSequence[Device]) -> DataSequence[Device]:
+        known_device_keys = {
+            value
+            for device in known_devices
+            for value in (device.uuid, device.id, device.hostname, device.local_system_ip)
+            if value
+        }
+        wan_edges = DataSequence(Device, [])
+
+        try:
+            device_details = self.session.endpoints.configuration_device_inventory.get_device_details("vedges")
+        except CatalystwanException as exc:
+            logger.debug("Skipping WAN edge inventory lookup: %s", exc)
+            return wan_edges
+
+        if not isinstance(device_details, DataSequence):
+            return wan_edges
+
+        for device_detail in device_details:
+            try:
+                device = self._device_from_inventory(device_detail)
+            except ValueError as exc:
+                logger.debug("Skipping WAN edge inventory entry: %s", exc)
+                continue
+
+            device_keys = {device.uuid, device.id, device.hostname, device.local_system_ip}
+            if device_keys.isdisjoint(known_device_keys):
+                wan_edges.append(device)
+                known_device_keys.update(device_keys)
+
+        return wan_edges
+
+    def get(self, rediscover: bool = False, include_inventory: bool = True) -> DataSequence[Device]:
         """Data sequence of all devices.
 
         Args:
             rediscover: Rediscover device request payload
+            include_inventory: Include WAN edge inventory entries that are not currently returned by device monitoring
 
         Returns:
             DataSequence[Device] of all devices
@@ -160,6 +253,9 @@ class DevicesAPI:
             params = {"deviceId": device_ids[i : i + self.max_params]}
             resp = self.session.get(url="/dataservice/device/system/info", params=params)
             devices_sys_info += resp.dataseq(Device)
+
+        if include_inventory:
+            devices_sys_info += self._get_unmonitored_wan_edges(devices_sys_info)
 
         return devices_sys_info
 
