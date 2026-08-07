@@ -16,7 +16,15 @@ TunnelDcPreference = Literal["primary-dc", "secondary-dc"]
 IkeGroup = Literal["2", "5", "14", "15", "16", "19", "20", "21"]
 IpsecReplayWindow = Literal[64, 128, 256, 512, 1024]
 IpsecCiphersuite = Literal[
-    "aes256-cbc-sha1", "aes256-cbc-sha384", "aes256-cbc-sha256", "aes256-cbc-sha512", "aes256-gcm"
+    "aes256-cbc-sha1",
+    "aes256-cbc-sha384",
+    "aes256-cbc-sha256",
+    "aes256-cbc-sha512",
+    "aes256-gcm",
+    "null-sha1",
+    "null-sha384",
+    "null-sha256",
+    "null-sha512",
 ]
 PerfectForwardSecrecy = Literal[
     "group-2", "group-5", "group-14", "group-15", "group-16", "group-19", "group-20", "group-21", "none"
@@ -41,7 +49,9 @@ class Interface(BaseModel):
         serialization_alias="ifName", validation_alias="ifName", description="Interface name: IPsec when present"
     )
     auto: Optional[Global[bool]] = Field(default=None, description="Auto Tunnel Mode")
-    shutdown: Union[Global[bool], Default[bool]] = Field(default=as_default(False), description="Administrative state")
+    shutdown: Union[Global[bool], Default[bool], Variable] = Field(
+        default=as_default(False), description="Administrative state"
+    )
     description: Optional[Union[Global[str], Variable, Default[None]]] = Field(
         default=None, description="Interface description"
     )
