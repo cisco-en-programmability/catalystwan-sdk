@@ -220,16 +220,35 @@ class Sequence(BaseModel):
 
     @property
     def _action(self) -> Actions:
+        # get or create dedicated action entry for action set
         if not self.actions:
             self.actions = [Actions()]
-        return self.actions[0]
+        for action in self.actions:
+            if action.export_to is None:
+                return action
+        action = Actions()
+        self.actions.insert(0, action)
+        return action
 
     @property
     def _action_set(self) -> ActionSet:
+        # get or create action set item
         action = self._action
         if action.set is None:
             action.set = [ActionSet()]
         return action.set[0]
+
+    @property
+    def _action_export_to(self) -> Actions:
+        # get or create dedicated action entry for exportTo
+        if self.actions is None:
+            self.actions = []
+        for action in self.actions:
+            if action.export_to is not None:
+                return action
+        action = Actions()
+        self.actions.append(action)
+        return action
 
     def match_carrier(self, carrier: CarrierType):
         entry = Entry(carrier=as_global(carrier, CarrierType))
@@ -325,6 +344,9 @@ class Sequence(BaseModel):
     def associate_community_action(self, community: str) -> None:
         self._action_set.community = as_global(community)
 
+    def associate_export_to_action(self, vpns: List[str]) -> None:
+        self._action_export_to.export_to = Global[List[str]](value=vpns)
+
     def associate_omp_tag_action(self, omp_tag: int) -> None:
         self._action_set.omp_tag = as_global(omp_tag)
 
@@ -332,14 +354,14 @@ class Sequence(BaseModel):
         self._action_set.preference = as_global(preference)
 
     @overload
-    def associate_service_action(self, service_type: ServiceType, vpn: Optional[int], *, tloc_list_id: UUID) -> None:
-        ...
+    def associate_service_action(
+        self, service_type: ServiceType, vpn: Optional[int], *, tloc_list_id: UUID
+    ) -> None: ...
 
     @overload
     def associate_service_action(
         self, service_type: ServiceType, vpn: Optional[int], *, ip: IPv4Address, color: TLOCColor, encap: EncapType
-    ) -> None:
-        ...
+    ) -> None: ...
 
     def associate_service_action(
         self, service_type=ServiceType, vpn=Optional[int], *, tloc_list_id=None, ip=None, color=None, encap=None
