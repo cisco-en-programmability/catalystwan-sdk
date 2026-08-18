@@ -17,6 +17,7 @@ EtherchannelFlowLoadBalance = Literal[
     "src-ip",
     "src-mac",
 ]
+InterfaceIntervalOptions = Literal["1", "5"]
 
 
 class ServicesIp(BaseModel):
@@ -109,7 +110,7 @@ class ServicesIp(BaseModel):
         serialization_alias="globalOtherSettingsVtyLineLogging",
         validation_alias="globalOtherSettingsVtyLineLogging",
     )
-    snmp_ifindex_persist: (Union[Variable, Global[bool], Default[bool]]) = Field(
+    snmp_ifindex_persist: Union[Variable, Global[bool], Default[bool]] = Field(
         default=Default[bool](value=True),
         serialization_alias="globalOtherSettingsSnmpIfindexPersist",
         validation_alias="globalOtherSettingsSnmpIfindexPersist",
@@ -141,6 +142,13 @@ class ServicesIp(BaseModel):
     )
     lacp_system_priority: Optional[Union[Variable, Global[int], Default[None]]] = Field(
         default=None, validation_alias="lacpSystemPriority", serialization_alias="lacpSystemPriority"
+    )
+    intf_per_min: Optional[Union[Variable, Global[InterfaceIntervalOptions], Default[InterfaceIntervalOptions]]] = (
+        Field(
+            default=None,
+            serialization_alias="globalOtherSettingsIntfPerMin",
+            validation_alias="globalOtherSettingsIntfPerMin",
+        )
     )
 
 
