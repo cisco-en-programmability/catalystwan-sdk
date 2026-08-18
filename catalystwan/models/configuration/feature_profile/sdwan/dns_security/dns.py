@@ -8,6 +8,8 @@ from typing_extensions import Self
 from catalystwan.api.configuration_groups.parcel import Global, _ParcelBase, as_global, as_optional_global
 from catalystwan.models.configuration.feature_profile.common import RefIdItem
 
+CloudProvider = Literal["umbrella", "cisco-secure-access"]
+
 
 class TargetVpns(BaseModel):
     model_config = ConfigDict(populate_by_name=True, extra="forbid")
@@ -69,6 +71,9 @@ class DnsParcel(_ParcelBase):
     umbrella_default: Optional[Global[bool]] = Field(
         default=None, validation_alias=AliasPath("data", "umbrellaDefault")
     )
+    cloud_provider: Optional[Global[CloudProvider]] = Field(
+        default=None, validation_alias=AliasPath("data", "cloudProvider")
+    )
 
     @model_validator(mode="after")
     def check_target_vpns(self):
@@ -91,6 +96,7 @@ class DnsParcel(_ParcelBase):
         local_domain_bypass_enabled: Optional[bool],
         local_domain_bypass_list: Optional[UUID],
         target_vpns: Optional[List[TargetVpns]] = None,
+        cloud_provider: Optional[CloudProvider] = None,
     ) -> Self:
         _child_org_id = as_global(str(child_org_id)) if child_org_id is not None else None
         _dns_server_ip = as_global(dns_server_ip) if dns_server_ip else None
@@ -107,4 +113,5 @@ class DnsParcel(_ParcelBase):
             child_org_id=_child_org_id,
             dns_server_ip=_dns_server_ip,
             target_vpns=target_vpns,
+            cloud_provider=as_optional_global(cloud_provider),
         )
