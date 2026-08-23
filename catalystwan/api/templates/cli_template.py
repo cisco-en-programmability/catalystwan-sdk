@@ -8,7 +8,7 @@ from difflib import Differ
 from typing import TYPE_CHECKING, List
 
 from attr import define  # type: ignore
-from ciscoconfparse import CiscoConfParse  # type: ignore
+from ciscoconfparse2 import CiscoConfParse  # type: ignore
 from requests.exceptions import HTTPError
 
 from catalystwan.dataclasses import Device
@@ -27,7 +27,7 @@ class CLITemplate:
     template_name: str
     template_description: str
     device_model: DeviceModel
-    config: CiscoConfParse = CiscoConfParse([], factory=True)
+    config: CiscoConfParse = CiscoConfParse([], factory=False)
 
     def load(self, session: ManagerSession, id: str) -> CiscoConfParse:
         """Load CLI config from template.
@@ -42,7 +42,7 @@ class CLITemplate:
         config = session.get_json(endpoint)
         if TemplateType(config["configType"]) == TemplateType.FEATURE:
             raise TemplateTypeError(config["templateName"])
-        self.config = CiscoConfParse(config["templateConfiguration"].splitlines())
+        self.config = CiscoConfParse(config["templateConfiguration"])
         return self.config
 
     def load_running(self, session: ManagerSession, device: Device) -> CiscoConfParse:
@@ -58,12 +58,12 @@ class CLITemplate:
         encoded_uuid = device.uuid.replace("/", "%2F")
         endpoint = f"/dataservice/template/config/running/{encoded_uuid}"
         config = session.get_json(endpoint)
-        self.config = CiscoConfParse(config["config"].splitlines())
+        self.config = CiscoConfParse(config["config"])
         logger.debug(f"Template loaded from {device.hostname}.")
         return self.config
 
     def generate_payload(self) -> dict:
-        config_str = "\n".join(self.config.ioscfg)
+        config_str = "\n".join([ii for ii in self.config.get_text() if ii.strip() != ""])
         payload = {
             "templateName": self.template_name,
             "templateDescription": self.template_description,
@@ -95,7 +95,7 @@ class CLITemplate:
 
         """
         self.config = config
-        config_str = "\n".join(self.config.ioscfg)
+        config_str = "\n".join([ii for ii in self.config.get_text() if ii.strip() != ""])
         payload = {
             "templateId": id,
             "templateName": self.template_name,
@@ -167,8 +167,8 @@ class CLITemplate:
         for line in ignored_lines:
             first.delete_lines(line)
             second.delete_lines(line)
-        first_n = list(map(lambda x: x.strip() + "\n", first.ioscfg))
-        second_n = list(map(lambda x: x.strip() + "\n", second.ioscfg))
+        first_n = list(map(lambda x: x.strip() + "\n", first.get_text()))
+        second_n = list(map(lambda x: x.strip() + "\n", second.get_text()))
         compare = list(Differ().compare(first_n, second_n))
         if not full:
             compare = [x for x in compare if x[0] in ["?", "-", "+"]]
