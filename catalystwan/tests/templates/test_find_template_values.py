@@ -241,3 +241,28 @@ def test_nested_variable_values():
     variable = result.get("tunnel-interface", {}).get("color", {}).get("value")
     assert isinstance(variable, DeviceVariable)
     assert variable.name == "test_value_variable"
+
+
+def test_ospfv3_multiple_route_policy_variables(template_definition_loader):
+    # Arrange
+    data = template_definition_loader("ospfv3-multiple-route-policy-variables.json")
+    from functools import reduce
+
+    def dict_get(dictionary, keys):
+        return reduce(lambda a, x: a[x], keys, dictionary)
+
+    # Act
+    values = find_template_values(data)
+
+    # Assert
+    var1 = dict_get(values, ("ospfv3", "address-family", "ipv4", "table-map", "name"))
+    assert isinstance(var1, DeviceVariable)
+    assert var1._template_path == ("ospfv3", "address-family", "ipv4", "table-map", "name")
+
+    var2 = dict_get(values, ("ospfv3", "address-family", "ipv4", "redistribute", 1, "route-policy"))
+    assert isinstance(var2, DeviceVariable)
+    assert var2._template_path == ("ospfv3", "address-family", "ipv4", "redistribute", "nat-route", "route-policy")
+
+    var3 = dict_get(values, ("ospfv3", "address-family", "ipv4", "redistribute", 2, "route-policy"))
+    assert isinstance(var3, DeviceVariable)
+    assert var3._template_path == ("ospfv3", "address-family", "ipv4", "redistribute", "eigrp", "route-policy")
