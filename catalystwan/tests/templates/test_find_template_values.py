@@ -1,7 +1,13 @@
 # Copyright 2024 Cisco Systems, Inc. and its affiliates
 
+from functools import reduce
+
 from catalystwan.api.templates.device_variable import DeviceVariable
 from catalystwan.utils.feature_template.find_template_values import find_template_values
+
+
+def dict_get(dictionary, keys):
+    return reduce(lambda a, x: a[x], keys, dictionary)
 
 
 def test_find_template_values():
@@ -238,7 +244,7 @@ def test_nested_variable_values():
     result = find_template_values(input_values)
 
     # Assert
-    variable = result.get("tunnel-interface", {}).get("color", {}).get("value")
+    variable = dict_get(result, ("tunnel-interface", "color", "value"))
     assert isinstance(variable, DeviceVariable)
     assert variable.name == "test_value_variable"
 
@@ -246,23 +252,47 @@ def test_nested_variable_values():
 def test_ospfv3_multiple_route_policy_variables(template_definition_loader):
     # Arrange
     data = template_definition_loader("ospfv3-multiple-route-policy-variables.json")
-    from functools import reduce
-
-    def dict_get(dictionary, keys):
-        return reduce(lambda a, x: a[x], keys, dictionary)
 
     # Act
     values = find_template_values(data)
 
     # Assert
-    var1 = dict_get(values, ("ospfv3", "address-family", "ipv4", "table-map", "name"))
-    assert isinstance(var1, DeviceVariable)
-    assert var1._template_path == ("ospfv3", "address-family", "ipv4", "table-map", "name")
+    var_policy = dict_get(values, ("ospfv3", "address-family", "ipv4", "table-map", "name"))
+    assert isinstance(var_policy, DeviceVariable)
+    assert var_policy._template_path == ("ospfv3", "address-family", "ipv4", "table-map", "name")
 
-    var2 = dict_get(values, ("ospfv3", "address-family", "ipv4", "redistribute", 1, "route-policy"))
-    assert isinstance(var2, DeviceVariable)
-    assert var2._template_path == ("ospfv3", "address-family", "ipv4", "redistribute", "nat-route", "route-policy")
+    var_redistribute_nat = dict_get(values, ("ospfv3", "address-family", "ipv4", "redistribute", 1, "route-policy"))
+    assert isinstance(var_redistribute_nat, DeviceVariable)
+    assert var_redistribute_nat._template_path == (
+        "ospfv3",
+        "address-family",
+        "ipv4",
+        "redistribute",
+        "nat-route",
+        "route-policy",
+    )
 
-    var3 = dict_get(values, ("ospfv3", "address-family", "ipv4", "redistribute", 2, "route-policy"))
-    assert isinstance(var3, DeviceVariable)
-    assert var3._template_path == ("ospfv3", "address-family", "ipv4", "redistribute", "eigrp", "route-policy")
+    var_redistribute_eigrp = dict_get(values, ("ospfv3", "address-family", "ipv4", "redistribute", 2, "route-policy"))
+    assert isinstance(var_redistribute_eigrp, DeviceVariable)
+    assert var_redistribute_eigrp._template_path == (
+        "ospfv3",
+        "address-family",
+        "ipv4",
+        "redistribute",
+        "eigrp",
+        "route-policy",
+    )
+
+
+def test_cisco_vpn(template_definition_loader):
+    # Arrange
+    data = template_definition_loader("cisco-vpn-definition.json")
+
+    # Act
+    values = find_template_values(data)
+
+    # Assert
+    var_natpool = dict_get(values, ("nat", "natpool", 1, "name"))
+    assert isinstance(var_natpool, DeviceVariable)
+    assert var_natpool._object_type == "variableName"
+    assert var_natpool._template_path == ("nat", "natpool", "vpn_nat_pool_name", "name")

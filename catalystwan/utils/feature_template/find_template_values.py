@@ -154,9 +154,17 @@ def get_list_item_template_path(
         if key not in primary_keys:
             continue
         field = item.get(key)
-        if not isinstance(field, dict) or field.get(target_key) != "constant":
+        if not isinstance(field, dict):
             continue
-        value = field.get(target_key_for_template_value)
+
+        field_type = field.get(target_key)
+        if field_type == "constant":
+            value = field.get(target_key_for_template_value)
+        elif field_type in ("variableName", "variable"):
+            value = field.get("vipVariableName")
+        else:
+            continue
+
         if value is not None and not isinstance(value, (dict, list)):
             item_path.append(str(value))
 
