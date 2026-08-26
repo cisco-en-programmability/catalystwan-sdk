@@ -256,11 +256,6 @@ def test_ospf_multiple_route_policy_variables(template_definition_loader):
     # Act
     values = find_template_values(data)
 
-    # Debug
-    import json
-
-    json.dump(values, open("__ospf.json", "w"), indent=4, default=str)
-
     # Assert
     var_policy = dict_get(values, ("ospf", "route-policy", 0, "pol-name"))
     assert isinstance(var_policy, DeviceVariable)
