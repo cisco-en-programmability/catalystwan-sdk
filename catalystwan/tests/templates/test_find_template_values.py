@@ -249,6 +249,28 @@ def test_nested_variable_values():
     assert variable.name == "test_value_variable"
 
 
+def test_ospf_multiple_route_policy_variables(template_definition_loader):
+    # Arrange
+    data = template_definition_loader("ospf-multiple-route-policy-variables.json")
+
+    # Act
+    values = find_template_values(data)
+
+    # Debug
+    import json
+
+    json.dump(values, open("__ospf.json", "w"), indent=4, default=str)
+
+    # Assert
+    var_policy = dict_get(values, ("ospf", "route-policy", 0, "pol-name"))
+    assert isinstance(var_policy, DeviceVariable)
+    assert var_policy._template_path == ("ospf", "route-policy", "in", "pol-name")
+
+    var_redistribute = dict_get(values, ("ospf", "redistribute", "route-policy"))
+    assert isinstance(var_redistribute, DeviceVariable)
+    assert var_redistribute._template_path == ("ospf", "redistribute", "static", "route-policy")
+
+
 def test_ospfv3_multiple_route_policy_variables(template_definition_loader):
     # Arrange
     data = template_definition_loader("ospfv3-multiple-route-policy-variables.json")

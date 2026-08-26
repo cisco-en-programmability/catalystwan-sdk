@@ -7,6 +7,20 @@ from catalystwan.api.templates.device_variable import DeviceVariable
 logger = logging.getLogger(__name__)
 
 
+class _TreeValueList(list):
+    """List of tree values with mapping-style access for a single item."""
+
+    def __getitem__(self, key):
+        if isinstance(key, str):
+            if len(self) != 1:
+                raise KeyError(key)
+            item = super().__getitem__(0)
+            if not isinstance(item, dict):
+                raise KeyError(key)
+            return item[key]
+        return super().__getitem__(key)
+
+
 def find_template_values(
     template_definition: dict,
     templated_values: Optional[dict] = None,
@@ -88,7 +102,7 @@ def find_template_values(
             )
         elif isinstance(template_value, list):
             current_nesting = get_nested_dict(templated_values, path[:-1])
-            current_nesting[field_key] = []
+            current_nesting[field_key] = _TreeValueList()
             for item in template_value:
                 item_path_prefix = _template_path_prefix + get_list_item_template_path(
                     template_definition,
