@@ -1,5 +1,5 @@
 # Copyright 2024 Cisco Systems, Inc. and its affiliates
-from typing import Literal, Optional
+from typing import List, Literal, Optional
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -86,3 +86,22 @@ class NodeInfo(BaseModel):
     id: str
     name: str
     uuid: Optional[UUID] = None
+
+
+class NodeCreationRequest(BaseModel):
+    name: str
+    description: Optional[str] = Field(default=None)
+    data: Node
+
+
+class NodeCreatedInfo(BaseModel):
+    name: str
+    uuid: UUID
+
+
+class NodeCreationResponse(BaseModel):
+    created: List[NodeCreatedInfo]
+
+    @property
+    def created_uuid(self) -> UUID:
+        return self.created[0].uuid

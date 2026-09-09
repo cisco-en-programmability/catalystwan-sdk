@@ -6,7 +6,7 @@ from uuid import UUID
 from catalystwan.endpoints import APIEndpoints, delete, get, post, put, versions
 from catalystwan.models.configuration.feature_profile.parcel import Parcel, ParcelCreationResponse
 from catalystwan.models.configuration.network_hierarchy.cflowd import CflowdParcel
-from catalystwan.models.configuration.network_hierarchy.node import NodeInfo
+from catalystwan.models.configuration.network_hierarchy.node import NodeCreationRequest, NodeCreationResponse, NodeInfo
 from catalystwan.models.configuration.network_hierarchy.security_logging import SecurityLoggingParcel
 from catalystwan.typed_list import DataSequence
 
@@ -15,6 +15,14 @@ class NetworkHierarchy(APIEndpoints):
     @get("/v1/network-hierarchy")
     @versions(">=20.10")
     def list_nodes(self) -> DataSequence[NodeInfo]: ...
+
+    @post("/v1/network-hierarchy")
+    @versions(">=20.10")
+    def create_node(self, payload: NodeCreationRequest) -> NodeCreationResponse: ...
+
+    @delete("/v1/network-hierarchy/{node_id}")
+    @versions(">=20.10")
+    def delete_node(self, node_id: UUID) -> None: ...
 
     @post("/v1/network-hierarchy/{node_id}/network-settings/cflowd")
     @versions(">20.12")
