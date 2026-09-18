@@ -59,6 +59,7 @@ class Server(BaseModel):
 
 
 class File(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
     disk_file_size: Optional[Union[Global[int], Default[int], Variable]] = Field(
         default=as_default(10), serialization_alias="diskFileSize", validation_alias="diskFileSize"
     )
@@ -68,7 +69,8 @@ class File(BaseModel):
 
 
 class Disk(BaseModel):
-    disk_enable: Optional[Global[bool]] = Field(
+    model_config = ConfigDict(populate_by_name=True)
+    disk_enable: Optional[Union[Global[bool], Variable]] = Field(
         default=None, serialization_alias="diskEnable", validation_alias="diskEnable"
     )
     file: File = Field(default_factory=File)
@@ -99,9 +101,9 @@ class LoggingParcel(_ParcelBase):
             TlsProfile(
                 profile=as_global(profile),
                 version=as_global(version, TlsVersion),
-                ciphersuite_list=Global[List[CypherSuite]](value=ciphersuite_list)
-                if ciphersuite_list
-                else Default[None](value=None),
+                ciphersuite_list=(
+                    Global[List[CypherSuite]](value=ciphersuite_list) if ciphersuite_list else Default[None](value=None)
+                ),
             )
         )
 
