@@ -100,11 +100,11 @@ class VersionedField:
         return model_dict
 
 
-def check_fields_exclusive(values: Dict, field_names: Set[str], at_least_one: bool = False) -> bool:
+def check_fields_exclusive(values: Mapping[str, Any], field_names: Set[str], at_least_one: bool = False) -> bool:
     """Helper method to check fields are mutually exclusive
 
     Args:
-        values (Dict): BaseModel field values
+        values (Mapping[str, Any]): BaseModel field values
         field_names (Set[str]): set of field names that we want to be mutually exclusive
         at_least_one (bool, optional): Additionaly check if at least one of fields is not None
 
@@ -122,13 +122,13 @@ def check_fields_exclusive(values: Dict, field_names: Set[str], at_least_one: bo
     return True if len(assigned) > 0 else False
 
 
-def check_any_of_exclusive_field_sets(values: Dict, field_sets: List[Tuple[Set[str], bool]]):
+def check_any_of_exclusive_field_sets(values: Mapping[str, Any], field_sets: List[Tuple[Set[str], bool]]):
     """This is very specific validator but common in policy definitions model.
     It checks that fields in each of the sets are mutually exclusive and also
     guarantees that at least one of the values is present from all sets.
 
     Args:
-        values (Dict): BaseModel field values
+        values (Mapping[str, Any]): BaseModel field values
         field_sets (Set[Tuple[Set[str]], bool]): Set of tuples each tuple should
         contain field names set and flag to check if at least one of fields is present within a set
 
@@ -143,6 +143,20 @@ def check_any_of_exclusive_field_sets(values: Dict, field_sets: List[Tuple[Set[s
     if not any_assigned:
         all_sets_field_names = [s[0] for s in field_sets]
         raise ValueError(f"One of {all_sets_field_names} must be assigned")
+
+
+def check_any_of_fields(values: Mapping[str, Any], field_names: Set[str]):
+    """Checks if at least one of fields is set
+    Args:
+            values (Mapping[str, Any]): BaseModel field values
+            field_names (Set[str]): set of field names that we want to be set
+
+        Raises:
+            ValueError: When none of fields are set
+    """
+    assigned = [k for k, v in values.items() if v is not None]
+    if not field_names & set(assigned):
+        raise ValueError(f"One of {field_names} must be assigned")
 
 
 def str_as_uuid_list(val: Union[str, Sequence[UUID]]) -> Sequence[UUID]:

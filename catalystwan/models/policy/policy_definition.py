@@ -897,7 +897,7 @@ class DestinationVpnEntry(BaseModel):
     value: str = Field(description="VPN ids numbers separated by space")
 
 
-class PrefferedColorGroupListEntry(BaseModel):
+class PreferredColorGroupListEntry(BaseModel):
     field: Literal["preferredColorGroup"] = "preferredColorGroup"
     ref: UUID
     color_restrict: bool = Field(False, serialization_alias="colorRestrict", validation_alias="colorRestrict")
@@ -1154,7 +1154,7 @@ class AdvancedInspectionProfileAction(BaseModel):
     parameter: ReferenceWithId
 
 
-class BackupSlaPrefferedColorAction(BaseModel):
+class BackupSlaPreferredColorAction(BaseModel):
     type: Literal["backupSlaPreferredColor"] = "backupSlaPreferredColor"
     parameter: SpaceSeparatedTLOCColorStr
 
@@ -1264,7 +1264,7 @@ ActionSetEntry = Annotated[
         OspfTagEntry,
         PolicerListEntry,
         PreferenceEntry,
-        PrefferedColorGroupListEntry,
+        PreferredColorGroupListEntry,
         PreferredRemoteColorEntry,
         ServiceChainEntry,
         ServiceEntry,
@@ -1288,7 +1288,7 @@ ActionEntry = Annotated[
     Union[
         ActionSet,
         AdvancedInspectionProfileAction,
-        BackupSlaPrefferedColorAction,
+        BackupSlaPreferredColorAction,
         CFlowDAction,
         ClassMapAction,
         CloudSaaSAction,

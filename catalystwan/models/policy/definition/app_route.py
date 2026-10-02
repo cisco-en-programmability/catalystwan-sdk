@@ -17,7 +17,7 @@ from catalystwan.models.common import (
 )
 from catalystwan.models.policy.policy_definition import (
     AppListEntry,
-    BackupSlaPrefferedColorAction,
+    BackupSlaPreferredColorAction,
     CloudSaaSAction,
     CountAction,
     DefinitionWithSequencesCommonBase,
@@ -82,7 +82,7 @@ AppRoutePolicySequenceEntry = Annotated[
 
 AppRoutePolicySequenceActionEntry = Annotated[
     Union[
-        BackupSlaPrefferedColorAction,
+        BackupSlaPreferredColorAction,
         CloudSaaSAction,
         CountAction,
         LogAction,
@@ -162,7 +162,7 @@ class AppRoutePolicySequence(PolicyDefinitionSequenceBase):
         self._insert_match(TrafficToEntry(value=traffic_to))
 
     def associate_backup_sla_preferred_color_action(self, tloc_colors: List[TLOCColor]) -> None:
-        self._insert_action(BackupSlaPrefferedColorAction(parameter=tloc_colors))
+        self._insert_action(BackupSlaPreferredColorAction(parameter=tloc_colors))
 
     def associate_cloud_saas_action(self) -> None:
         self._insert_action(CloudSaaSAction())
@@ -176,14 +176,12 @@ class AppRoutePolicySequence(PolicyDefinitionSequenceBase):
     @overload
     def associate_sla_class_action(
         self, sla_class: UUID, not_met_action: Optional[SlaNotMetAction] = None, *, preferred_color: List[TLOCColor]
-    ) -> None:
-        ...
+    ) -> None: ...
 
     @overload
     def associate_sla_class_action(
         self, sla_class: UUID, not_met_action: Optional[SlaNotMetAction] = None, *, preferred_color_group: UUID
-    ) -> None:
-        ...
+    ) -> None: ...
 
     def associate_sla_class_action(
         self,

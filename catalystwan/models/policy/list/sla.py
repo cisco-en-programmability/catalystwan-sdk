@@ -52,6 +52,22 @@ class SLAClassListEntry(BaseModel):
         default=None, serialization_alias="fallbackBestTunnel", validation_alias="fallbackBestTunnel"
     )
 
+    def configure_fallback_best_tunnel(
+        self,
+        criteria: Optional[SLAClassCriteria] = None,
+        jitter_variance: Optional[int] = None,
+        latency_variance: Optional[int] = None,
+        loss_variance: Optional[int] = None,
+    ) -> FallbackBestTunnel:
+        tunnel = FallbackBestTunnel(
+            criteria=criteria,
+            jitter_variance=jitter_variance,
+            latency_variance=latency_variance,
+            loss_variance=loss_variance,
+        )
+        self.fallback_best_tunnel = tunnel
+        return tunnel
+
 
 class SLAClassList(PolicyListBase):
     type: Literal["sla"] = "sla"
