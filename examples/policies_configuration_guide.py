@@ -22,7 +22,7 @@ python examples/policies_configuration_guide.py 127.0.0.1 433 admin p4s$w0rD
 import logging
 import sys
 from dataclasses import dataclass
-from ipaddress import IPv4Address, IPv4Network, IPv6Network
+from ipaddress import IPv4Address, IPv4Network, IPv6Interface
 from typing import List, Optional, Sequence
 from uuid import UUID
 
@@ -54,6 +54,7 @@ from catalystwan.models.policy import (
     VPNList,
     VPNMembershipPolicy,
 )
+from catalystwan.models.policy.centralized import CentralizedPolicyDefinition
 
 logger = logging.getLogger(__name__)
 
@@ -129,8 +130,8 @@ def configure_groups_of_interest(api: PolicyAPI) -> List[ConfigItem]:
     configured_items.append(ConfigItem(DataPrefixList, data_prefix_list.name, data_prefix_list_id))
 
     data_ipv6_prefix_list = DataIPv6PrefixList(name="MyDataIPv6Prefixes")
-    data_ipv6_prefix_list.add_prefix(IPv6Network("2001:db8::1000/124"))
-    data_ipv6_prefix_list.add_prefix(IPv6Network("2001:db9::1000/124"))
+    data_ipv6_prefix_list.add_prefix(IPv6Interface("2001:db8::1000/124"))
+    data_ipv6_prefix_list.add_prefix(IPv6Interface("2001:db9::1000/124"))
     data_ipv6_prefix_list_id = api.lists.create(data_ipv6_prefix_list)
     configured_items.append(ConfigItem(DataIPv6PrefixList, data_ipv6_prefix_list.name, data_ipv6_prefix_list_id))
 
@@ -192,9 +193,8 @@ def configure_groups_of_interest(api: PolicyAPI) -> List[ConfigItem]:
 
     # Configure SLA Class
     sla_class = SLAClassList(name="MySLAClass")
-    sla_class.assign_app_probe_class(app_probe_class_id, latency=10, loss=1, jitter=5)
-    sla_class.add_fallback_jitter_criteria(10)
-    sla_class.add_fallback_loss_criteria(5)
+    sla_entry = sla_class.assign_app_probe_class(app_probe_class_id, latency=10, loss=1, jitter=5)
+    sla_entry.configure_fallback_best_tunnel(jitter_variance=10, loss_variance=5)
     sla_class_id = api.lists.create(sla_class)
     configured_items.append(ConfigItem(SLAClassList, sla_class.name, sla_class_id))
 
@@ -234,7 +234,7 @@ def configure_groups_of_interest(api: PolicyAPI) -> List[ConfigItem]:
     export_vpn_id = api.lists.create(export_vpn)
     configured_items.append(ConfigItem(VPNList, export_vpn.name, export_vpn_id))
 
-    # Configure preffered colors
+    # Configure preferred colors
     preferred_color_group_list = PreferredColorGroupList(name="MyPreferredColorGroups")
     preferred_color_group_list.assign_color_groups(
         primary=({"green", "lte", "metro-ethernet"}, "all-paths"),
@@ -337,44 +337,43 @@ def create_traffic_data_policy(api: PolicyAPI, items: List[ConfigItem]) -> Confi
     policy = TrafficDataPolicy(name="MyTrafficDataPolicy")
 
     # add first sequence
-    seq_1 = policy.add_ipv4_sequence(base_action="accept")
+    seq_1 = policy.add_sequence(base_action="accept", sequence_ip_type="ipv4")
     seq_1.match_app_list(find_id(items, "Microsoft_Apps"))
     seq_1.match_destination_ip([IPv4Network("19.3.0.0/16")])
     seq_1.match_destination_port(port_ranges=[(1000, 5000)])
     seq_1.match_dns_app_list(find_id(items, "webex_apps"))
-    seq_1.match_dns_request()
-    seq_1.match_dscp(8)
-    seq_1.match_high_plp()
-    seq_1.match_other_destination_region()
+    seq_1.match_dns("request")
+    seq_1.match_dscp([8])
+    seq_1.match_plp("high")
+    seq_1.match_destination_region("other-region")
     seq_1.match_packet_length((1000, 16000))
-    seq_1.match_primary_destination_region()
     seq_1.match_source_ip([IPv4Network("10.3.0.0/16"), IPv4Network("10.4.0.0/16")])
     seq_1.match_source_port({22, 161, 300})
     seq_1.match_tcp()
-    seq_1.match_traffic_to_access()
+    seq_1.match_traffic_to("access")
     seq_1.associate_app_qoe_optimization_action(tcp=True, dre=True, service_node_group="SNG-APPQOE11")
     seq_1.associate_cflowd_action()
     seq_1.associate_count_action("MyTrafficDataCounter")
     seq_1.associate_dscp_action(3)
     seq_1.associate_forwarding_class_action("MyForwardingClass")
     seq_1.associate_local_service_chain_action(sc_type="SC10", vpn=20, restrict=True)
-    seq_1.associate_local_tloc_action(color="green", encap="ipsec", restrict=True)
+    seq_1.associate_local_tloc_action(color=["green"], encap="ipsec", restrict=True)
     seq_1.associate_loss_correction_fec_action(adaptive=True, threshold=3)
     seq_1.associate_nat_action(nat_pool=1)
 
     # add second sequence
-    seq_2 = policy.add_ipv4_sequence("Second Sequence", base_action="accept")
-    seq_2.match_dns_response()
-    seq_2.match_low_plp()
-    seq_2.match_secondary_destination_region()
+    seq_2 = policy.add_sequence("Second Sequence", base_action="accept", sequence_ip_type="ipv4")
+    seq_2.match_dns("response")
+    seq_2.match_plp("low")
+    seq_2.match_destination_region("secondary-region")
     seq_2.match_source_data_prefix_list(find_id(items, "MyDataPrefixes"))
-    seq_2.match_traffic_to_core()
+    seq_2.match_traffic_to("core")
     seq_2.match_destination_data_prefix_list(find_id(items, "MyDataPrefixes"))
     seq_2.associate_loss_correction_packet_duplication_action()
     seq_2.associate_log_action()
     seq_2.associate_next_hop_action(next_hop=IPv4Address("12.0.1.12"), loose=True)
     seq_2.associate_policer_list_action(find_id(items, "MyPolicer"))
-    seq_2.associate_preffered_color_group(find_id(items, "MyPreferredColorGroups"))
+    seq_2.associate_preferred_color_group(find_id(items, "MyPreferredColorGroups"))
     seq_2.associate_redirect_dns_action(dns_type="host")
     seq_2.associate_secure_internet_gateway_action(fallback_to_routing=True)
     seq_2.associate_tloc_action(tloc_list_id=find_id(items, "MyTLOCList"))
@@ -398,7 +397,9 @@ def run_demo(args: CmdArguments):
         api = session.api.policy
         configured_items: List[ConfigItem] = []
         try:
-            centralized_policy = CentralizedPolicy(policy_name="MyCentralizedPolicy")
+            centralized_policy = CentralizedPolicy(
+                policy_name="MyCentralizedPolicy", policy_definition=CentralizedPolicyDefinition()
+            )
 
             """1. Configure Groups of Interest for Centralized Policy"""
             configured_items.extend(configure_groups_of_interest(api))

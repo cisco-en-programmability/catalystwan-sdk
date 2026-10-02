@@ -60,9 +60,9 @@ from catalystwan.models.policy.policy_definition import (
     PolicyDefinitionGetResponse,
     PolicyDefinitionId,
     PolicyDefinitionSequenceBase,
+    PreferredColorGroupListEntry,
     PreferredRemoteColorEntry,
     PreferredRemoteColorValue,
-    PrefferedColorGroupListEntry,
     ProtocolEntry,
     RedirectDNSAction,
     SecureInternetGatewayAction,
@@ -234,8 +234,8 @@ class TrafficDataPolicySequence(PolicyDefinitionSequenceBase):
         self._insert_action_in_set(tloc_entry)
 
     @accept_action
-    def associate_preffered_color_group(self, color_group_list_id: UUID, restrict: bool = False) -> None:
-        self._insert_action_in_set(PrefferedColorGroupListEntry(ref=color_group_list_id, color_restrict=restrict))
+    def associate_preferred_color_group(self, color_group_list_id: UUID, restrict: bool = False) -> None:
+        self._insert_action_in_set(PreferredColorGroupListEntry(ref=color_group_list_id, color_restrict=restrict))
 
     @accept_action
     def associate_preferred_remote_color(self, color_group_list_id: TLOCColor, restrict: bool = False) -> None:

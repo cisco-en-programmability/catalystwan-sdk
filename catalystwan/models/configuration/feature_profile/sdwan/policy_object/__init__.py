@@ -17,7 +17,7 @@ from .policy.ipv6_data_prefix import IPv6DataPrefixEntry, IPv6DataPrefixParcel
 from .policy.ipv6_prefix_list import IPv6PrefixListEntry, IPv6PrefixListParcel
 from .policy.mirror import MirrorParcel
 from .policy.policer import PolicerEntry, PolicerParcel
-from .policy.prefered_group_color import Preference, PreferredColorGroupEntry, PreferredColorGroupParcel
+from .policy.preferred_color_group import Preference, PreferredColorGroupEntry, PreferredColorGroupParcel
 from .policy.prefix_list import PrefixListEntry, PrefixListParcel
 from .policy.service_object_group import ServiceObjectGroupParcel
 from .policy.sla_class import FallbackBestTunnel, SLAClassCriteria, SLAClassListEntry, SLAClassParcel
