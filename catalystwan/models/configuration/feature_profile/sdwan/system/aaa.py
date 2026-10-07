@@ -12,7 +12,7 @@ DEFAULT_USER_PRIVILEGE = "15"
 
 class PubkeyChainItem(BaseModel):
     model_config = ConfigDict(extra="forbid", populate_by_name=True)
-    key_string: Global[str] = Field(
+    key_string: Union[Global[str], Variable] = Field(
         validation_alias="keyString",
         serialization_alias="keyString",
         description="Set the RSA key string",
@@ -80,7 +80,7 @@ class RadiusServerItem(BaseModel):
         default=as_default(5),
         description="Configure how long to wait for replies from the Radius server",
     )
-    key: Global[str] = Field(
+    key: Union[Global[str], Variable] = Field(
         description=(
             "Set the Radius server shared key [Note: Catalyst SD-WAN Manager will encrypt "
             "this field before saving. Cleartext strings will not be returned back "
@@ -163,7 +163,7 @@ class TacacsServerItem(BaseModel):
         default=None,
         description="Configure how long to wait for replies from the TACACS server",
     )
-    key: Global[str] = Field(
+    key: Union[Global[str], Variable] = Field(
         description=(
             "Set the TACACS server shared key [Note: Catalyst SD-WAN Manager will encrypt"
             "this field before saving. Cleartext strings will not be returned back"
