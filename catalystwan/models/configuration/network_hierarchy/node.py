@@ -100,8 +100,20 @@ class NodeCreatedInfo(BaseModel):
 
 
 class NodeCreationResponse(BaseModel):
-    created: List[NodeCreatedInfo]
+    model_config = ConfigDict(populate_by_name=True)
+    uuid: Optional[UUID] = Field(
+        default=None,
+        validation_alias="Network Hierarchy UUID",
+        serialization_alias="Network Hierarchy UUID",
+        deprecated=True,
+        description="Used in legacy SDWAN Manager versions <=20.12",
+    )
+    created: List[NodeCreatedInfo] = Field(default_factory=list)
 
     @property
     def created_uuid(self) -> UUID:
-        return self.created[0].uuid
+        if self.created:
+            return self.created[0].uuid
+        if self.uuid is not None:
+            return self.uuid
+        raise ValueError("Created Network Hierarchy UUID not found")
