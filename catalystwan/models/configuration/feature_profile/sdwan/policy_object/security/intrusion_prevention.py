@@ -1,6 +1,6 @@
 # Copyright 2024 Cisco Systems, Inc. and its affiliates
 
-from typing import Literal, Optional
+from typing import Literal, Optional, Union
 from uuid import UUID
 
 from pydantic import AliasPath, ConfigDict, Field
@@ -19,7 +19,7 @@ SignatureSet = Literal[IntrusionPreventionSignatureSet, "no-rules-active"]
 class IntrusionPreventionParcel(_ParcelBase):
     model_config = ConfigDict(populate_by_name=True)
     type_: Literal["unified/intrusion-prevention"] = Field(default="unified/intrusion-prevention", exclude=True)
-    signature_set: Global[SignatureSet] = Field(
+    signature_set: Union[Global[SignatureSet], RefIdItem] = Field(
         default=Global[SignatureSet](value="balanced"), validation_alias=AliasPath("data", "signatureSet")
     )
     inspection_mode: Global[IntrusionPreventionInspectionMode] = Field(
