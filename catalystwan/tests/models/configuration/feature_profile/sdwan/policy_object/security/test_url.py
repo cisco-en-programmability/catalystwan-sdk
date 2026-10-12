@@ -71,3 +71,22 @@ def test_url_parcel_round_trip_legacy_type_field():
     assert round_trip_parcel.subtype is None
     assert round_trip_parcel.legacy_subtype == "urlblocked"
     assert validated_parcel == round_trip_parcel
+
+
+def test_urlblocked_validation():
+    # Arrange
+    payload = {
+        "name": "URL-Block-26.1",
+        "description": "test message format",
+        "data": {
+            "entries": [
+                {"pattern": {"optionType": "global", "value": "facebook.com"}},
+                {"pattern": {"optionType": "global", "value": "instagram.com"}},
+            ],
+            "type": "urlblocked",
+        },
+    }
+    # Act
+    parcel = URLParcel.model_validate_json(json.dumps(payload))
+    roundtrip = URLParcel.model_validate_json(parcel.model_dump_json(by_alias=True, exclude_none=True))
+    assert parcel == roundtrip
