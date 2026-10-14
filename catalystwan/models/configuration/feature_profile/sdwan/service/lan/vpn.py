@@ -31,10 +31,10 @@ ProtocolIPv4 = Literal[
 ProtocolIPv6 = Literal[
     "BGP",
     "OSPF",
-    "connected",
-    "static",
-    "network",
-    "aggregate",
+    "Connected",
+    "Static",
+    "Network",
+    "Aggregate",
 ]
 
 Region = Literal[
