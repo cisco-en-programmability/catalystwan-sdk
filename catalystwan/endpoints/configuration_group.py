@@ -38,10 +38,12 @@ class FeatureProfile(BaseModel):
 
 
 class ConfigGroup(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+    id: Optional[str] = None
     name: str
-    description: Optional[str]
+    description: Optional[str] = None
     solution: Solution
-    profiles: Optional[List[FeatureProfile]]
+    profiles: Optional[List[FeatureProfile]] = None
 
 
 class ConfigGroupResponsePayload(BaseModel):
