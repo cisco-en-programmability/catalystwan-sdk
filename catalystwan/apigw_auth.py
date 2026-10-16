@@ -4,7 +4,7 @@ from threading import RLock
 from typing import Literal, Optional, Union
 from urllib.parse import urlparse
 
-from pydantic import BaseModel, Field, PositiveInt
+from pydantic import BaseModel, Field, PositiveInt, model_validator
 from requests import HTTPError, PreparedRequest, post
 from requests.auth import AuthBase
 from requests.exceptions import JSONDecodeError
@@ -17,14 +17,21 @@ LoginMode = Literal["machine", "user", "session"]
 
 
 class ApiGwLogin(BaseModel):
-    client_id: str
-    client_secret: str
+    client_id: Optional[str] = None
+    client_secret: Optional[str] = None
     org_name: str
+    token: Optional[str] = None
     mode: Optional[LoginMode] = None
     username: Optional[str] = None
     session: Optional[str] = None
     tenant_user: Optional[bool] = None
     token_duration: PositiveInt = Field(default=60 * 30, description="in seconds")
+
+    @model_validator(mode="after")
+    def validate_credentials_or_token(self) -> "ApiGwLogin":
+        if not self.token and (not self.client_id or not self.client_secret):
+            raise ValueError("Either 'token' or both 'client_id' and 'client_secret' must be provided.")
+        return self
 
 
 class ApiGwAuth(AuthBase, AuthProtocol):
@@ -36,8 +43,8 @@ class ApiGwAuth(AuthBase, AuthProtocol):
 
     def __init__(self, login: ApiGwLogin, logger: Optional[logging.Logger] = None, verify: Union[bool, str] = False):
         self.login = login
-        self.token = ""
-        self.org_registered: bool = False
+        self.token = login.token or ""
+        self.org_registered: bool = bool(login.token)
         self.logger = logger or logging.getLogger(__name__)
         self.verify = verify
         self.session_count: int = 0
@@ -45,7 +52,8 @@ class ApiGwAuth(AuthBase, AuthProtocol):
         self.lock: RLock = RLock()
 
     def __str__(self) -> str:
-        return f"ApiGatewayAuth(mode={self.login.mode})"
+        mode_str = f"mode={self.login.mode}" if self.login.mode else "token"
+        return f"ApiGatewayAuth({mode_str})"
 
     def __call__(self, request: PreparedRequest) -> PreparedRequest:
         with self.lock:
@@ -60,10 +68,18 @@ class ApiGwAuth(AuthBase, AuthProtocol):
             self.authenticate(request)
 
     def authenticate(self, request: PreparedRequest):
+        if not self.login.client_id or not self.login.client_secret:
+            raise CatalystwanException(
+                "ApiGateway token has expired and cannot be refreshed without client_id and client_secret."
+            )
         base_url = self.get_base_url(request)
         self.token = self.get_token(base_url, self.login, self.logger, self.verify, self.request_timeout)
 
     def register(self, request: PreparedRequest):
+        if not self.login.client_id or not self.login.client_secret:
+            raise CatalystwanException(
+                "ApiGateway organization cannot be registered without client_id and client_secret."
+            )
         base_url = self.get_base_url(request)
         self.register_org(base_url, self.login, self.logger, self.verify, self.request_timeout)
         self.org_registered = True
