@@ -103,9 +103,7 @@ class TestDashboardDevicesHealth(unittest.TestCase):
 
         res = self.dashboard_api.get_devices_health(limit=20, offset=10)
 
-        self.mock_session.get.assert_called_once_with(
-            "/dataservice/health/devices", params={"limit": 20, "offset": 10}
-        )
+        self.mock_session.get.assert_called_once_with("/dataservice/health/devices", params={"limit": 20, "offset": 10})
         self.assertEqual(res.total_devices, 100)
         self.assertEqual(len(res.devices), 20)
 
@@ -117,9 +115,7 @@ class TestDashboardDevicesHealth(unittest.TestCase):
 
         res = self.dashboard_api.get_devices_health(site_id="200")
 
-        self.mock_session.get.assert_called_once_with(
-            "/dataservice/health/devices", params={"site-id": "200"}
-        )
+        self.mock_session.get.assert_called_once_with("/dataservice/health/devices", params={"site-id": "200"})
         self.assertEqual(len(res.devices), 5)
 
     def test_get_devices_health_loop_protection_on_duplicate_data(self):
@@ -140,3 +136,74 @@ class TestDashboardDevicesHealth(unittest.TestCase):
         # Should terminate cleanly after seeing duplicate data instead of infinite looping
         self.assertEqual(self.mock_session.get.call_count, 2)
         self.assertEqual(len(res.devices), 50)
+
+    def test_get_devices_health_auto_pagination_with_site_id(self):
+        """Ensures site_id parameter is passed during subsequent pagination calls."""
+        page1_devices = [_make_device_raw(i) for i in range(50)]
+        page2_devices = [_make_device_raw(i) for i in range(50, 75)]
+
+        resp_page1 = MagicMock()
+        resp_page1.json.return_value = {"total_devices": 75, "devices": page1_devices}
+
+        resp_page2 = MagicMock()
+        resp_page2.json.return_value = {"total_devices": 75, "devices": page2_devices}
+
+        self.mock_session.get.side_effect = [resp_page1, resp_page2]
+
+        res = self.dashboard_api.get_devices_health(site_id="300")
+
+        self.assertEqual(self.mock_session.get.call_count, 2)
+        first_call_args, first_call_kwargs = self.mock_session.get.call_args_list[0]
+        self.assertEqual(first_call_kwargs["params"], {"site-id": "300"})
+
+        second_call_args, second_call_kwargs = self.mock_session.get.call_args_list[1]
+        self.assertEqual(second_call_kwargs["params"], {"offset": 50, "limit": 50, "site-id": "300"})
+
+        self.assertEqual(res.total_devices, 75)
+        self.assertEqual(len(res.devices), 75)
+
+    def test_get_devices_health_auto_paginate_disabled(self):
+        """Ensures pagination does not happen if auto_paginate is False."""
+        page1_devices = [_make_device_raw(i) for i in range(50)]
+        resp_page1 = MagicMock()
+        resp_page1.json.return_value = {"total_devices": 100, "devices": page1_devices}
+        self.mock_session.get.return_value = resp_page1
+
+        res = self.dashboard_api.get_devices_health(auto_paginate=False)
+
+        self.mock_session.get.assert_called_once_with("/dataservice/health/devices", params=None)
+        self.assertEqual(len(res.devices), 50)
+        self.assertEqual(res.total_devices, 100)
+
+    def test_get_devices_health_empty_response(self):
+        """Ensures empty response is handled gracefully."""
+        mock_resp = MagicMock()
+        mock_resp.json.return_value = {"total_devices": 0, "devices": []}
+        self.mock_session.get.return_value = mock_resp
+
+        res = self.dashboard_api.get_devices_health()
+
+        self.mock_session.get.assert_called_once_with("/dataservice/health/devices", params=None)
+        self.assertEqual(res.total_devices, 0)
+        self.assertEqual(len(res.devices), 0)
+
+    def test_get_devices_health_deduplicates_partial_overlapping_pages(self):
+        """Ensures that overlapping devices across pages are deduplicated."""
+        page1_devices = [_make_device_raw(0), _make_device_raw(1)]
+        # Page 2 has device 1 (duplicate) and device 2 (new)
+        page2_devices = [_make_device_raw(1), _make_device_raw(2)]
+
+        resp_page1 = MagicMock()
+        resp_page1.json.return_value = {"total_devices": 3, "devices": page1_devices}
+
+        resp_page2 = MagicMock()
+        resp_page2.json.return_value = {"total_devices": 3, "devices": page2_devices}
+
+        self.mock_session.get.side_effect = [resp_page1, resp_page2]
+
+        res = self.dashboard_api.get_devices_health()
+
+        self.assertEqual(self.mock_session.get.call_count, 2)
+        self.assertEqual(len(res.devices), 3)
+        device_uuids = [d.uuid for d in res.devices]
+        self.assertEqual(device_uuids, ["uuid-0", "uuid-1", "uuid-2"])
