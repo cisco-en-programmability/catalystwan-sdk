@@ -47,6 +47,16 @@ class HardwareRootCA(BaseModel):
     )
 
 
+class EnterpriseRootCA(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+    enterprise_root_ca: str = Field(
+        serialization_alias="enterpriseRootCA", validation_alias="enterpriseRootCA"
+    )
+    intermediate_ca: Optional[str] = Field(
+        default=None, serialization_alias="intermediateCA", validation_alias="intermediateCA"
+    )
+
+
 class Certificate(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
     certificate_signing: str = Field(serialization_alias="certificateSigning", validation_alias="certificateSigning")
@@ -438,6 +448,11 @@ class ConfigurationSettings(APIEndpoints):
         ...
 
     @view({SingleTenantView, ProviderView})
+    @get("/settings/configuration/certificate/enterpriserootca", "data")
+    def get_enterprise_root_ca(self) -> DataSequence[EnterpriseRootCA]:
+        ...
+
+    @view({SingleTenantView, ProviderView})
     @get("/settings/configuration/certificate", "data")
     def get_certificates(self) -> DataSequence[Certificate]:
         ...
@@ -604,6 +619,11 @@ class ConfigurationSettings(APIEndpoints):
     @view({SingleTenantView, ProviderView})
     @put("/settings/configuration/hardwarerootca", "data")
     def edit_hardware_root_cas(self, payload: HardwareRootCA) -> DataSequence[HardwareRootCA]:
+        ...
+
+    @view({SingleTenantView, ProviderView})
+    @post("/settings/configuration/certificate/enterpriserootca", "data")
+    def upload_enterprise_root_ca(self, payload: EnterpriseRootCA) -> DataSequence[EnterpriseRootCA]:
         ...
 
     @view({SingleTenantView, ProviderView})
