@@ -6,11 +6,17 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from catalystwan.typed_list import DataSequence
 from catalystwan.utils.creation_tools import create_dataclass
-from catalystwan.utils.dashboard import (CertificatesStatus, Count,
-                                         DeviceHealth, DeviceHealthOverview,
-                                         DevicesHealth, LicensedDevices,
-                                         TenantStatus, TransportHealth,
-                                         TunnelHealth)
+from catalystwan.utils.dashboard import (
+    CertificatesStatus,
+    Count,
+    DeviceHealth,
+    DeviceHealthOverview,
+    DevicesHealth,
+    LicensedDevices,
+    TenantStatus,
+    TransportHealth,
+    TunnelHealth,
+)
 
 if TYPE_CHECKING:
     from catalystwan.session import ManagerSession
