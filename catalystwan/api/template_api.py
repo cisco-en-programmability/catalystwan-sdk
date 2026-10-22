@@ -7,7 +7,7 @@ import logging
 from enum import Enum
 from typing import TYPE_CHECKING, Any, Optional, Type, overload
 
-from ciscoconfparse import CiscoConfParse  # type: ignore
+from ciscoconfparse2 import CiscoConfParse  # type: ignore
 
 from catalystwan.api.task_status_api import Task
 from catalystwan.api.templates.cli_template import CLITemplate
