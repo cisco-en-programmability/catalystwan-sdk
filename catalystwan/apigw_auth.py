@@ -44,6 +44,10 @@ class ApiGwRegister(BaseModel):
 
 
 def _login_to_register(login: ApiGwLogin) -> ApiGwRegister:
+    if not login.client_id or not login.client_secret:
+        raise CatalystwanException(
+            "ApiGateway organization cannot be registered without client_id and client_secret."
+        )
     return ApiGwRegister(
         client_id=login.client_id,
         client_secret=login.client_secret,
@@ -158,8 +162,8 @@ class ApiGwAuth(AuthBase, AuthProtocol):
         verify: Union[bool, str] = False,
         timeout: int = 10,
     ) -> None:
+        payload = _login_to_register(apigw_login).model_dump()
         try:
-            payload = _login_to_register(apigw_login).model_dump()
             response = post(
                 url=f"{base_url}/apigw/organization/registration",
                 json=payload,
