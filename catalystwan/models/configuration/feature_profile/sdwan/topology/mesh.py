@@ -1,5 +1,6 @@
 # Copyright 2024 Cisco Systems, Inc. and its affiliates
-from typing import List, Literal
+from typing import List, Literal, Optional
+from uuid import UUID
 
 from pydantic import AliasPath, BaseModel, ConfigDict, Field
 
@@ -15,6 +16,12 @@ class MeshParcel(_ParcelBase):
     type_: Literal["mesh"] = Field(default="mesh", exclude=True)
     target: Target = Field(default=Target(), validation_alias=AliasPath("data", "target"), description="Target Vpn")
     sites: Global[List[str]] = Field(default=as_global([]), validation_alias=AliasPath("data", "sites"))
+    migration_source: Optional[UUID] = Field(
+        default=None,
+        serialization_alias="migrationSource",
+        validation_alias="migrationSource",
+        description="Added in 27.1.1 for seamless topology migration",
+    )
 
     def add_target_vpn(self, vpn: str) -> None:
         self.target.vpn.value.append(vpn)

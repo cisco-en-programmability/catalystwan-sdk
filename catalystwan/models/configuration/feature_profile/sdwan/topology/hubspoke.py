@@ -1,5 +1,6 @@
 # Copyright 2024 Cisco Systems, Inc. and its affiliates
 from typing import List, Literal, Optional
+from uuid import UUID
 
 from pydantic import AliasPath, BaseModel, ConfigDict, Field
 
@@ -47,6 +48,12 @@ class HubSpokeParcel(_ParcelBase):
     target: Target = Field(default=Target(), validation_alias=AliasPath("data", "target"))
     selected_hubs: Global[List[str]] = Field(default=as_global([]), validation_alias=AliasPath("data", "selectedHubs"))
     spokes: List[Spoke] = Field(default_factory=list, validation_alias=AliasPath("data", "spokes"))
+    migration_source: Optional[UUID] = Field(
+        default=None,
+        serialization_alias="migrationSource",
+        validation_alias="migrationSource",
+        description="Added in 27.1.1 for seamless topology migration",
+    )
 
     def add_spoke(self, name: str, spoke_sites: List[str]) -> Spoke:
         spoke = Spoke.create(name=name, spoke_sites=spoke_sites)

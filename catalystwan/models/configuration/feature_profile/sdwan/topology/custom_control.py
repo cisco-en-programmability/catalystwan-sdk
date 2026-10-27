@@ -405,6 +405,12 @@ class CustomControlParcel(_ParcelBase):
         validation_alias=AliasPath("data", "target"),
         description="Target",
     )
+    migration_source: Optional[UUID] = Field(
+        default=None,
+        serialization_alias="migrationSource",
+        validation_alias="migrationSource",
+        description="Added in 27.1.1 for seamless topology migration",
+    )
 
     def set_default_action(self, action: AcceptRejectActionType = "reject"):
         self.default_action = as_global(action, AcceptRejectActionType)
