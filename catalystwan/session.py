@@ -100,9 +100,10 @@ def create_base_url(url: str, port: Optional[int] = None) -> str:
 
 def create_apigw_session(
     url: str,
-    client_id: str,
-    client_secret: str,
-    org_name: str,
+    client_id: Optional[str] = None,
+    client_secret: Optional[str] = None,
+    org_name: str = "",
+    token: Optional[str] = None,
     subdomain: Optional[str] = None,
     port: Optional[int] = None,
     mode: Optional[LoginMode] = None,
@@ -116,9 +117,10 @@ def create_apigw_session(
 
     Args:
         url (str): IP address or domain name
-        client_id (str): client id
-        client_secret (str): client secret
+        client_id (str): client id (optional if token is provided)
+        client_secret (str): client secret (optional if token is provided)
         org_name (str): organization name
+        token (str): bearer token (optional if client_id and client_secret are provided)
         subdomain: subdomain specifying to which view switch when creating provider as a tenant session,
             works only on provider user mode
         port (int): port
@@ -137,6 +139,7 @@ def create_apigw_session(
             client_id=client_id,
             client_secret=client_secret,
             org_name=org_name,
+            token=token,
             mode=mode,
             username=username,
             session=session,
