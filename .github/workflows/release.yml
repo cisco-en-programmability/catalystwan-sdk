@@ -10,7 +10,7 @@ permissions: read-all
 
 jobs:
   publish_release:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         shell: bash
