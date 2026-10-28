@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from catalystwan.typed_list import DataSequence
 from catalystwan.utils.creation_tools import create_dataclass
@@ -154,18 +154,72 @@ class DashboardAPI:
 
         return transport_interface
 
-    def get_devices_health(self) -> DevicesHealth:
+    def get_devices_health(
+        self,
+        limit: Optional[int] = None,
+        offset: Optional[int] = None,
+        site_id: Optional[str] = None,
+        auto_paginate: bool = True,
+    ) -> DevicesHealth:
         """
         Get information about devices health
 
+        Args:
+            limit: Optional maximum number of devices to fetch per request.
+            offset: Optional offset to start fetching devices from.
+            site_id: Optional site id to filter devices by.
+            auto_paginate: If True and limit/offset are not explicitly provided,
+                automatically paginate through all pages until total_devices are fetched.
+
         Returns:
-            DevicesHealth object
+            DevicesHealth object containing total_devices count and the DataSequence of DeviceHealth items.
         """
-        response = self.session.get_json("/dataservice/health/devices")
+        params: Dict[str, Any] = {}
+        if limit is not None:
+            params["limit"] = limit
+        if offset is not None:
+            params["offset"] = offset
+        if site_id is not None:
+            params["site-id"] = site_id
+
+        response = self.session.get("/dataservice/health/devices", params=params if params else None).json()
         devices_health = create_dataclass(DevicesHealth, response)
 
+        raw_devices: List[Any] = list(response.get("devices", []))
+        total_devices = devices_health.total_devices
+
+        if auto_paginate and limit is None and offset is None:
+            page_size = len(raw_devices)
+            seen_uuids = {d.get("uuid") for d in raw_devices if isinstance(d, dict) and "uuid" in d}
+
+            current_offset = len(raw_devices)
+            while current_offset < total_devices and page_size > 0:
+                page_params: Dict[str, Any] = {"offset": current_offset, "limit": page_size}
+                if site_id is not None:
+                    page_params["site-id"] = site_id
+
+                page_response = self.session.get("/dataservice/health/devices", params=page_params).json()
+                page_devices = page_response.get("devices", [])
+
+                if not page_devices:
+                    break
+
+                new_devices = []
+                for d in page_devices:
+                    uuid = d.get("uuid") if isinstance(d, dict) else None
+                    if uuid is None or uuid not in seen_uuids:
+                        if uuid:
+                            seen_uuids.add(uuid)
+                        new_devices.append(d)
+
+                if not new_devices:
+                    break
+
+                raw_devices.extend(new_devices)
+                current_offset += len(page_devices)
+
         devices_health.devices = DataSequence(
-            DeviceHealth, [create_dataclass(DeviceHealth, device) for device in devices_health.devices]  # type: ignore
+            DeviceHealth, [create_dataclass(DeviceHealth, device) for device in raw_devices]  # type: ignore
         )
 
         return devices_health

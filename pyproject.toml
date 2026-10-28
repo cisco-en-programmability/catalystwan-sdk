@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "catalystwan"
-version = "0.41.6dev13"
+version = "0.41.7dev0"
 description = "Cisco Catalyst WAN SDK for Python"
 authors = ["sbasan <sbasan@cisco.com>"]
 readme = "README.md"
@@ -15,7 +15,6 @@ ciscoconfparse = "1.9.41"
 tenacity = ">=8.1.0, !=8.4.0"
 Jinja2 = "^3.1.2"
 flake8-quotes = "^3.3.1"
-clint = "^0.5.1"
 requests-toolbelt = "^1.0.0"
 packaging = "^23.0"
 pydantic = "^2.7"

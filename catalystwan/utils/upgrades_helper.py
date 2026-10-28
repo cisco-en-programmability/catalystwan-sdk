@@ -4,7 +4,6 @@ from enum import Enum
 from pathlib import PurePath
 
 from attr import define  # type: ignore
-from clint.textui.progress import Bar as ProgressBar  # type: ignore
 from requests_toolbelt.multipart.encoder import MultipartEncoder, MultipartEncoderMonitor  # type: ignore
 
 from catalystwan.endpoints import CustomPayloadType, PreparedPayload
@@ -12,6 +11,7 @@ from catalystwan.endpoints.configuration_device_inventory import DeviceDetailsRe
 from catalystwan.exceptions import MultiplePersonalityError
 from catalystwan.typed_list import DataSequence
 from catalystwan.utils.personality import Personality
+from catalystwan.utils.progress_bar import ProgressBar
 
 
 class Family(Enum):

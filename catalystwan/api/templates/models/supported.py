@@ -4,6 +4,7 @@ from catalystwan.api.templates.models.aaa_model import AAAModel
 from catalystwan.api.templates.models.cisco_aaa_model import CiscoAAAModel
 from catalystwan.api.templates.models.cisco_banner_model import CiscoBannerModel
 from catalystwan.api.templates.models.cisco_bfd_model import CiscoBFDModel
+from catalystwan.api.templates.models.cisco_bgp_model import CiscoBGPModel
 from catalystwan.api.templates.models.cisco_logging_model import CiscoLoggingModel
 from catalystwan.api.templates.models.cisco_ntp_model import CiscoNTPModel
 from catalystwan.api.templates.models.cisco_omp_model import CiscoOMPModel
@@ -22,13 +23,14 @@ from catalystwan.api.templates.models.vpn_vsmart_model import VpnVsmartModel
 available_models = {
     "aaa": AAAModel,
     "cisco_aaa": CiscoAAAModel,
+    "cisco_bfd": CiscoBFDModel,
+    "cisco_bgp": CiscoBGPModel,
     "cisco_banner": CiscoBannerModel,
     "cisco_bfd": CiscoBFDModel,
     "cisco_ntp": CiscoNTPModel,
     "cisco_ospf": CiscoOSPFModel,
     "cisco_logging": CiscoLoggingModel,
     "cisco_vpn_interface": CiscoVpnInterfaceModel,
-    "cisco_system": CiscoSystemModel,
     "cisco_vpn": CiscoVPNModel,
     "cisco_snmp": CiscoSNMPModel,
     "cisco_system": CiscoSystemModel,
