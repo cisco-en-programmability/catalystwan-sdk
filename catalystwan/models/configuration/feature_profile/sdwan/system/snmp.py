@@ -6,7 +6,7 @@ from typing import List, Literal, Optional, Union
 
 from pydantic import AliasPath, BaseModel, ConfigDict, Field
 
-from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase, as_default
+from catalystwan.api.configuration_groups.parcel import Default, Global, Variable, _ParcelBase
 
 Authorization = Literal["read-only", "read-write"]
 Priv = Literal["aes-cfb-128", "aes-256-cfb-128"]
@@ -36,7 +36,7 @@ class CommunityItem(BaseModel):
         extra="forbid",
         populate_by_name=True,
     )
-    name: Global[str] = Field(
+    name: Union[Global[str], Variable] = Field(
         ...,
         description="Set name of the SNMP community"
         "[Note: Catalyst SD-WAN Manager will encrypt this field before saving."
@@ -142,7 +142,9 @@ class SNMPParcel(_ParcelBase):
         populate_by_name=True,
     )
     shutdown: Union[Global[bool], Variable, Default[bool]] = Field(
-        default=as_default(False), validation_alias=AliasPath("data", "shutdown"), description="Enable or disable SNMP"
+        default=Default(value=False),
+        validation_alias=AliasPath("data", "shutdown"),
+        description="Enable or disable SNMP",
     )
     contact: Union[Global[str], Variable, Default[None]] = Field(
         default=Default[None](value=None),
