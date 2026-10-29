@@ -17,7 +17,7 @@ from catalystwan import PACKAGE_VERSION, __package__
 from catalystwan.endpoints import BASE_PATH, APIEndpointRequestMeta, TypeSpecifier, request, versions, view
 from catalystwan.utils.session_type import SessionType  # type: ignore
 
-SOURCE_BASE_PATH = "https://github.com/cisco-en-programmability/catalystwan-sdk/blob/main/"
+SOURCE_BASE_PATH = "https://github.com/cisco-en-programmability/catalystwan-sdk/blob/dev/"
 
 
 def relative(absolute: str) -> str:
@@ -52,8 +52,7 @@ def generate_origin_string(typespec: TypeSpecifier) -> str:
 
 
 class MarkdownRenderer(Protocol):
-    def md(self) -> str:
-        ...
+    def md(self) -> str: ...
 
 
 @dataclass
