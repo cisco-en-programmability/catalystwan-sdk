@@ -242,16 +242,25 @@ class ManagerResponse(Response, APIEndpointClientResponse):
         return create_dataclass(cls, data)
 
     def get_error_info(self) -> ManagerErrorInfo:
-        """Returns error information from JSON payload"""
+        """Return structured error fields or a message for a non-object error.
 
-        if self.payload.error is None:
+        Some services return ``{"error": "Internal Server Error"}`` rather than
+        the Manager error object. Preserve that value as a message so callers
+        can raise ManagerHTTPError with the original HTTP status and response,
+        instead of masking it with a mapping-unpack TypeError. Missing/null
+        errors remain empty; structured objects keep their existing validation.
+        """
+        error = self.payload.error
+        if error is None:
             return ManagerErrorInfo(
                 message=None,
                 details=None,
                 code=None,
             )
 
-        return ManagerErrorInfo(**self.payload.error)
+        if isinstance(error, dict):
+            return ManagerErrorInfo(**error)
+        return ManagerErrorInfo(message=str(error))
 
 
 def with_vmanage_response(method: Callable[[Any], Response]) -> Callable[[Any], ManagerResponse]:
