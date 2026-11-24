@@ -97,6 +97,31 @@ class TestSessionExceptions(unittest.TestCase):
             with self.assertRaises(sdk_exception):
                 self.session.request(self.response.request.method, self.response.request.url)
 
+    @patch("requests.sessions.Session.request")
+    def test_string_error_preserves_http_failure(self, mock_request_base):
+        """Report a string error as HTTP 500 with its original request and response."""
+        response = Response()
+        response.status_code = 500
+        response.reason = "Internal Server Error"
+        response._content = b'{"error":"Internal Server Error"}'
+        response.headers["Content-Type"] = "application/json"
+        response.url = "https://example.invalid/api/sites"
+        response.request = Request("POST", response.url).prepare()
+        mock_request_base.return_value = response
+
+        with self.assertRaises(ManagerHTTPError) as raised:
+            self.session.request("POST", "https://example.invalid/api/sites")
+
+        error = raised.exception
+        self.assertEqual(error.info.message, "Internal Server Error")
+        assert error.response is not None
+        self.assertEqual(error.response.url, response.url)
+        self.assertIs(error.request, response.request)
+        self.assertEqual(error.response.status_code, 500)
+        self.assertEqual(error.response.json(), {"error": "Internal Server Error"})
+        self.assertIn("500 Server Error", str(error))
+        mock_request_base.assert_called_once()
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -148,6 +148,36 @@ class TestResponse(unittest.TestCase):
             assert error_info.details is None
             assert error_info.code is None
 
+    @parameterized.expand(
+        [
+            ("Internal Server Error", "Internal Server Error"),
+            ("", ""),
+            (["service unavailable"], "['service unavailable']"),
+            (500, "500"),
+            (False, "False"),
+        ]
+    )
+    def test_get_non_object_error(self, error: Any, expected_message: str):
+        """Keep non-object error information without hiding the HTTP failure."""
+        self.response_mock.json.return_value = {"error": error}
+
+        error_info = ManagerResponse(self.response_mock).get_error_info()
+
+        self.assertEqual(error_info, ManagerErrorInfo(message=expected_message))
+
+    def test_get_structured_error(self):
+        """Preserve all fields of the existing structured Manager error format."""
+        self.response_mock.json.return_value = {
+            "error": {"message": "Request failed", "details": "Service unavailable", "code": "SERVICE0001"}
+        }
+
+        error_info = ManagerResponse(self.response_mock).get_error_info()
+
+        self.assertEqual(
+            error_info,
+            ManagerErrorInfo(message="Request failed", details="Service unavailable", code="SERVICE0001"),
+        )
+
     def test_dataobj_optional_validate(self):
         # Arrange
         self.response_mock.json.return_value = VALIDATE_DATASEQ_TEST_DATA[0]
